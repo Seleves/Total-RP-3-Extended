@@ -18,3 +18,5 @@ If you want to test this out I highly recommend making a database backup before.
 - integrate variable tags into the UI
 - integrate a lint like function
 - localization
+- remove unused code
+- add a variable inspector
