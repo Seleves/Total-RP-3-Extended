@@ -8,6 +8,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<!--    Display frame     -->
 	<!-- *_*_*_*_*_*_*_*_*_*  -->
 
+	
+
 	<Frame name="TRP3_ItemEditorFrameDisplay" inherits="TRP3_EditorTitledFrame" virtual="true">
 		<Frames>
 			<EditBox parentKey="name" inherits="TRP3_TitledHelpEditBox">

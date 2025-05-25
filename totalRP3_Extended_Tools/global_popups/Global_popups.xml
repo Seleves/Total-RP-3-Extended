@@ -4,18 +4,11 @@
 -->
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
-	<Button inherits="TRP3_QuestButtonTemplate" name="TRP3_WorkflowLinkButton" virtual="true">
-		<Frames>
-			<Frame parentKey="select" inherits="TRP3_DropdownButtonTemplate" enableMouse="true" name="$parentSelect">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Name" x="-4" y="-5"/>
-				</Anchors>
-			</Frame>
-		</Frames>
-	</Button>
+
+	<Script file="Global_popups_mixins.lua"/>
 
 	<!-- Object browser line  -->
-	<!--Button name="TRP3_ObjectBrowserLine" virtual="true" inherits="TRP3_TooltipBackdropTemplate">
+	<Button name="TRP3_ObjectBrowserLine" virtual="true" inherits="TRP3_TooltipBackdropTemplate">
 		<Size x="0" y="28"/>
 		<KeyValues>
 			<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_GREY" type="global"/>
@@ -62,59 +55,10 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				_G[self:GetName().."Highlight"]:Hide();
 			</OnLeave>
 		</Scripts>
-	</Button-->
-
-	<Frame name="TRP3_ScriptEditorDelay" hidden="true" inherits="TRP3_EditorEffectTemplate">
-
-		<Size x="400" y="330"/>
-
-		<Frames>
-
-			<EditBox parentKey="duration" inherits="TRP3_TitledHelpEditBox">
-				<Size x="215" y="18"/>
-				<Anchors>
-					<Anchor point="TOP" x="-5" y="-55"/>
-				</Anchors>
-			</EditBox>
-
-			<Frame parentKey="interrupt" inherits="TRP3_DropdownButtonTemplate" enableMouse="true" name="$parentInterrupt">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.duration" x="-4" y="-15"/>
-				</Anchors>
-			</Frame>
-
-			<Frame parentKey="type" inherits="TRP3_DropdownButtonTemplate" enableMouse="true" name="$parentType">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.interrupt" x="0" y="-12"/>
-				</Anchors>
-			</Frame>
-
-			<EditBox parentKey="sound" inherits="TRP3_TitledHelpEditBox">
-				<Size x="215" y="18"/>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.type" x="4" y="-15"/>
-				</Anchors>
-			</EditBox>
-
-			<CheckButton parentKey="soundFile" inherits="TRP3_CheckBox">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.sound" x="0" y="-15"/>
-				</Anchors>
-			</CheckButton>
-
-			<EditBox parentKey="text" inherits="TRP3_TitledHelpEditBox">
-				<Size x="215" y="18"/>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.soundFile" x="0" y="-18"/>
-				</Anchors>
-			</EditBox>
-
-		</Frames>
-
-	</Frame>
+	</Button>
 
 	<!-- Object browser  -->
-	<!--Frame name="TRP3_ObjectBrowser" hidden="true" enableMouse="true" inherits="TRP3_BrowserDialogBackdropTemplate">
+	<Frame name="TRP3_ObjectBrowser" hidden="true" enableMouse="true" inherits="TRP3_BrowserDialogBackdropTemplate">
 		<KeyValues>
 			<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_GREY" type="global"/>
 		</KeyValues>
@@ -186,7 +130,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</Frames>
 			</Frame>
 
-			<!- - Filter section - ->
+			<!-- Filter section -->
 			<Frame parentKey="filter" inherits="TRP3_TooltipBackdropTemplate">
 				<Size x="0" y="60"/>
 				<KeyValues>
@@ -219,6 +163,134 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</Frames>
 			</Frame>
 		</Frames>
-	</Frame-->
+	</Frame>
+
+	<!-- Emote browser -->
+
+	<Button name="TRP3_Tools_EmotesListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_EmotesListElementMixin">
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="token" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<Size x="125"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4"/>
+					</Anchors>
+					<Color b="0.95" r="0.95" g="0.95"/>
+				</FontString>
+				<FontString parentKey="command" inherits="GameFontNormal" maxLines="1" justifyH="RIGHT" justifyV="CENTER">
+					<Anchors>
+						<Anchor point="LEFT" x="4" relativePoint="RIGHT" relativeKey="$parent.token"/>
+						<Anchor point="RIGHT" x="-4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
+			<OnClick method="OnClick"/>
+		</Scripts>
+	</Button>
+
+	<Frame name="TRP3_Tools_EmotesBrowser" hidden="true" enableMouse="true" inherits="TRP3_BrowserDialogBackdropTemplate" mixin="TRP3_Tools_EmotesBrowserMixin">
+		<KeyValues>
+			<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_GREY" type="global"/>
+		</KeyValues>
+
+		<Size x="550" y="400"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="title" text="Emotes" inherits="GameFontNormalLarge">
+					<Size x="0" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-17"/>
+						<Anchor point="TOPRIGHT" x="0" y="-17"/>
+					</Anchors>
+					<Color b="0.95" r="0.95" g="0.95"/>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+
+			<Button parentKey="close" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-5" y="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Close();
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Frame parentKey="content" inherits="TRP3_TooltipBackdropTemplate">
+				<Size x="0" y="295"/>
+
+				<KeyValues>
+					<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_CREAMY_BROWN" type="global"/>
+				</KeyValues>
+
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-35"/>
+					<Anchor point="LEFT" x="10" y="0"/>
+					<Anchor point="RIGHT" x="-10" y="0"/>
+				</Anchors>
+
+				<Frames>
+					<Frame name="$parentList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
+						<KeyValues>
+							<KeyValue key="listElementTemplate" value="TRP3_Tools_EmotesListElementTemplate" type="string"/>
+							<KeyValue key="listElementMixin" value="TRP3_Tools_EmotesListElementMixin" type="global"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="5" y="-5"/>
+							<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
+			<!-- Filter section -->
+			<Frame parentKey="filter" inherits="TRP3_TooltipBackdropTemplate">
+				<Size x="0" y="60"/>
+				<KeyValues>
+					<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_CREAMY_BROWN" type="global"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="10" y="10"/>
+					<Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="total" inherits="GameFontNormal">
+							<Size x="0" y="10"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="-12"/>
+								<Anchor point="TOPRIGHT" x="0" y="-12"/>
+							</Anchors>
+							<Color b="0.95" r="0.95" g="0.95"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+
+					<EditBox parentKey="box" inherits="TRP3_Tools_TitledEditBoxTemplate">
+						<Size x="100" y="25"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="10"/>
+						</Anchors>
+					</EditBox>
+
+				</Frames>
+			</Frame>
+		</Frames>
+	</Frame>
+
+	<Script file="Global_popups.lua"/>
 
 </Ui>

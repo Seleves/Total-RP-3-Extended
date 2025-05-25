@@ -8,7 +8,13 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<!--     Imports      -->
 	<!-- *_*_*_*_*_*_*_*_*_*  -->
 
-	<Include file="Script.lua"/>
+	<Script file="Script.lua"/>
+	<Script file="Operand.lua"/>
+	<Script file="Formatters.lua"/>
+	<Script file="Builtin_effects.lua"/>
+	<Script file="Builtin_operands.lua"/>
+
+	<Script file="Script_mixins.lua"/>
 
 	<Include file="Effects\Effects.xml"/>
 	<Include file="Effects\Effects.lua"/>
@@ -24,6 +30,213 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Include file="Normal\Normal.xml"/>
 	<Include file="Normal\Normal.lua"/>
 
+
+	<Button name="TRP3_Tools_ScriptTriggerListElementTemplate" virtual="true" inherits="BackdropTemplate" registerForClicks="AnyUp" mixin="TRP3_Tools_ScriptTriggerListElementMixin">
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="BACKDROP_CALLOUT_GLOW_0_16" type="global"/>
+		</KeyValues>
+
+		<Size x="0" y="65" />
+		<Frames>
+			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
+				<Size x="40" y="40" />
+				<Anchors>
+					<Anchor point="TOPLEFT" x="12" y="-12"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="whenText" inherits="GameFontNormalLarge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="5" y="0" />
+						<Anchor point="RIGHT" x="-5" />
+						<Anchor point="BOTTOM" relativeKey="$parent.icon" />
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+
+				<FontString parentKey="thenText" inherits="GameFontNormalLarge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="BOTTOM" y="30" />
+						<Anchor point="LEFT" x="12" />
+						<Anchor point="RIGHT" x="-12" />
+						<Anchor point="BOTTOM" y="12" />
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+			</Layer>
+
+		</Layers>
+		<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="6" y="-6" />
+				<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
+			</Anchors>
+			<TexCoords bottom="0" left="0.25" top="1" right="1" />
+		</HighlightTexture>
+
+		<Scripts>
+			<OnClick method="OnClick"/>
+		</Scripts>
+	</Button>
+
+	<Button name="TRP3_Tools_ScriptEffectListElementTemplate" virtual="true" inherits="BackdropTemplate" registerForClicks="AnyUp" mixin="TRP3_Tools_ScriptEffectListElementMixin">
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555" type="global"/>
+		</KeyValues>
+
+		<Size x="0" y="65" />
+		<Frames>
+			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
+				<Size x="40" y="40" />
+				<Anchors>
+					<Anchor point="TOPLEFT" x="12" y="-12"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="title" inherits="GameFontNormalLarge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="5" y="0" />
+						<Anchor point="RIGHT" x="-5" />
+						<Anchor point="BOTTOM" relativeKey="$parent.icon" />
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+
+				<FontString parentKey="preview" inherits="GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="BOTTOM" y="40" />
+						<Anchor point="LEFT" x="12" />
+						<Anchor point="RIGHT" x="-12" />
+						<Anchor point="BOTTOM" y="12" />
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="securityIndicator">
+					<Color r="1" g="0.8" b="0.8"/>
+					<Anchors>
+						<Anchor point="TOP" y="-5"/>
+						<Anchor point="BOTTOM" y="5"/>
+						<Anchor point="LEFT" x="5"/>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="10"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+
+		</Layers>
+		<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="6" y="-6" />
+				<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
+			</Anchors>
+			<TexCoords bottom="0" left="0.25" top="1" right="1" />
+		</HighlightTexture>
+		<Scripts>
+			<OnClick method="OnClick"/>
+		</Scripts>
+	</Button>
+
+	<Frame name="TRP3_Tools_ScriptConditionTermPreviewTemplate" virtual="true">
+		<Size y="20"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="open" inherits="GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10"/>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="70" />
+						<Anchor point="BOTTOM"/>
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+
+				<FontString parentKey="expression" inherits="GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOP"/>
+						<Anchor point="LEFT" x="70" />
+						<Anchor point="RIGHT" x="-20" />
+						<Anchor point="BOTTOM" />
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+
+				<FontString parentKey="close" inherits="GameFontNormal" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="TOP"/>
+						<Anchor point="LEFT" relativePoint="RIGHT" x="-20"/>
+						<Anchor point="BOTTOMRIGHT" x="-10"/>
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="TRP3_Tools_EditorScriptTemplate" virtual="true" mixin="TRP3_Tools_EditorScriptMixin">
+		<Anchors>
+			<Anchor point="TOPLEFT"/>
+			<Anchor point="BOTTOMRIGHT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\AddOns\totalRP3\Resources\UI\!ui-frame-wooden-border" vertTile="true">
+					<Color r="1" g="0.8" b="0.8"/>
+					<TexCoords left="0.0078125" right="0.171875"/>
+					<Anchors>
+						<Anchor point="TOP"/>
+						<Anchor point="BOTTOM"/>
+						<Anchor point="LEFT" relativePoint="CENTER" x="-4"/>
+						<Anchor point="RIGHT" relativePoint="CENTER" x="4"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			
+			<Frame name="$parentTriggerList" parentKey="triggerList" inherits="TRP3_Tools_ListTemplate">
+				<KeyValues>
+					<KeyValue key="listElementTemplate" value="TRP3_Tools_ScriptTriggerListElementTemplate" type="string"/>
+					<KeyValue key="listElementMixin" value="TRP3_Tools_ScriptTriggerListElementMixin" type="global"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOM"/>
+					<Anchor point="RIGHT" x="-4" relativePoint="CENTER"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentEffectList" parentKey="effectList" inherits="TRP3_Tools_ListTemplate">
+				<KeyValues>
+					<KeyValue key="listElementTemplate" value="TRP3_Tools_ScriptEffectListElementTemplate" type="string"/>
+					<KeyValue key="listElementMixin" value="TRP3_Tools_ScriptEffectListElementMixin" type="global"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPRIGHT" y="-25"/>
+					<Anchor point="BOTTOM"/>
+					<Anchor point="LEFT" x="4" relativePoint="CENTER"/>
+				</Anchors>
+			</Frame>
+
+			<DropdownButton parentKey="scriptList" inherits="TRP3_Tools_TitledDropdownButtonTemplate" name="$parentScriptList">
+				<KeyValues>
+					<KeyValue key="titleText" value="Workflow" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOP"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" relativeKey="$parent.effectList"/>
+					<Anchor point="LEFT" relativePoint="CENTER" x="4"/>
+				</Anchors>
+			</DropdownButton>
+		</Frames>
+	</Frame>
+	
 
 
 </Ui>

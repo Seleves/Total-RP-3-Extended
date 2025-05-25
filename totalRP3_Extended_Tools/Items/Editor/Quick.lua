@@ -1,6 +1,8 @@
 -- Copyright The Total RP 3 Extended Authors
 -- SPDX-License-Identifier: Apache-2.0
 
+local _, addon = ...;
+
 local Globals, Utils = TRP3_API.globals, TRP3_API.utils;
 local getClass = TRP3_API.extended.getClass;
 local stEtN = Utils.str.emptyToNil;
@@ -57,7 +59,7 @@ local function onSave(toMode)
 end
 
 local function onConvert()
-	TRP3_API.extended.tools.goToPage(onSave(TRP3_DB.modes.NORMAL));
+	addon.openDraft(onSave(TRP3_DB.modes.NORMAL));
 end
 
 local function onIconSelected(icon)
@@ -212,155 +214,5 @@ function TRP3_API.extended.tools.initItemQuickEditor(ToolFrame)
 		editor.name:SetFocus();
 	end);
 	setTooltipForSameFrame(editor.convert, "TOP", 0, 0, loc.IT_CONVERT_TO_NORMAL, loc.IT_CONVERT_TO_NORMAL_TT);
-
-	-- Templates
-	toolFrame.list.bottom.item.Name:SetText(loc.DB_CREATE_ITEM);
-	toolFrame.list.bottom.item.InfoText:SetText(loc.DB_CREATE_ITEM_TT);
-	toolFrame.list.bottom.item.templates.title:SetText(loc.DB_CREATE_ITEM_TEMPLATES);
-	toolFrame.list.bottom.item.templates.quick.Name:SetText(loc.DB_CREATE_ITEM_TEMPLATES_QUICK);
-	toolFrame.list.bottom.item.templates.quick.InfoText:SetText(loc.DB_CREATE_ITEM_TEMPLATES_QUICK_TT);
-	toolFrame.list.bottom.item.templates.document.Name:SetText(loc.DB_CREATE_ITEM_TEMPLATES_DOCUMENT);
-	toolFrame.list.bottom.item.templates.document.InfoText:SetText(loc.DB_CREATE_ITEM_TEMPLATES_DOCUMENT_TT);
-	toolFrame.list.bottom.item.templates.blank.Name:SetText(loc.DB_CREATE_ITEM_TEMPLATES_BLANK);
-	toolFrame.list.bottom.item.templates.blank.InfoText:SetText(loc.DB_CREATE_ITEM_TEMPLATES_BLANK_TT);
-	toolFrame.list.bottom.item.templates.expert.Name:SetText(loc.DB_CREATE_ITEM_TEMPLATES_EXPERT);
-	toolFrame.list.bottom.item.templates.expert.InfoText:SetText(loc.DB_CREATE_ITEM_TEMPLATES_EXPERT_TT);
-	toolFrame.list.bottom.item.templates.container.Name:SetText(loc.DB_CREATE_ITEM_TEMPLATES_CONTAINER);
-	toolFrame.list.bottom.item.templates.container.InfoText:SetText(loc.DB_CREATE_ITEM_TEMPLATES_CONTAINER_TT);
-	toolFrame.list.bottom.item.templates.from.Name:SetText(loc.DB_CREATE_ITEM_TEMPLATES_FROM);
-	toolFrame.list.bottom.item.templates.from.InfoText:SetText(loc.DB_CREATE_ITEM_TEMPLATES_FROM_TT);
-	toolFrame.list.bottom.item.templates.aura.Name:SetText(loc.DB_CREATE_ITEM_TEMPLATES_AURA);
-	toolFrame.list.bottom.item.templates.aura.InfoText:SetText(loc.DB_CREATE_ITEM_TEMPLATES_AURA_TT);
-
-	toolFrame.list.bottom.campaign.templates.blank.Name:SetText(loc.DB_CREATE_CAMPAIGN_TEMPLATES_BLANK);
-	toolFrame.list.bottom.campaign.templates.blank.InfoText:SetText(loc.DB_CREATE_CAMPAIGN_TEMPLATES_BLANK_TT);
-	toolFrame.list.bottom.campaign.templates.from.Name:SetText(loc.DB_CREATE_CAMPAIGN_TEMPLATES_FROM);
-	toolFrame.list.bottom.campaign.templates.from.InfoText:SetText(loc.DB_CREATE_CAMPAIGN_TEMPLATES_FROM_TT);
-
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.item.templates.container, "inv_misc_bag_36");
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.item.templates.blank, "inv_inscription_scroll");
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.item.templates.expert, "ability_siege_engineer_pattern_recognition");
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.item.templates.document, "inv_misc_book_16");
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.item.templates.quick, "petbattle_speed");
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.item.templates.from, "spell_nature_mirrorimage");
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.item.templates.aura, "ability_priest_spiritoftheredeemer");
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.item, "inv_garrison_blueprints1");
-
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.campaign.templates.blank, "inv_inscription_scroll");
-	TRP3_API.ui.frame.setupIconButton(toolFrame.list.bottom.campaign.templates.from, "spell_nature_mirrorimage");
-
-	toolFrame.list.bottom.item:SetScript("OnClick", function(self)
-		ToolFrame.list.bottom.campaign.templates:Hide();
-		ToolFrame.list.container.import:Hide();
-		if TRP3_ItemQuickEditor:IsVisible() then
-			TRP3_ItemQuickEditor:Hide();
-		elseif self.templates:IsVisible() then
-			self.templates:Hide();
-		else
-			TRP3_API.ui.frame.configureHoverFrame(self.templates, self, "BOTTOM", 0, 5, false);
-			self.templates:SetPoint("BOTTOM", self, "TOP", 200, 25);	-- Black magic to off-center the templates frame.
-			self.templates.ArrowUP:SetPoint("TOP", self.templates, "BOTTOM", -200, 5);	-- More black magic to re-center the arrow on the button.
-		end
-	end);
-
-	toolFrame.list.bottom.campaign:SetScript("OnClick", function(self)
-		ToolFrame.list.bottom.item.templates:Hide();
-		ToolFrame.list.container.import:Hide();
-		if self.templates:IsVisible() then
-			self.templates:Hide();
-		else
-			TRP3_API.ui.frame.configureHoverFrame(self.templates, self, "BOTTOM", 0, 5, false);
-		end
-	end);
-
-	toolFrame.list.bottom.item.templates.quick:SetScript("OnClick", function()
-		toolFrame.list.bottom.item.templates:Hide();
-		TRP3_API.extended.tools.openItemQuickEditor(toolFrame.list.bottom.item, onQuickCreatedFromList);
-	end);
-
-	toolFrame.list.bottom.item.templates.blank:SetScript("OnClick", function()
-		toolFrame.list.bottom.item.templates:Hide();
-		local itemID, _ = TRP3_API.extended.tools.createItem(TRP3_API.extended.tools.getBlankItemData(TRP3_DB.modes.NORMAL));
-		TRP3_API.extended.tools.goToPage(itemID);
-	end);
-
-	toolFrame.list.bottom.item.templates.expert:SetScript("OnClick", function()
-		toolFrame.list.bottom.item.templates:Hide();
-		local itemID, _ = TRP3_API.extended.tools.createItem(TRP3_API.extended.tools.getBlankItemData(TRP3_DB.modes.EXPERT));
-		TRP3_API.extended.tools.goToPage(itemID);
-	end);
-
-	toolFrame.list.bottom.item.templates.container:SetScript("OnClick", function()
-		toolFrame.list.bottom.item.templates:Hide();
-		local itemID, _ = TRP3_API.extended.tools.createItem(TRP3_API.extended.tools.getContainerItemData());
-		TRP3_API.extended.tools.goToPage(itemID);
-	end);
-
-	toolFrame.list.bottom.item.templates.document:SetScript("OnClick", function()
-		toolFrame.list.bottom.item.templates:Hide();
-		local generatedID = Utils.str.id();
-		local itemID, _ = TRP3_API.extended.tools.createItem(TRP3_API.extended.tools.getDocumentItemData(generatedID), generatedID);
-		TRP3_API.extended.tools.goToPage(itemID);
-	end);
-
-	toolFrame.list.bottom.item.templates.aura:SetScript("OnClick", function()
-		toolFrame.list.bottom.item.templates:Hide();
-		local generatedID = Utils.str.id();
-		local itemID, _ = TRP3_API.extended.tools.createItem(TRP3_API.extended.tools.getAuraItemData(generatedID), generatedID);
-		TRP3_API.extended.tools.goToPage(itemID);
-	end);
-
-	toolFrame.list.bottom.item.templates.from:SetScript("OnClick", function()
-
-		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = toolFrame.list.bottom.item.templates, point = "LEFT", parentPoint = "RIGHT"}, {function(fromID)
-			toolFrame.list.bottom.item.templates:Hide();
-			local fromClass = getClass(fromID);
-			local copiedData = {};
-			local generatedID = Utils.str.id();
-			Utils.table.copy(copiedData, fromClass);
-			copiedData.MD = {
-				MO = copiedData.MD.MO,
-				V = 1,
-				CD = date("%d/%m/%y %H:%M:%S");
-				CB = Globals.player_id,
-				SD = date("%d/%m/%y %H:%M:%S");
-				SB = Globals.player_id,
-			};
-			TRP3_API.extended.tools.replaceID(copiedData, fromID, generatedID);
-			local ID, _ = TRP3_API.extended.tools.createItem(copiedData, generatedID);
-			TRP3_API.extended.tools.goToPage(ID);
-		end, TRP3_DB.types.ITEM});
-
-	end);
-
-	toolFrame.list.bottom.campaign.templates.blank:SetScript("OnClick", function()
-		toolFrame.list.bottom.campaign.templates:Hide();
-		local generatedID = Utils.str.id();
-		local campaignID, _ = TRP3_API.extended.tools.createCampaign(TRP3_API.extended.tools.getCampaignData(generatedID), generatedID);
-		TRP3_API.extended.tools.goToPage(campaignID);
-	end);
-
-	toolFrame.list.bottom.campaign.templates.from:SetScript("OnClick", function()
-
-		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = toolFrame.list.bottom.campaign.templates, point = "LEFT", parentPoint = "RIGHT"}, {function(fromID)
-			toolFrame.list.bottom.campaign.templates:Hide();
-			local fromClass = getClass(fromID);
-			local copiedData = {};
-			local generatedID = Utils.str.id();
-			Utils.table.copy(copiedData, fromClass);
-			copiedData.MD = {
-				MO = copiedData.MD.MO,
-				V = 1,
-				CD = date("%d/%m/%y %H:%M:%S");
-				CB = Globals.player_id,
-				SD = date("%d/%m/%y %H:%M:%S");
-				SB = Globals.player_id,
-			};
-			TRP3_API.extended.tools.replaceID(copiedData, fromID, generatedID);
-			local campaignID, _ = TRP3_API.extended.tools.createItem(copiedData, generatedID);
-			TRP3_API.extended.tools.goToPage(campaignID);
-		end, TRP3_DB.types.CAMPAIGN});
-
-	end);
 
 end

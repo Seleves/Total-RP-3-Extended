@@ -1,0 +1,43 @@
+<!--
+	Copyright The Total RP 3 Extended Authors
+	SPDX-License-Identifier: Apache-2.0
+-->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
+	
+	<Script file="Note_mixins.lua"/>
+	
+	<Button name="TRP3_Tools_EditorNoteButtonTemplate" virtual="true" mixin="TRP3_Tools_EditorNoteButtonMixin">
+		<Size x="32" y="32"/>
+		<Anchors>
+			<Anchor point="TOPLEFT"/>
+		</Anchors>
+		<Scripts>
+			<OnClick method="OnClick"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>			
+		</Scripts>
+		<NormalTexture atlas="minimap-genericevent-hornicon" setAllPoints="true" useAtlasSize="false"/>
+		<PushedTexture atlas="minimap-genericevent-hornicon-pressed" setAllPoints="true" useAtlasSize="false"/>
+		<HighlightTexture atlas="worldquest-questmarker-glow" alphaMode="ADD" setAllPoints="true" useAtlasSize="false"/>
+	</Button>
+	
+	<Frame name="TRP3_Tools_EditorNoteTemplate" virtual="true" inherits="TRP3_Tools_TitledPopupTemplate" hidden="true" mixin="TRP3_Tools_EditorNoteMixin">
+		<KeyValues>
+			<KeyValue key="titleText" value="${EDITOR_NOTES}" type="string"/>
+		</KeyValues>
+		
+		<Frames>
+			<Frame parentKey="note" inherits="TRP3_TextArea">
+				<Anchors>
+					<Anchor point="TOP" y="-40"/>
+					<Anchor point="LEFT" x="30"/>
+					<Anchor point="RIGHT" x="-30"/>
+					<Anchor point="BOTTOM" y="30"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		
+	</Frame>
+	
+</Ui>

@@ -1,21 +1,46 @@
 -- Copyright The Total RP 3 Extended Authors
 -- SPDX-License-Identifier: Apache-2.0
 
+local _, addon = ...
+
 local Globals, Events, Utils = TRP3_API.globals, TRP3_Addon.Events, TRP3_API.utils;
-local pairs, assert, tostring, strsplit, wipe, date = pairs, assert, tostring, strsplit, wipe, date;
 local EMPTY = TRP3_API.globals.empty;
 local loc = TRP3_API.loc;
+local after  = C_Timer.After;
 local getFullID, getClass = TRP3_API.extended.getFullID, TRP3_API.extended.getClass;
 local setTooltipForSameFrame = TRP3_API.ui.tooltip.setTooltipForSameFrame;
 local refreshTooltipForFrame = TRP3_RefreshTooltipForFrame;
 
 local toolFrame;
+local tabBar;
+
+local TAB_TYPE = {
+	CREATION    = "CREATION",
+	DATABASE    = "DATABASE",
+	DISCLAIMER  = "DISCLAIMER",
+	CREDITS     = "CREDITS"
+};
+
+StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"] = {
+	button1 = SAVE,
+	button2 = "Discard",
+	button3 = CANCEL,
+	timeout = false,
+	whileDead = true,
+	hideOnEscape = true,
+	showAlert = true,
+};
+
+local USE_NEW_EDITOR = true; -- TODO remove temporary
+
+local drafts = {};
 
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 -- API
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 TRP3_API.extended.tools = {};
+
 
 local BACKGROUNDS = {
 	"Interface\\ENCOUNTERJOURNAL\\UI-EJ-Classic",
@@ -31,7 +56,6 @@ function TRP3_API.extended.tools.setBackground(backgroundIndex)
 	local texture = BACKGROUNDS[backgroundIndex];
 	toolFrame.BkgMain:SetTexture(texture);
 	toolFrame.BkgHeader:SetTexture(texture);
-	toolFrame.BkgScroll:SetTexture(texture);
 end
 local setBackground = TRP3_API.extended.tools.setBackground;
 
@@ -123,6 +147,8 @@ TRP3_API.extended.tools.getClassDataSafeByType = getClassDataSafeByType;
 local draftData = {};
 local draftRegister = {};
 
+
+
 local function getObjectLocale(class)
 	return (class.MD or EMPTY).LO or "en";
 end
@@ -191,7 +217,6 @@ local function displayRootInfo(rootClassID, rootClass, classID, specificDraft)
 		specificText = specificText .. fieldFormat:format(loc.SPECIFIC_INNER_ID, "|cff00ffff" .. classID .. "|r");
 	end
 	specificText = specificText .. "\n\n" .. fieldFormat:format(loc.TYPE, getTypeLocale(specificDraft.TY));
-	specificText = specificText .. "\n\n" .. fieldFormat:format(loc.SPECIFIC_MODE, getModeLocale(specificDraft.MD.MO));
 	toolFrame.specific.text:SetText(specificText);
 
 	toolFrame.root.select:SetSelectedValue(getObjectLocale(rootClass));
@@ -263,25 +288,6 @@ end
 -- Pages
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-local function goToListPage(skipButton)
-	if not skipButton then
-		NavBar_Reset(toolFrame.navBar);
-	end
-	setBackground(1);
-	toolFrame.actions:Hide();
-	toolFrame.specific:Hide();
-	toolFrame.root:Hide();
-	toolFrame.tutoframe:Hide();
-	for _, pageData in pairs(PAGE_BY_TYPE) do
-		local frame = toolFrame[pageData.frame or ""];
-		if frame then
-			frame:Hide();
-		end
-	end
-	TRP3_API.extended.tools.toList();
-end
-TRP3_API.extended.tools.goToListPage = goToListPage;
-
 function goToPage(fullClassID, forceDraftReload)
 	local parts = {strsplit(TRP3_API.extended.ID_SEPARATOR, fullClassID)};
 	local rootClassID = parts[1];
@@ -293,15 +299,15 @@ function goToPage(fullClassID, forceDraftReload)
 	end
 
 	-- Go to page
-	toolFrame.list:Hide();
+	toolFrame.database:Hide();
 	toolFrame.actions:Show();
 	toolFrame.specific:Show();
 	toolFrame.root:Show();
 	toolFrame.tutoframe:Hide();
 
 	-- Load data
-	local rootDraft = openObjectAndGetDraft(rootClassID, forceDraftReload);
-	local specificDraft = draftRegister[fullClassID];
+	local rootDraft = drafts[rootClassID].class;
+	local specificDraft = drafts[rootClassID].register[fullClassID];
 	assert(specificDraft, "Can't find specific object in draftRegister: " .. fullClassID);
 
 	local selectedPageData, selectedPageFrame;
@@ -324,6 +330,9 @@ function goToPage(fullClassID, forceDraftReload)
 	TRP3_ExtendedTutorial.loadStructure(nil);
 
 	-- Show selected
+	
+	addon.currentEditor.cursor.objectId = fullClassID;
+	
 	setBackground(selectedPageData.background or 1);
 	displayRootInfo(rootClassID, rootDraft, specificClassID, specificDraft);
 	toolFrame.rootClassID = rootClassID;
@@ -349,7 +358,7 @@ function goToPage(fullClassID, forceDraftReload)
 	for _, part in pairs(parts) do
 		fullId = getFullID(fullId, part);
 		local reconstruct = fullId;
-		local class = draftRegister[reconstruct];
+		local class = drafts[rootClassID].register[reconstruct];
 		local text = PAGE_BY_TYPE[class.TY].tabTextGetter(part, class);
 		NavBar_AddButton(toolFrame.navBar, {id = reconstruct, name = text, OnClick = function()
 			goToPage(reconstruct);
@@ -371,7 +380,267 @@ function goToPage(fullClassID, forceDraftReload)
 	end
 
 end
+
+TRP3_ToolFrameTabsMixin = {};
+function TRP3_ToolFrameTabsMixin:CloseRequest(tabButton, data)
+	if data.type == TAB_TYPE.CREATION then
+		local openTabCount = 0;
+		for _, tab in ipairs(tabBar.tabs) do
+			if tab.data.type == TAB_TYPE.CREATION and tab.data.creationId == data.creationId then
+				openTabCount = openTabCount + 1;
+			end
+		end
+		if USE_NEW_EDITOR then
+			addon.updateCurrentObjectDraft();
+		end
+		if openTabCount <= 1 then
+			if TRP3_API.extended.isObjectMine(data.creationId) and not addon.utils.deepCompare(drafts[data.creationId].class, TRP3_API.extended.getClass(data.creationId)) then
+				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].text = "Your creation " .. data.label .. " has unsaved changes.|nDo you want to save them?";
+				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].OnAccept = function()
+					addon.saveDraft(data.creationId);
+					addon.deleteDraft(data.creationId);
+					tabBar:Close(tabButton);
+				end;
+				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].OnCancel = function()
+					addon.deleteDraft(data.creationId);
+					tabBar:Close(tabButton);
+				end;
+				local dialog = StaticPopup_Show("TRP3_SAVE_DISCARD_CANCEL");
+				if dialog then
+					dialog:ClearAllPoints();
+					dialog:SetPoint("CENTER", UIParent, "CENTER");
+				end
+			else
+				addon.deleteDraft(data.creationId);
+				self:Close(tabButton);
+			end
+		else
+			self:Close(tabButton);
+		end
+	else
+		self:Close(tabButton);
+	end
+end
+
+function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
+	addon.currentEditor = data;
+	
+	if USE_NEW_EDITOR then
+		addon.saveEditor();
+		addon.resetEditor();
+	end
+	
+	toolFrame.database:Hide();
+	toolFrame.editor:Hide();
+	toolFrame.backers:Hide();
+	toolFrame.disclaimer:Hide();
+
+	toolFrame.actions:Hide();
+	toolFrame.specific:Hide();
+	toolFrame.root:Hide();
+	toolFrame.tutoframe:Hide();
+	toolFrame.navBar:Hide(); -- TODO legacy	
+	for _, pageData in pairs(PAGE_BY_TYPE) do
+		local frame = toolFrame[pageData.frame or ""];
+		if frame then
+			frame:Hide();
+		end
+	end
+
+	if data.type == TAB_TYPE.DATABASE then
+		NavBar_Reset(toolFrame.navBar);
+		setBackground(1);
+		toolFrame.database:Show();
+		addon.refreshCreationsList();
+	elseif data.type == TAB_TYPE.CREATION then
+		if USE_NEW_EDITOR then
+			addon.showEditor(data);
+			toolFrame.editor:Show();
+		else
+			toolFrame.navBar:Show(); -- TODO legacy
+			goToPage(data.cursor.objectId);
+		end
+	elseif data.type == TAB_TYPE.CREDITS then
+		toolFrame.backers.scroll.child.HTML:SetText(Utils.str.toHTML(TRP3_KS_BACKERS:format(TRP3_API.extended.tools.formatVersion())));
+		toolFrame.backers.scroll.child.HTML:SetScript("OnHyperlinkClick", function(self, url, text, button) -- luacheck: ignore 212
+			TRP3_API.Ellyb.Popups:OpenURL(url);
+		end)
+		toolFrame.backers:Show();
+	elseif data.type == TAB_TYPE.DISCLAIMER then
+		--toolFrame.disclaimer.html:SetText(Utils.str.toHTML(loc.DISCLAIMER)); -- TODO uncomment
+		toolFrame.disclaimer.html:SetText(Utils.str.toHTML([[{h1:c}Prototype - please read{/h1}
+
+	You're using a {col:ff0000}Development Version{/col} of the Total RP 3 Extended database!
+
+	Despite my best efforts you may encounter:
+
+	• Missing features
+	• Bugs in the user interface
+	• Creations that don't work properly
+	• Incompatible save files
+
+	{h2}In order to avoid frustration, please make a {col:ff0000}Data Backup{/col} beforehand.{/h2}
+
+	You can find here a tutorial about finding all saved data:
+	{link*https://github.com/Total-RP/Total-RP-3/wiki/Saved-Variables*Where are my information stored?}
+
+	You can find here a tutorial about syncing your data to a cloud service:
+	{link*https://github.com/Total-RP/Total-RP-3/wiki/How-to-backup-and-synchronize-your-add-ons-settings-using-a-cloud-service*How to backup and synchronize your add-ons settings using a cloud service}
+
+	The latest DEV updates are on {link*https://github.com/Seleves/Total-RP-3-Extended/tree/main*GitHub}.
+	Feel free to report problems or post feedback. Please also have a look at the "known issues" section.
+
+	Thank you for testing and your feedback.
+
+	{p:r}Seleves{/p}]])); -- TODO remove
+		toolFrame.disclaimer.html.ok:SetScript("OnClick", function()
+			TRP3_Tools_Flags.has_seen_disclaimer = true;
+			tabBar:Close(tabBar:FindTab(function(data) return data.type == TAB_TYPE.DISCLAIMER; end));
+			addon.openDatabase();
+		end);
+		toolFrame.disclaimer.html:SetScript("OnHyperlinkClick", function(_, link)
+			TRP3_API.popup.showTextInputPopup(loc.UI_LINK_WARNING, nil, nil, link);
+		end);
+		toolFrame.disclaimer:Show();
+	end
+end
+
+function addon.openDraft(creationId, forceNewEditor, cursor)
+	if not drafts[creationId] then
+		drafts[creationId] = addon.createDraft(creationId);
+	end
+	local existingEditor = not forceNewEditor and addon.findDraft(creationId);
+	if forceNewEditor or not existingEditor then
+		local class = TRP3_API.extended.getClass(creationId);
+		local link = TRP3_API.inventory.getItemLink(class, creationId);
+		tabBar:AddTabAndActivate({
+			type       = TAB_TYPE.CREATION,
+			creationId = creationId, 
+			label      = link, 
+			tooltipHeader = link,
+			closeable  = true,
+			cursor     = cursor or {
+				objectId = creationId
+			}
+		});
+	else
+		tabBar:Activate(existingEditor);
+	end
+end
+
+function addon.getDraft(creationId)
+	return drafts[creationId];
+end
+
+function addon.findDraft(creationId)
+	return tabBar:FindTab(function(data) return data.creationId == creationId; end);
+end
+
+function addon.deleteDraft(creationId)
+	wipe(drafts[creationId].class);
+	wipe(drafts[creationId].register);
+	wipe(drafts[creationId]);
+	drafts[creationId] = nil;
+end
+
+function addon.saveDraft(creationId)
+	local draftClass = drafts[creationId].class;
+	draftClass.MD.V = draftClass.MD.V + 1;
+	draftClass.MD.SD = date("%d/%m/%y %H:%M:%S");
+	draftClass.MD.SB = TRP3_API.globals.player_id;
+	draftClass.MD.tV = TRP3_API.globals.extended_version;
+	draftClass.MD.dV = TRP3_API.utils.str.sanitizeVersion(TRP3_API.globals.extended_display_version);
+	
+	local object = TRP3_API.extended.getClass(creationId);
+	wipe(object);
+	TRP3_API.utils.table.copy(object, draftClass);
+	
+	TRP3_API.security.computeSecurity(creationId, object);
+
+	-- TODO security level is computed on the database object, not the draft.
+	-- that's why the updated security detail needs to be copied back into the draft
+	-- Check if this is necessary
+	draftClass.securityLevel = object.securityLevel;
+	draftClass.details = draftClass.details or {};
+	wipe(draftClass.details);
+	TRP3_API.utils.table.copy(draftClass.details, object.details);
+
+	TRP3_API.extended.unregisterObject(creationId);
+	TRP3_API.extended.registerObject(creationId, object, 0);
+	TRP3_API.script.clearRootCompilation(creationId);
+	TRP3_API.extended.auras.refresh();
+	TRP3_Extended:TriggerEvent(TRP3_Extended.Events.REFRESH_BAG);
+	TRP3_Extended:TriggerEvent(TRP3_Extended.Events.REFRESH_CAMPAIGN, creationId);
+end
+
+function addon.closeAllDrafts(creationId)
+	local tabsToClose = {};
+	for _, tab in ipairs(tabBar.tabs) do
+		if tab.data.type == TAB_TYPE.CREATION and tab.data.creationId == data.creationId then
+			table.insert(tabsToClose, tab);
+		end
+	end
+	for _, tab in pairs(tabsToClose) do
+		tabBar:Close(tab);
+	end
+end
+
+function addon.openDatabase()
+	local databaseTab = tabBar:FindTab(function(data) return data.type == TAB_TYPE.DATABASE; end);
+	if not databaseTab then
+		tabBar:AddTabAndActivate({
+			type       = TAB_TYPE.DATABASE, 
+			label      = loc.DB, 
+			closeable  = false
+		});
+	else
+		tabBar:Activate(databaseTab);
+	end
+end
+
+function addon.openDisclaimer()
+	local disclaimerTab = tabBar:FindTab(function(data) return data.type == TAB_TYPE.DISCLAIMER; end);
+	if not disclaimerTab then
+		tabBar:AddTabAndActivate({
+			type       = TAB_TYPE.DISCLAIMER, 
+			label      = "Before you start...", 
+			closeable  = false
+		});
+	else
+		tabBar:Activate(disclaimerTab);
+	end
+end
+
+function addon.openCredits()
+	local creditsTab = tabBar:FindTab(function(data) return data.type == TAB_TYPE.CREDITS; end);
+	if not creditsTab then
+		tabBar:AddTabAndActivate({
+			type       = TAB_TYPE.CREDITS, 
+			label      = "Credits", 
+			closeable  = true
+		});
+	else
+		tabBar:Activate(creditsTab);
+	end
+end
+
+function addon.refreshTabs()
+	tabBar:Refresh();
+end
+
+function addon.forEachTab(tabFun)
+	for _, tab in pairs(tabBar.tabs) do
+		tabFun(tab.data);
+	end
+end
+
+TRP3_API.extended.tools.goToListPage = addon.openDatabase;
+
+-- this API must stay, it is used by the Extended main addon
 TRP3_API.extended.tools.goToPage = goToPage;
+
+-- this call was previously exposed to the API
+TRP3_API.extended.tools.toList = addon.openDatabase;
 
 function TRP3_API.extended.tools.saveTab(fullClassID, tab)
 	TRP3_Tools_Parameters.editortabs[fullClassID] = tab;
@@ -403,22 +672,55 @@ end
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 function TRP3_API.extended.tools.showFrame()
+	--print(toolFrame:GetWidth(), toolFrame:GetHeight())
+
+	--toolFrame:SetSize(toolFrame:GetSize());
 	toolFrame:Show();
 	toolFrame:Raise();
 end
 
+local function localizeTransformer(text)
+	if text and text:match("^%$%{.*%}$") then
+		return loc[text:sub(3, -2)] or text;
+	end
+	return text;
+end
+local localize;
+localize = function(frame)
+	local frameType = frame.GetFrameType and frame:GetFrameType();
+	
+	if frame.Localize then
+		frame:Localize(localizeTransformer);
+	elseif (frameType == "Button") and frame.GetText and frame.SetText then
+		frame:SetText(localizeTransformer(frame:GetText()));
+	end
+	for _, region in pairs({frame:GetRegions()}) do
+		if region.GetText and region.SetText then
+			region:SetText(localizeTransformer(region:GetText()));
+		end
+	end
+	
+	for _, child in pairs({frame:GetChildren()}) do
+		localize(child);
+	end
+end
+
 local function onStart()
+
+	localize(toolFrame);
+
 	toolFrame.root:SetTitleText(loc.ROOT_TITLE);
 	toolFrame.root:SetTitleWidth(150);
 	toolFrame.actions:SetTitleText(loc.DB_ACTIONS);
 	toolFrame.actions:SetTitleWidth(100);
 
-	toolFrame.actions.cancel:SetText(CANCEL)
+	--toolFrame.actions.cancel:SetText(CANCEL)
 	toolFrame.actions.save:SetScript("OnClick", function()
 		onSave(toolFrame.currentEditor);
 	end);
 	toolFrame.actions.cancel:SetScript("OnClick", function()
-		goToListPage();
+		-- TODO also close the tab or maybe remove that button. it's redundant
+		addon.openDatabase();
 	end);
 	toolFrame.root.id:SetText(loc.EDITOR_ID_COPY);
 	toolFrame.root.id:SetScript("OnClick", function()
@@ -436,6 +738,34 @@ local function onStart()
 	PAGE_BY_TYPE[TRP3_DB.types.DOCUMENT].loc = loc.TYPE_DOCUMENT;
 	PAGE_BY_TYPE[TRP3_DB.types.DIALOG].loc = loc.TYPE_DIALOG;
 	PAGE_BY_TYPE[TRP3_DB.types.AURA].loc = loc.TYPE_AURA;
+
+	-- toolFrame.Close:SetScript("OnClick", function(self) self:GetParent():Hide(); end);
+
+	-- toolFrame.Resize.minWidth = 1150;
+	-- toolFrame.Resize.minHeight = 730;
+	-- toolFrame:SetSize(toolFrame.Resize.minWidth, toolFrame.Resize.minHeight);
+	-- toolFrame.Resize.resizableFrame = toolFrame;
+	-- toolFrame.Resize.onResizeStop = function()
+	-- 	toolFrame.Minimize:Hide();
+	-- 	toolFrame.Maximize:Show();
+	-- 	TRP3_Extended:TriggerEvent(TRP3_Extended.Events.NAVIGATION_EXTENDED_RESIZED, toolFrame:GetWidth(), toolFrame:GetHeight());
+	-- end;
+
+	-- toolFrame.Maximize:SetScript("OnClick", function()
+	-- 	toolFrame.Maximize:Hide();
+	-- 	toolFrame.Minimize:Show();
+	-- 	toolFrame:SetSize(UIParent:GetWidth(), UIParent:GetHeight());
+	-- 	after(0.1, function()
+	-- 		TRP3_Extended:TriggerEvent(TRP3_Extended.Events.NAVIGATION_EXTENDED_RESIZED, toolFrame:GetWidth(), toolFrame:GetHeight());
+	-- 	end);
+	-- end);
+
+	-- toolFrame.Minimize:SetScript("OnClick", function()
+	-- 	toolFrame:SetSize(toolFrame.Resize.minWidth, toolFrame.Resize.minHeight);
+	-- 	after(0.1, function()
+	-- 		toolFrame.Resize.onResizeStop();
+	-- 	end);
+	-- end);
 
 	-- Root panel locale selection
 	local template = "|T%s:11:16|t";
@@ -457,7 +787,7 @@ local function onStart()
 	local homeData = {
 		name = loc.DB,
 		OnClick = function()
-			goToListPage();
+			addon.openDatabase();
 		end
 	}
 	toolFrame.navBar.home:SetWidth(110);
@@ -484,6 +814,9 @@ local function onStart()
 
 	-- Init editors
 	TRP3_API.extended.tools.initScript(toolFrame, effectMenu);
+
+	addon.global_popups.initialize();
+
 	TRP3_InnerObjectEditor.init(toolFrame);
 	TRP3_LinksEditor.init(toolFrame);
 	TRP3_API.extended.tools.initDocument(toolFrame);
@@ -494,6 +827,8 @@ local function onStart()
 	TRP3_API.extended.tools.initCutscene(toolFrame);
 	TRP3_API.extended.tools.initAura(toolFrame);
 	TRP3_API.extended.tools.initList(toolFrame);
+	TRP3_API.extended.tools.initEditor(toolFrame);
+	
 	TRP3_ExtendedTutorial.init(toolFrame);
 
 	TRP3_Extended:TriggerEvent(TRP3_Extended.Events.NAVIGATION_EXTENDED_RESIZED, toolFrame:GetWidth(), toolFrame:GetHeight());
@@ -503,7 +838,13 @@ local function onStart()
 	BINDING_NAME_TRP3_EXTENDED_TOOLS = loc.TB_TOOLS;
 
 	TRP3_API.RegisterCallback(TRP3_Addon, Events.WORKFLOW_ON_FINISH, function()
-		goToListPage();
+		if TRP3_Tools_Flags.has_seen_disclaimer then
+			addon.openDisclaimer(); -- TODO remove
+			--addon.openDatabase(); -- TODO uncomment
+		else
+			addon.openDisclaimer();
+		end
+		
 	end);
 
 	TRP3_API.ui.frame.setupMove(toolFrame);
@@ -512,6 +853,8 @@ end
 local function onInit()
 	toolFrame = TRP3_ToolFrame;
 	toolFrame.warnings = {};
+	
+	tabBar = TRP3_ToolFrameTabs;
 
 	if not TRP3_Tools_Parameters then
 		TRP3_Tools_Parameters = {};

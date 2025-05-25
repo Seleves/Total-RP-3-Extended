@@ -536,7 +536,7 @@ function TRP3_API.extended.tools.initCampaignEditorNormal(ToolFrame)
 					description:CreateTitle(self.questID);
 					description:CreateButton(loc.CA_QUEST_DD_COPY, function() onQuestDropdown(1, self); end);
 
-					if next(questClipboard) then
+					if TableHasAnyEntries(questClipboard) then
 						description:CreateButton(loc.CA_QUEST_DD_PASTE, function() onQuestDropdown(2, self); end);
 					end
 					description:CreateButton(loc.CA_QUEST_DD_REMOVE, function() onQuestDropdown(3, self); end);

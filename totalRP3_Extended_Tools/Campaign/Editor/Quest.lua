@@ -485,7 +485,7 @@ function TRP3_API.extended.tools.initQuest(ToolFrame)
 					description:CreateTitle(self.stepID);
 					description:CreateButton(loc.QE_STEP_DD_COPY, function() onStepDropdown(1, self); end);
 
-					if next(stepClipboard) then
+					if TableHasAnyEntries(stepClipboard) then
 						description:CreateButton(loc.QE_STEP_DD_PASTE, function() onStepDropdown(2, self); end);
 					end
 					description:CreateButton(loc.QE_STEP_DD_REMOVE, function() onStepDropdown(3, self); end);

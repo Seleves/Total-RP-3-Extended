@@ -1,0 +1,97 @@
+<!--
+	Copyright The Total RP 3 Extended Authors
+	SPDX-License-Identifier: Apache-2.0
+-->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
+	
+	<Script file="Constraint_mixins.lua"/>
+
+	<Frame name="TRP3_Tools_ScriptConstraintEditorListElementTemplate" inherits="BackdropTemplate" virtual="true" mixin="TRP3_Tools_ScriptConstraintEditorListElementMixin">
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555" type="global"/>
+		</KeyValues>
+		<Size y="32"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="open" text="(" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="CENTER">
+					<Size x="10" y="22"/>
+					<Anchors>
+						<Anchor point="TOP" y="-10"/>
+						<Anchor point="LEFT" x="65"/>
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+
+				<FontString parentKey="close" text=")" inherits="GameFontNormalLarge" justifyH="RIGHT" justifyV="CENTER">
+					<Size x="10" y="22"/>
+					<Anchors>
+						<Anchor point="TOP" y="-10"/>
+						<Anchor point="TOPRIGHT" x="-35" y="-10"/>
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+
+				<FontString parentKey="expression" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<Size y="22"/>
+					<Anchors>
+						<Anchor point="TOP" y="-10"/>
+						<Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.open"/>
+						<Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.close"/>
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+			</Layer>
+
+			<Layer level="BORDER">
+				<Texture parentKey="highlight" alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-6" />
+						<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
+					</Anchors>
+					<TexCoords bottom="0" left="0.25" top="1" right="1" />
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="logicalOperatorButton" inherits="TRP3_CommonButton">
+				<Size x="50" y="22"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="10" y="-10"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ToggleLogicalOperator();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentKey="delete">
+				<Size x="22" y="22"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-10" y="-10"/>
+				</Anchors>
+				<NormalTexture parentKey="normalTexture" atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
+				<PushedTexture parentKey="pushedTexture" atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>
+				<HighlightTexture atlas="128-RedButton-Delete-Highlight" setAllPoints="true" useAtlasSize="false" alphaMode="ADD"/>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnDelete();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnMouseUp method="OnClick"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
+		</Scripts>
+	</Frame>
+
+	<Frame name="TRP3_Tools_ScriptConstraintEditorTemplate" virtual="true" inherits="TRP3_Tools_ListTemplate" mixin="TRP3_Tools_ScriptConstraintEditorMixin">
+		<KeyValues>
+			<KeyValue key="listElementTemplate" value="TRP3_Tools_ScriptConstraintEditorListElementTemplate" type="string"/>
+			<KeyValue key="listElementMixin" value="TRP3_Tools_ScriptConstraintEditorListElementMixin" type="global"/>
+		</KeyValues>
+	</Frame>
+	
+</Ui>
