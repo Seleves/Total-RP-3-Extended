@@ -637,3 +637,21 @@ function TRP3_Tools_TitledPopupMixin:Open()
 	self:Raise();
 	self:Show();
 end
+
+TRP3_Tools_BrowseButtonMixin = {};
+
+function TRP3_Tools_BrowseButtonMixin:Initialize()
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, BROWSE);
+end
+
+TRP3_Tools_TargetButtonMixin = {};
+
+function TRP3_Tools_TargetButtonMixin:Localize(transform)
+	self.titleText = transform(self.titleText);
+	self.helpText  = transform(self.helpText);
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, self.titleText, self.helpText);
+end
+
+function TRP3_Tools_TargetButtonMixin:Initialize()
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, self.titleText, self.helpText);
+end

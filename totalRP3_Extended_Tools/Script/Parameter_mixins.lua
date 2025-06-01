@@ -68,7 +68,8 @@ function TRP3_Tools_ScriptParameterCoordinateMixin:Setup(widgetContext, paramete
 	self.y.titleText = parameterY.title;
 	self.y.helpText = parameterY.description;
 	self.y:Localize(IDENTITY);
-	self.here:SetText(loc.OP_OP_DISTANCE_CURRENT);
+	self.here.titleText = loc.OP_OP_DISTANCE_CURRENT;
+	self.here:Localize(IDENTITY);
 end
 
 function TRP3_Tools_ScriptParameterCoordinateMixin:SetValue(x, y)

@@ -2,10 +2,11 @@ local _, addon = ...
 
 local loc = TRP3_API.loc;
 
+addon.editor = {};
+
 local statusBar;
 local objectTree;
 local noteFrame;
-local triggersFrame;
 local editorsByType = {};
 local modalPopups = {};
 
@@ -266,7 +267,7 @@ function addon.updateCurrentObjectDraft()
 	end
 	
 	noteFrame:InterfaceToClass(currentObject.class);
-	triggersFrame:InterfaceToClass(currentObject.class);
+	addon.editor.script:InterfaceToClass(currentObject.class);
 end
 
 function addon.saveEditor()
@@ -307,7 +308,13 @@ function addon.displayObject(objectId)
 	end
 	
 	noteFrame:ClassToInterface(currentObject.class);
-	triggersFrame:ClassToInterface(currentObject.class, currentDraft.class);
+	addon.editor.script:ClassToInterface(currentObject.class, currentDraft.class);
+end
+
+function addon.editor.getCurrentPropertiesEditor()
+	if currentObject then
+		return editorsByType[currentObject.class.TY];
+	end
 end
 
 function addon.hidePopups()
@@ -404,10 +411,9 @@ function TRP3_API.extended.tools.initEditor(toolFrame)
 	objectTree = TRP3_ToolFrameEditor.split.tree; -- = TRP3_ToolFrameEditorTree
 	noteFrame  = TRP3_ToolFrameEditor.noteFrame;
 
-	addon.editor = addon.editor or {};
 	addon.editor.trigger = TRP3_ToolFrameEditor.triggerFrame;
 	addon.editor.effect  = TRP3_ToolFrameEditor.effectFrame;
-	addon.editor.script  = TRP3_ToolFrameEditor.split.split.triggers;
+	addon.editor.script  = TRP3_ToolFrameEditor.split.split.script;
 
 	-- statusBar.id:SetText(loc.EDITOR_ID_COPY);
 	-- statusBar.id:SetScript("OnClick", function()
@@ -419,7 +425,7 @@ function TRP3_API.extended.tools.initEditor(toolFrame)
 	editorsByType[TRP3_DB.types.QUEST_STEP] = nil; -- TODO
 	editorsByType[TRP3_DB.types.ITEM]       = TRP3_ToolFrameEditor.split.split.properties.item;
 	editorsByType[TRP3_DB.types.DOCUMENT]   = TRP3_ToolFrameEditor.split.split.properties.document;
-	editorsByType[TRP3_DB.types.DIALOG]     = nil; -- TODO
+	editorsByType[TRP3_DB.types.DIALOG]     = TRP3_ToolFrameEditor.split.split.properties.cutscene;
 	editorsByType[TRP3_DB.types.AURA]       = TRP3_ToolFrameEditor.split.split.properties.aura;
 	
 	for _, editor in pairs(editorsByType) do
@@ -428,8 +434,7 @@ function TRP3_API.extended.tools.initEditor(toolFrame)
 		end
 	end
 	
-	triggersFrame = TRP3_ToolFrameEditor.split.split.triggers;
-	triggersFrame:Initialize();
+	addon.editor.script:Initialize();
 	addon.editor.trigger:Initialize();
 	addon.editor.effect:Initialize();
 	

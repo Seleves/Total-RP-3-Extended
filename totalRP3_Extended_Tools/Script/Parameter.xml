@@ -44,8 +44,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Anchor point="TOPLEFT"/>
 				</Anchors>
 			</EditBox>
-			<Button parentKey="here" inherits="TRP3_CommonButton">
-				<Size x="60" y="22"/>
+			<Button parentKey="here" inherits="TRP3_Tools_TargetButtonTemplate">
 				<Anchors>
 					<Anchor point="RIGHT"/>
 				</Anchors>
@@ -64,8 +63,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Frame name="TRP3_Tools_ScriptParameterObjectTemplate" virtual="true" mixin="TRP3_Tools_ScriptParameterObjectMixin">
 		<Size y="25"/>
 		<Frames>
-			<Button parentKey="browse" text="BROWSE" inherits="TRP3_CommonButton">
-				<Size x="90" y="22"/>
+			<Button parentKey="browse" inherits="TRP3_Tools_BrowseButtonTemplate">
 				<Anchors>
 					<Anchor point="RIGHT"/>
 				</Anchors>
@@ -130,8 +128,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Anchor point="RIGHT"/>
 				</Anchors>
 			</Button>
-			<Button parentKey="browse" text="BROWSE" inherits="TRP3_CommonButton">
-				<Size x="90" y="22"/>
+			<Button parentKey="browse" inherits="TRP3_Tools_BrowseButtonTemplate">
 				<Anchors>
 					<Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.play" x="-5"/>
 				</Anchors>
@@ -148,8 +145,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Frame name="TRP3_Tools_ScriptParameterEmoteTemplate" virtual="true" mixin="TRP3_Tools_ScriptParameterEmoteMixin">
 		<Size y="25"/>
 		<Frames>
-			<Button parentKey="browse" text="BROWSE" inherits="TRP3_CommonButton">
-				<Size x="90" y="22"/>
+			<Button parentKey="browse" inherits="TRP3_Tools_BrowseButtonTemplate">
 				<Anchors>
 					<Anchor point="RIGHT"/>
 				</Anchors>
@@ -204,7 +200,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</EditBox>
 
-							<Button parentKey="browse" inherits="TRP3_CommonButton" text="BROWSE">
+							<Button parentKey="browse" inherits="TRP3_Tools_BrowseButtonTemplate">
 								<Anchors>
 									<Anchor point="TOP" x="0" y="-10" relativePoint="BOTTOM" relativeKey="$parent.id"/>
 								</Anchors>

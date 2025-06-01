@@ -184,12 +184,13 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<ScrollFrame parentKey="item" inherits="TRP3_Tools_EditorItemTemplate" useParentLevel="true"/>
 									<ScrollFrame parentKey="aura" inherits="TRP3_Tools_EditorAuraTemplate" useParentLevel="true"/>
 									<ScrollFrame parentKey="document" inherits="TRP3_Tools_EditorDocumentTemplate" useParentLevel="true"/>
+									<ScrollFrame parentKey="cutscene" inherits="TRP3_Tools_EditorCutsceneTemplate" useParentLevel="true"/>
 									
 									<Button name="$parentNoteButton" parentKey="noteButton" inherits="TRP3_Tools_EditorNoteButtonTemplate"/>
 									
 								</Frames>
 							</Frame>
-							<Frame parentKey="triggers" inherits="TRP3_Tools_EditorScriptTemplate">
+							<Frame parentKey="script" inherits="TRP3_Tools_EditorScriptTemplate">
 								<KeyValues>
 									<KeyValue key="collapsedLabel" value="Triggers and Workflows" type="string"/>
 									<KeyValue key="minExtent" value="150" type="number"/>

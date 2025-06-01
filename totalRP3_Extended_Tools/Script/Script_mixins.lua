@@ -198,6 +198,10 @@ function TRP3_Tools_EditorScriptMixin:UpdateScriptList()
 		return a[1] < b[1];
 	end);
 	TRP3_API.ui.listbox.setupListBox(self.scriptList, scriptList, function(scriptId) self:OnScriptSelected(scriptId); end, "(no workflow selected)");
+	
+	if addon.editor.getCurrentPropertiesEditor() then -- TODO remove the IF when all object editors ar implemented
+		addon.editor.getCurrentPropertiesEditor():OnScriptsChange(scriptList);
+	end
 end
 
 function TRP3_Tools_EditorScriptMixin:UpdateTriggerList()

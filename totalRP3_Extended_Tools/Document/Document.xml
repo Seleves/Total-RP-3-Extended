@@ -217,6 +217,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</Anchors>
 						<Frames>
 							<Frame parentKey="toolbar" inherits="TRP3_TextToolbar">
+								<Size x="360" y="50"/>
 								<Anchors>
 									<Anchor point="TOP" y="-50"/>
 									<Anchor point="LEFT" x="20" y="0"/>

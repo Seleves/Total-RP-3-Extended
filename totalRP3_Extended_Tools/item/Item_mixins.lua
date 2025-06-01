@@ -1,6 +1,6 @@
 local loc = TRP3_API.loc;
 
-TRP3_Tools_EditorItemMixin = {};
+TRP3_Tools_EditorItemMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
 
 function TRP3_Tools_EditorItemMixin:OnSizeChanged()
 	if self:GetHeight() < self.content:GetHeight() then

@@ -673,7 +673,20 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</Scripts>
 			</Button>
 		</Frames>
-	</Frame>	
-	
+	</Frame>
+
+	<Button name="TRP3_Tools_BrowseButtonTemplate" text="|A:common-search-magnifyingglass:12:12:0:-1:255:209:0|a" inherits="TRP3_CommonButton" virtual="true" mixin="TRP3_Tools_BrowseButtonMixin">
+		<Size x="25" y="25"/>
+		<Scripts>
+			<OnLoad method="Initialize"/>
+		</Scripts>
+	</Button>
+
+	<Button name="TRP3_Tools_TargetButtonTemplate" text="|A:TargetCrosshairs:36:36:9:-10|a" inherits="TRP3_CommonButton" virtual="true" mixin="TRP3_Tools_TargetButtonMixin">
+		<Size x="25" y="25"/>
+		<Scripts>
+			<OnLoad method="Initialize"/>
+		</Scripts>
+	</Button>
 	
 </Ui>

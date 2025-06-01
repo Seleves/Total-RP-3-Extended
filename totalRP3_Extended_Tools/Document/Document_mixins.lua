@@ -5,7 +5,7 @@ local loc = TRP3_API.loc;
 local MIN_TOOLBAR_BUTTON_WIDTH = 50;
 local MAX_TOOLBAR_BUTTON_WIDTH = 120;
 
-TRP3_Tools_EditorDocumentMixin = {};
+TRP3_Tools_EditorDocumentMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
 
 function TRP3_Tools_EditorDocumentMixin:OnSizeChanged()
 	if self:GetHeight() < self.content:GetHeight() then
@@ -246,6 +246,8 @@ function TRP3_Tools_EditorDocumentMixin:DeletePage(pageData)
 		self:UpdatePageLabels();
 		if pageData.active then
 			self:ShowPage(math.max(pageIndex-1, 1));
+		else
+			list:Refresh();
 		end
 	end
 end
@@ -300,6 +302,7 @@ function TRP3_Tools_EditorDocumentMixin:ImportItemTextFrame()
 			});
 		end
 		self:UpdatePageLabels();
+		self:SaveCurrentPage();
 		self:ShowPage(firstPageInserted);
 	else
 		TRP3_API.utils.message.displayMessage("Please open the object from which you want to import text.", 4);
@@ -336,10 +339,7 @@ function TRP3_Tools_DocumentPageListElementMixin:OnLeave()
 end
 
 function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
-	local documentEditor = self:GetParent();
-	while not documentEditor.ShowPage and not documentEditor.ClassToPages do
-		documentEditor = documentEditor:GetParent();
-	end
+	local documentEditor = addon.editor.getCurrentPropertiesEditor();
 	local pageIndex = documentEditor.content.pages.list.model:FindIndex(self.data);
 	
 	if button == "LeftButton" then
@@ -356,11 +356,13 @@ function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
 			contextMenu:CreateTitle(self.data.label);
 			
 			local addBeforeOption = contextMenu:CreateButton("Insert page before", function()
+				documentEditor:SaveCurrentPage();
 				documentEditor:AddPage(pageIndex);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(addBeforeOption, "Insert an empty page before this page");
 
 			local addAfterOption = contextMenu:CreateButton("Insert page after", function()
+				documentEditor:SaveCurrentPage();
 				documentEditor:AddPage(pageIndex + 1);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(addAfterOption, "Insert an empty page after this page");
@@ -400,6 +402,7 @@ function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
 					for index = 1, count do
 						documentEditor:AddPage(pageIndex + index - 1, addon.clipboard.retrieveShallow(index).TX, true);
 					end
+					documentEditor:SaveCurrentPage();
 					documentEditor:UpdatePageLabels();
 					documentEditor:ShowPage(pageIndex + count - 1);
 				end);
@@ -409,6 +412,7 @@ function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
 					for index = 1, count do
 						documentEditor:AddPage(pageIndex + index, addon.clipboard.retrieveShallow(index).TX, true);
 					end
+					documentEditor:SaveCurrentPage();
 					documentEditor:UpdatePageLabels();
 					documentEditor:ShowPage(pageIndex + count);
 				end);
@@ -423,6 +427,7 @@ function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
 
 			if self.data.selected then
 				local deleteSelectionOption = contextMenu:CreateButton("Delete selection", function()
+					documentEditor:SaveCurrentPage();
 					documentEditor:DeleteSelectedPages();
 				end);
 				TRP3_MenuUtil.SetElementTooltip(deleteSelectionOption, "Delete all selected pages");
@@ -433,9 +438,6 @@ function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
 end
 
 function TRP3_Tools_DocumentPageListElementMixin:OnDelete()
-	local documentEditor = self:GetParent();
-	while not documentEditor.ShowPage and not documentEditor.ClassToPages do
-		documentEditor = documentEditor:GetParent();
-	end
-	documentEditor:DeletePage(self.data);
+	addon.editor.getCurrentPropertiesEditor():SaveCurrentPage();
+	addon.editor.getCurrentPropertiesEditor():DeletePage(self.data);
 end

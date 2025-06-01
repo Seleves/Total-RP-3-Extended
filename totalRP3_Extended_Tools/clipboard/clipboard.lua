@@ -17,6 +17,16 @@ addon.clipboard.types = {
 	CAMPAIGN_NPC  = "CA_NPC",
 };
 
+local TYPES_WITH_MD = {
+	[TRP3_DB.types.ITEM]       = true,
+	[TRP3_DB.types.AURA]       = true,
+	[TRP3_DB.types.DOCUMENT]   = true,
+	[TRP3_DB.types.DIALOG]     = true,
+	[TRP3_DB.types.CAMPAIGN]   = true,
+	[TRP3_DB.types.QUEST]      = true,
+	[TRP3_DB.types.QUEST_STEP] = true,
+};
+
 local function canContain(parentType, innerType)
 	return (
 		innerType == addon.clipboard.types.ITEM
@@ -39,9 +49,14 @@ end
 function addon.clipboard.append(class, type, absoluteId, relativeId, subId)
 	local copy = {};
 	TRP3_API.utils.table.copy(copy, class);
-	copy.MD = {
-		MO = TRP3_DB.modes.EXPERT
-	};
+	if TYPES_WITH_MD[type] then
+		copy.MD = {
+			MO = TRP3_DB.modes.EXPERT
+		};
+	elseif type == addon.clipboard.types.DIALOG_STEP then
+		copy.active = nil;
+		copy.selected = nil;
+	end
 	table.insert(clipboardData, {
 		class      = copy,
 		type       = type,
