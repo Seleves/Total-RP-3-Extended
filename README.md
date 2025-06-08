@@ -7,7 +7,7 @@ If you want to test this out I highly recommend making a database backup before.
 
 # TODO list
 
-- cutscene, campaign, quest, step editor
+- ~~cutscene, campaign, quest, step editor~~
 - make each tab remember what the user was looking at ("cursor")
 - add multi selection mode where feasible
 - add copy&paste for most structures
