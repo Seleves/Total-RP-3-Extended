@@ -18,7 +18,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Include file="Links\Links.xml"/>
 	<Include file="Items\Items.xml"/>
 	<Include file="Document\Document.xml"/>
-	<Include file="Campaign\Campaign.xml"/>
+	<Include file="campaign\Campaign.xml"/>
+	<Include file="quest\Quest.xml"/>
+	<Include file="quest_step\Quest_step.xml"/>
 	<Include file="Cutscene\Cutscene.xml"/>
 	<Include file="Aura\Aura.xml"/>
 	<Include file="List\List.xml"/>

@@ -185,6 +185,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<ScrollFrame parentKey="aura" inherits="TRP3_Tools_EditorAuraTemplate" useParentLevel="true"/>
 									<ScrollFrame parentKey="document" inherits="TRP3_Tools_EditorDocumentTemplate" useParentLevel="true"/>
 									<ScrollFrame parentKey="cutscene" inherits="TRP3_Tools_EditorCutsceneTemplate" useParentLevel="true"/>
+									<ScrollFrame parentKey="campaign" inherits="TRP3_Tools_EditorCampaignTemplate" useParentLevel="true"/>
+									<ScrollFrame parentKey="quest" inherits="TRP3_Tools_EditorQuestTemplate" useParentLevel="true"/>
+									<ScrollFrame parentKey="questStep" inherits="TRP3_Tools_EditorQuestStepTemplate" useParentLevel="true"/>
 									
 									<Button name="$parentNoteButton" parentKey="noteButton" inherits="TRP3_Tools_EditorNoteButtonTemplate"/>
 									

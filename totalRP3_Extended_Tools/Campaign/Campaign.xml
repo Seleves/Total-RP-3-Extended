@@ -4,6 +4,356 @@
 -->
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
+	
+	<Script file="Campaign_mixins.lua"/>
+	
+	<Frame name="TRP3_Tools_CampaignNPCListElementTemplate" inherits="BackdropTemplate" virtual="true" mixin="TRP3_Tools_CampaignNPCListElementMixin">
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555" type="global"/>
+		</KeyValues>
+		<Size y="65"/>
+		<Frames>
+			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
+				<Size x="40" y="40" />
+				<Anchors>
+					<Anchor point="LEFT" x="15" y="0" />
+				</Anchors>
+			</Frame>
+			<Button parentKey="delete">
+				<Size x="22" y="22"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-10" y="-10"/>
+				</Anchors>
+				<NormalTexture parentKey="normalTexture" atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
+				<PushedTexture parentKey="pushedTexture" atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>
+				<HighlightTexture atlas="128-RedButton-Delete-Highlight" setAllPoints="true" useAtlasSize="false" alphaMode="ADD"/>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnDelete();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			
+			<Layer level="OVERLAY">
+				<FontString parentKey="id" inherits="GameFontNormalSmall" justifyH="RIGHT" text="[ID]">
+					<Size x="100" y="0" />
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-36" y="-10" />
+					</Anchors>
+					<Color r="0.95" g="0.75" b="0.10" />
+				</FontString>
+				<FontString parentKey="name" inherits="GameFontNormalLarge" justifyH="LEFT" text="[NPCNAME]">
+					<Size x="0" y="20" />
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="5" y="0" />
+						<Anchor point="RIGHT" relativeKey="$parent.id" relativePoint="LEFT" x="-5" y="0" />
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+				<FontString parentKey="description" inherits="GameFontNormalSmall" justifyH="LEFT" text="[DESCRIPTION]">
+					<Size x="0" y="10" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.icon" x="5" y="5" />
+						<Anchor point="RIGHT" x="-5" y="0" />
+					</Anchors>
+					<Color r="0.95" g="0.75" b="0.10" />
+				</FontString>
+			</Layer>
+
+			<Layer level="BORDER">
+				<Texture parentKey="highlight" alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-6" />
+						<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
+					</Anchors>
+					<TexCoords bottom="0" left="0.25" top="1" right="1" />
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnMouseUp method="OnClick"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
+		</Scripts>
+	</Frame>
+
+	<ScrollFrame name="TRP3_Tools_EditorCampaignTemplate" inherits="ScrollFrameTemplate" virtual="true" mixin="TRP3_Tools_EditorCampaignMixin">
+		<Anchors>
+			<Anchor point="TOPLEFT"/>
+			<Anchor point="BOTTOMRIGHT" x="-16"/>
+		</Anchors>
+		<ScrollChild>
+			<Frame parentKey="content">
+				<Size y="400"/>
+				<Anchors>
+					<Anchor point="TOP"/>
+					<Anchor point="LEFT"/>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+				
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture file="Interface\AddOns\totalRP3\Resources\UI\!ui-frame-wooden-border" vertTile="true">
+							<Color r="1" g="0.8" b="0.8"/>
+							<TexCoords left="0.0078125" right="0.171875"/>
+							<Anchors>
+								<Anchor point="TOP"/>
+								<Anchor point="BOTTOM"/>
+								<Anchor point="LEFT" relativePoint="CENTER" x="-4"/>
+								<Anchor point="RIGHT" relativePoint="CENTER" x="4"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				
+				<Frames>
+					
+					<Frame parentKey="main" inherits="TRP3_Tools_TitledPanelTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="${TYPE_CAMPAIGN}" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="0"/>
+							<Anchor point="BOTTOM"/>
+							<Anchor point="RIGHT" relativePoint="CENTER" x="-4"/>
+						</Anchors>
+						
+						<Frames>
+							
+							<EditBox parentKey="name" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+								<KeyValues>
+									<KeyValue key="titleText" value="${CA_NAME}" type="string"/>
+									<KeyValue key="helpText" value="${CA_NAME_TT}" type="string"/>
+								</KeyValues>
+								<Anchors>
+									<Anchor point="TOP" y="-45"/>
+									<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
+									<Anchor point="LEFT" x="20" y="0"/>
+								</Anchors>
+							</EditBox>
+
+							<Button parentKey="icon" inherits="TRP3_IconButton">
+								<Anchors>
+									<Anchor point="TOP" y="-64"/>
+									<Anchor point="LEFT" x="10" relativePoint="CENTER"/>
+								</Anchors>
+								<Layers>
+									<Layer level="OVERLAY">
+										<FontString parentKey="label" text="${CA_ICON}" maxLines="1" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+											<Size x="100" y="20"/>
+											<Anchors>
+												<Anchor point="LEFT" x="35"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+							</Button>
+							
+							<DropdownButton parentKey="vignette" inherits="TRP3_Tools_TitledDropdownButtonTemplate" name="$parentVignette">
+								<KeyValues>
+									<KeyValue key="titleText" value="${CA_IMAGE}" type="string"/>
+									<KeyValue key="helpText" value="${CA_IMAGE_TT}" type="string"/>
+								</KeyValues>
+								<Anchors>
+									<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.name"/>
+									<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
+									<Anchor point="LEFT" x="20" y="0"/>
+								</Anchors>
+							</DropdownButton>
+
+							<Frame parentKey="description" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+								<KeyValues>
+									<KeyValue key="titleText" value="${CA_DESCRIPTION}" type="string"/>
+									<KeyValue key="helpText" value="${CA_DESCRIPTION_TT}" type="string"/>
+								</KeyValues>
+								<Size x="0" y="74"/>
+								<Anchors>
+									<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.vignette"/>
+									<Anchor point="RIGHT" x="-20" y="0"/>
+									<Anchor point="LEFT" x="20" y="0"/>
+								</Anchors>
+							</Frame>
+
+						</Frames>
+
+						<Layers>
+							<Layer level="ARTWORK" textureSubLevel="2">
+								<Texture parentKey="previewIconBorder" file="Interface\ExtraButton\GarrZoneAbility-BarracksAlliance">
+									<Size x="175" y="85"/>
+									<Anchors>
+										<Anchor point="TOP" x="0" y="-250"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK" textureSubLevel="1">
+								<Texture parentKey="previewIcon">
+									<Size x="35" y="35"/>
+									<Anchors>
+										<Anchor point="CENTER" relativeKey="$parent.previewIconBorder" x="1" y="0"/>
+									</Anchors>
+								</Texture>
+								<Texture file="Interface\AddOns\totalRP3\Resources\UI\_ui-frame-wooden-border" horizTile="true">
+									<Color r="1" g="0.8" b="0.8"/>
+									<TexCoords top="0.484375" bottom="0.8125"/>
+									<Anchors>
+										<Anchor point="TOP" y="-220"/>
+										<Anchor point="BOTTOM" y="-212" relativePoint="TOP"/>
+										<Anchor point="LEFT"/>
+										<Anchor point="RIGHT"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="OVERLAY">
+								<FontString parentKey="previewText" text="${EDITOR_PREVIEW}" maxLines="1" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+									<Size x="100" y="20"/>
+									<Anchors>
+										<Anchor point="TOP" x="0" y="-230"/>
+									</Anchors>
+									<Color r="0.95" g="0.95" b="0.95" />
+								</FontString>
+								<Texture parentKey="previewBanner" file="Interface\QuestionFrame\TitleBanner" alpha="0.85">
+									<Size x="256" y="64"/>
+									<Anchors>
+										<Anchor point="CENTER" relativeKey="$parent.previewIconBorder" x="1" y="-60"/>
+									</Anchors>
+								</Texture>
+								<FontString inherits="SystemFont_Med1" parentKey="previewName" text="TEXT">
+									<Size x="150" y="0"/>
+									<Anchors>
+										<Anchor point="CENTER" relativeKey="$parent.previewBanner" x="0" y="18"/>
+									</Anchors>
+									<Color r="0.2824" g="0.0157" b="0.0157"/>
+								</FontString>
+							</Layer>
+						</Layers>
+
+					</Frame>
+					
+					<Frame parentKey="npc" inherits="TRP3_Tools_TitledPanelTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="${CA_NPC}" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOP"/>
+							<Anchor point="BOTTOM"/>
+							<Anchor point="LEFT" relativePoint="CENTER" x="4"/>
+							<Anchor point="RIGHT"/>
+						</Anchors>
+						<Frames>
+							<Frame name="$parentNPCList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
+								<KeyValues>
+									<KeyValue key="listElementTemplate" value="TRP3_Tools_CampaignNPCListElementTemplate" type="string"/>
+									<KeyValue key="listElementMixin" value="TRP3_Tools_CampaignNPCListElementMixin" type="global"/>
+								</KeyValues>
+								<Anchors>
+									<Anchor point="TOP" y="-45"/>
+									<Anchor point="BOTTOM" y="40"/>
+									<Anchor point="LEFT" x="20"/>
+									<Anchor point="RIGHT" x="-20"/>
+								</Anchors>
+							</Frame>
+
+							<Frame name="$parentNPCEditor" parentKey="sharedNPCEditor" hidden="true">
+								<Frames>
+									<EditBox parentKey="id" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+										<KeyValues>
+											<KeyValue key="titleText" value="${CA_NPC_ID}" type="string"/>
+											<KeyValue key="helpText" value="${CA_NPC_ID_TT}" type="string"/>
+										</KeyValues>
+										<Anchors>
+											<Anchor point="TOP" y="-20"/>
+											<Anchor point="LEFT" x="20"/>
+											<Anchor point="RIGHT" x="-10" relativePoint="CENTER"/>
+										</Anchors>
+									</EditBox>
+
+									<Button parentKey="target" inherits="TRP3_Tools_TargetButtonTemplate">
+										<KeyValues>
+											<KeyValue key="titleText" value="${DI_GET_ID}" type="string"/>
+											<KeyValue key="helpText" value="${DI_GET_ID_TT}" type="string"/>
+										</KeyValues>
+										<Anchors>
+											<Anchor point="LEFT" x="8" relativePoint="RIGHT" relativeKey="$parent.id"/>
+										</Anchors>
+									</Button>
+
+									<EditBox parentKey="name" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+										<KeyValues>
+											<KeyValue key="titleText" value="${CA_NPC_EDITOR_NAME}" type="string"/>
+											<KeyValue key="helpText" value="${CA_NPC_EDITOR_NAME}" type="string"/>
+										</KeyValues>
+										<Anchors>
+											<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.id"/>
+											<Anchor point="LEFT" x="20"/>
+											<Anchor point="RIGHT" x="-20"/>
+										</Anchors>
+									</EditBox>
+
+									<EditBox parentKey="title" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+										<KeyValues>
+											<KeyValue key="titleText" value="${CA_NPC_EDITOR_TITLE}" type="string"/>
+											<KeyValue key="helpText" value="${CA_NPC_EDITOR_TITLE}" type="string"/>
+										</KeyValues>
+										<Anchors>
+											<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.name"/>
+											<Anchor point="LEFT" x="20"/>
+											<Anchor point="RIGHT" x="-20"/>
+										</Anchors>
+									</EditBox>
+
+									<Button parentKey="icon" inherits="TRP3_IconButton">
+										<Anchors>
+											<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.title"/>
+											<Anchor point="LEFT" x="20"/>
+										</Anchors>
+									</Button>
+
+									<Frame parentKey="description" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+										<KeyValues>
+											<KeyValue key="titleText" value="${CA_NPC_EDITOR_DESC}" type="string"/>
+											<KeyValue key="helpText" value="${CA_NPC_EDITOR_DESC}" type="string"/>
+										</KeyValues>
+										<Size x="0" y="74"/>
+										<Anchors>
+											<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.title"/>
+											<Anchor point="RIGHT" x="-20" y="0"/>
+											<Anchor point="LEFT" x="20" relativePoint="RIGHT" relativeKey="$parent.icon"/>
+											<Anchor point="BOTTOM" y="20"/>
+										</Anchors>
+									</Frame>
+								</Frames>
+							</Frame>
+
+						</Frames>
+					</Frame>
+					
+				</Frames>
+			</Frame>
+		</ScrollChild>
+		<Scripts>
+			<OnSizeChanged method="OnSizeChanged"/>
+		</Scripts>
+	</ScrollFrame>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	<!-- *_*_*_*_*_*_*_*_*_*  -->
 	<!--     Imports      -->
 	<!-- *_*_*_*_*_*_*_*_*_*  -->

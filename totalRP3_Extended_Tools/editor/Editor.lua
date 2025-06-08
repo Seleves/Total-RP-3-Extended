@@ -317,6 +317,12 @@ function addon.editor.getCurrentPropertiesEditor()
 	end
 end
 
+function addon.editor.getCurrentObjectRelativeId()
+	if currentObject then
+		return currentObject.node.data.relativeId;
+	end
+end
+
 function addon.hidePopups()
 	TRP3_API.popup.hidePopups();
 	for _, popup in pairs(modalPopups) do
@@ -420,9 +426,9 @@ function TRP3_API.extended.tools.initEditor(toolFrame)
 		-- TRP3_API.popup.showTextInputPopup(loc.EDITOR_ID_COPY_POPUP, nil, nil, currentEditor.creationId);
 	-- end); -- TODO copy id feature
 	
-	editorsByType[TRP3_DB.types.CAMPAIGN]   = nil; -- TODO
-	editorsByType[TRP3_DB.types.QUEST]      = nil; -- TODO
-	editorsByType[TRP3_DB.types.QUEST_STEP] = nil; -- TODO
+	editorsByType[TRP3_DB.types.CAMPAIGN]   = TRP3_ToolFrameEditor.split.split.properties.campaign;
+	editorsByType[TRP3_DB.types.QUEST]      = TRP3_ToolFrameEditor.split.split.properties.quest;
+	editorsByType[TRP3_DB.types.QUEST_STEP] = TRP3_ToolFrameEditor.split.split.properties.questStep;
 	editorsByType[TRP3_DB.types.ITEM]       = TRP3_ToolFrameEditor.split.split.properties.item;
 	editorsByType[TRP3_DB.types.DOCUMENT]   = TRP3_ToolFrameEditor.split.split.properties.document;
 	editorsByType[TRP3_DB.types.DIALOG]     = TRP3_ToolFrameEditor.split.split.properties.cutscene;
