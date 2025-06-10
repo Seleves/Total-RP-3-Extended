@@ -657,10 +657,11 @@ end
 
 -- interface for object editors
 TRP3_Tools_EditorObjectMixin = {
-	Initialize       = function(self) end,
-	ClassToInterface = function(self, class, creationClass) end,
-	InterfaceToClass = function(self, targetClass) end,
-	OnScriptsChange  = function(self, scripts) end,
+	Initialize            = function(self) end,
+	ClassToInterface      = function(self, class, creationClass) end,
+	InterfaceToClass      = function(self, targetClass) end,
+	OnScriptsChanged      = function(self, scripts) end,
+	CountScriptReferences = function(self, scriptId) return 0; end,
 };
 
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

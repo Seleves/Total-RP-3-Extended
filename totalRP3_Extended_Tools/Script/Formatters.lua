@@ -3,12 +3,8 @@ local loc = TRP3_API.loc;
 
 addon.script.formatters = {};
 
---local UNIT_ID_MAP = {};
 local SPECIAL_FORMATTERS = {};
 function addon.script.formatters:Initialize()
-	-- UNIT_ID_MAP.player = loc.OP_UNIT_PLAYER;
-	-- UNIT_ID_MAP.target = loc.OP_UNIT_TARGET;
-	-- UNIT_ID_MAP.npc    = loc.OP_UNIT_NPC;
 	SPECIAL_FORMATTERS.achievement = function(parameter, value)
 		local achievementId = tonumber(value or "") or 0;
 		local _, achievementName = GetAchievementInfo(achievementId);
@@ -48,15 +44,7 @@ function addon.script.formatters:Initialize()
 			return addon.script.formatters.unknown(tostring(mountId or "")), true;
 		end
 	end;
-	-- local objectTypeMapping = {
-	-- 	["item"]     = TRP3_DB.types.ITEM,
-	-- 	["aura"]     = TRP3_DB.types.AURA,
-	-- 	["document"] = TRP3_DB.types.DOCUMENT,
-	-- 	["dialog"]   = TRP3_DB.types.DIALOG,
-	-- 	["quest"]    = TRP3_DB.types.QUEST,
-	-- 	["step"]     = TRP3_DB.types.QUEST_STEP,
-	-- };
-	for semanticObjectType, objectType in pairs(addon.script.parameter.objectMap) do -- objectTypeMapping
+	for semanticObjectType, objectType in pairs(addon.script.parameter.objectMap) do
 		SPECIAL_FORMATTERS[semanticObjectType] = function(parameter, absoluteId)
 			absoluteId = tostring(absoluteId or "");
 			local ids = {strsplit(TRP3_API.extended.ID_SEPARATOR, absoluteId)};

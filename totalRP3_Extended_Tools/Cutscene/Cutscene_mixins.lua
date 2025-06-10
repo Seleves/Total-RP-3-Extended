@@ -132,7 +132,7 @@ function TRP3_Tools_EditorCutsceneMixin:ClassToInterface(class, creationClass)
 	self.content.main.list.model:Flush();
 	self.content.main.list.model:InsertTable(steps);
 	self.content.main.alternate:SetChecked(false); -- TODO get this from cursor
-	self.deferShowStep = true; -- wait for the OnScriptsChange from the scripts frame to load workflow ids, then show first step
+	self.deferShowStep = true; -- wait for the OnScriptsChanged from the scripts frame to load workflow ids, then show first step
 end
 
 function TRP3_Tools_EditorCutsceneMixin:InterfaceToClass(targetClass)
@@ -152,21 +152,25 @@ function TRP3_Tools_EditorCutsceneMixin:InterfaceToClass(targetClass)
 	end
 end
 
-function TRP3_Tools_EditorCutsceneMixin:OnScriptsChange(scriptList)
-	local validScripts = {};
-	for index, script in ipairs(scriptList) do
-		validScripts[script[2]] = true;
-	end
+function TRP3_Tools_EditorCutsceneMixin:OnScriptsChanged(changes)
+	local scriptMap = {};
 	local scriptListWithNoneOption = {};
-	TRP3_API.utils.table.copy(scriptListWithNoneOption, scriptList);
+	for _, script in pairs(changes) do
+		if script.newId then
+			table.insert(scriptListWithNoneOption, {script.newId, script.newId});
+			if script.oldId then
+				scriptMap[script.oldId] = script.newId;
+			end
+		end
+	end
 	table.insert(scriptListWithNoneOption, {"(no workflow)", ""});
 	TRP3_API.ui.listbox.setupListBox(self.content.step.workflow, scriptListWithNoneOption);
 
 	self:SaveCurrentStep();
 
 	for _, stepData in self.content.main.list.model:EnumerateEntireRange() do
-		if stepData.WO and not validScripts[stepData.WO] then
-			stepData.WO = nil;
+		if stepData.WO then
+			stepData.WO = scriptMap[stepData.WO];
 		end
 	end
 
@@ -179,6 +183,17 @@ function TRP3_Tools_EditorCutsceneMixin:OnScriptsChange(scriptList)
 			self:ShowStep(index);
 		end
 	end
+end
+
+function TRP3_Tools_EditorCutsceneMixin:CountScriptReferences(scriptId)
+	self:SaveCurrentStep();
+	local count = 0;
+	for _, stepData in self.content.main.list.model:EnumerateEntireRange() do
+		if stepData.WO == scriptId then
+			count = count + 1;
+		end
+	end
+	return count;
 end
 
 function TRP3_Tools_EditorCutsceneMixin:SaveCurrentStep()

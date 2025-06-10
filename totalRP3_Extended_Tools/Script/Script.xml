@@ -234,6 +234,31 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Anchor point="LEFT" relativePoint="CENTER" x="4"/>
 				</Anchors>
 			</DropdownButton>
+
+			<Frame parentKey="scriptControls">
+				<Anchors>
+					<Anchor point="TOP"/>
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.scriptList"/>
+					<Anchor point="RIGHT"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.scriptList"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="rename" text="Rename" inherits="TRP3_CommonButton">
+						<Size x="100" y="22"/>
+						<Anchors>
+							<Anchor point="LEFT"/>
+							<Anchor point="RIGHT" relativePoint="CENTER"/>
+						</Anchors>
+					</Button>
+					<Button parentKey="delete" text="DELETE" inherits="TRP3_CommonButton">
+						<Size x="100" y="22"/>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="CENTER"/>
+							<Anchor point="RIGHT"/>
+						</Anchors>
+					</Button>
+				</Frames>
+			</Frame>
 		</Frames>
 	</Frame>
 	

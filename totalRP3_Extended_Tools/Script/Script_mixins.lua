@@ -48,12 +48,113 @@ function TRP3_Tools_EditorScriptMixin:Initialize()
 	addon.script:Initialize();
 	self.triggers = {};
 	self.scripts = {};
+	self.scriptControls.rename:SetScript("OnClick", function()
+		self:RenameSelectedScript();
+	end);
+	self.scriptControls.delete:SetScript("OnClick", function()
+		self:DeleteSelectedScript();
+	end);
+end
+
+function TRP3_Tools_EditorScriptMixin:RenameSelectedScript()
+	local oldScriptId = self.scriptList:GetSelectedValue();
+	if oldScriptId and self.scripts[oldScriptId] then
+		TRP3_API.popup.showTextInputPopup(loc.WO_ADD_ID, function(newScriptId)
+			newScriptId = strtrim(newScriptId or "");
+			if oldScriptId == newScriptId then
+				-- nothing to do
+			elseif newScriptId:len() == 0 or self.scripts[newScriptId] then
+				TRP3_API.popup.showAlertPopup(loc.WO_ADD_ID_NO_AVAILABLE);
+			else
+				self.scripts[newScriptId] = self.scripts[oldScriptId];
+				self.scripts[oldScriptId] = nil;
+				for _, trigger in ipairs(self.triggers) do
+					if trigger.script == oldScriptId then
+						trigger.script = newScriptId;
+					end
+				end
+				self:OnScriptsChanged(nil, nil, {[oldScriptId] = newScriptId});
+				self:UpdateTriggerList();
+				self.scriptList:SetSelectedValue(newScriptId);
+			end
+		end, nil, oldScriptId);
+	end
+end
+
+function TRP3_Tools_EditorScriptMixin:DeleteSelectedScript()
+	local scriptId = self.scriptList:GetSelectedValue();
+	if scriptId and self.scripts[scriptId] then
+		local refCount = addon.editor.getCurrentPropertiesEditor():CountScriptReferences(scriptId);
+		for _, trigger in ipairs(self.triggers) do
+			if trigger.script == scriptId then
+				refCount = refCount + 1;
+			end
+		end
+		if refCount <= 0 then
+			self:DeleteScripts(scriptId);
+		else
+			TRP3_API.popup.showConfirmPopup("This workflow might still be used.|n|nAre you sure you want to delete it?", function()
+				self:DeleteScripts(scriptId);
+			end);
+		end
+	end
+end
+
+function TRP3_Tools_EditorScriptMixin:DeleteScripts(...)
+	local selectedScript = self.scriptList:GetSelectedValue();
+	local deletions = {};
+	for _, scriptId in ipairs({...}) do
+		if self.scripts[scriptId] then
+			self.scripts[scriptId] = nil;
+			deletions[scriptId] = scriptId;
+		end
+	end
+	for _, trigger in ipairs(self.triggers) do
+		if trigger.script and deletions[trigger.script] then
+			trigger.script = nil;
+		end
+	end
+	self:OnScriptsChanged(deletions, nil, nil);
+	self:UpdateTriggerList();
+	if deletions[selectedScript or ""] then
+		self.scriptList:SetSelectedValue(nil);
+	else
+		self.scriptList:SetSelectedValue(selectedScript);
+	end
+end
+
+function TRP3_Tools_EditorScriptMixin:OnScriptsChanged(deletions, insertions, renamings)
+	local changes = {};
+	for scriptId, _ in pairs(self.scripts) do
+		local change = {
+			oldId = scriptId,
+			newId = scriptId
+		};
+		if insertions and insertions[scriptId] then
+			change.oldId = nil;
+		end
+		for oldId, newId in pairs(renamings or TRP3_API.globals.empty) do
+			if change.newId == newId then
+				change.oldId = oldId;
+			end
+		end
+		table.insert(changes, change);
+	end
+	for scriptId, _ in pairs(deletions or TRP3_API.globals.empty) do
+		table.insert(changes, {
+			oldId = scriptId,
+			newId = nil
+		});
+	end
+	table.sort(changes, function(a, b) return (a.newId or a.oldId) < (b.newId or b.oldId); end);
+	addon.editor.getCurrentPropertiesEditor():OnScriptsChanged(changes);
+	self:UpdateScriptList();
 end
 
 function TRP3_Tools_EditorScriptMixin:OnTriggerChanged(originalTrigger, newTrigger)
 	if newTrigger.script and not self.scripts[newTrigger.script] then
 		self.scripts[newTrigger.script] = {};
-		self:UpdateScriptList();
+		self:OnScriptsChanged(nil, {[newTrigger.script] = newTrigger.script}, nil);
 	end
 	if originalTrigger then
 		wipe(originalTrigger);
@@ -97,27 +198,43 @@ function TRP3_Tools_EditorScriptMixin:DeleteTrigger(trigger)
 end
 
 function TRP3_Tools_EditorScriptMixin:OnScriptSelected(scriptId)
-	local effects = {};
-	if scriptId and self.scripts[scriptId] then
-		for index, effect in ipairs(self.scripts[scriptId]) do
-			table.insert(effects, {
-				title   = addon.script.getEffectTitle(effect),
-				preview = addon.script.getEffectPreview(effect),
-				icon    = "Interface\\Icons\\" .. addon.script.getEffectIcon(effect),
-				constraint = self:ConstraintToPreview(effect.constraint, "IF"),
-				security = addon.script.getEffectSecurity(effect)
-			});
+	if scriptId == "" then
+		self.scriptList:SetSelectedValue(nil);
+		TRP3_API.popup.showTextInputPopup(loc.WO_ADD_ID, function(newScriptId)
+			newScriptId = strtrim(newScriptId or "");
+			if newScriptId:len() == 0 or self.scripts[newScriptId] then
+				TRP3_API.popup.showAlertPopup(loc.WO_ADD_ID_NO_AVAILABLE);
+			else
+				self.scripts[newScriptId] = {};
+				self:OnScriptsChanged(nil, {[newScriptId] = newScriptId}, nil);
+				self.scriptList:SetSelectedValue(newScriptId);
+			end
+		end, nil, "");
+	else
+		local effects = {};
+		if scriptId and self.scripts[scriptId] then
+			for index, effect in ipairs(self.scripts[scriptId]) do
+				table.insert(effects, {
+					title   = addon.script.getEffectTitle(effect),
+					preview = addon.script.getEffectPreview(effect),
+					icon    = "Interface\\Icons\\" .. addon.script.getEffectIcon(effect),
+					constraint = self:ConstraintToPreview(effect.constraint, "IF"),
+					security = addon.script.getEffectSecurity(effect)
+				});
+			end
+			table.insert(effects, {isAddButton = true}); -- add button
+			self.scriptControls:Show();
+		else
+			self.scriptControls:Hide();
 		end
-		table.insert(effects, {isAddButton = true}); -- add button
-	end
-	self.effectList.model:Flush();
-	self.effectList.model:InsertTable(effects);
+		self.effectList.model:Flush();
+		self.effectList.model:InsertTable(effects);
 
-	for index, trigger in self.triggerList.model:EnumerateEntireRange() do
-		trigger.active = self.triggers[index] and self.triggers[index].script == scriptId;
+		for index, trigger in self.triggerList.model:EnumerateEntireRange() do
+			trigger.active = self.triggers[index] and self.triggers[index].script == scriptId;
+		end
+		self.triggerList:Refresh();
 	end
-	self.triggerList:Refresh();
-
 end
 
 function TRP3_Tools_EditorScriptMixin:ConstraintToPreview(constraint, qualifier)
@@ -180,7 +297,7 @@ function TRP3_Tools_EditorScriptMixin:ClassToInterface(class, creationClass)
 		self.scripts[scriptId] = addon.script.getNormalizedEffectListData(scriptData or TRP3_API.globals.empty);
 	end
 
-	self:UpdateScriptList();
+	self:OnScriptsChanged(nil, nil, nil);
 	self.triggers = addon.script.getNormalizedTriggerData(class, self.scripts);
 
 	self:UpdateTriggerList();
@@ -197,11 +314,8 @@ function TRP3_Tools_EditorScriptMixin:UpdateScriptList()
 	table.sort(scriptList, function(a, b) 
 		return a[1] < b[1];
 	end);
+	table.insert(scriptList, {"|TInterface\\PaperDollInfoFrame\\Character-Plus:16:16|t " .. loc.WO_ADD, ""});
 	TRP3_API.ui.listbox.setupListBox(self.scriptList, scriptList, function(scriptId) self:OnScriptSelected(scriptId); end, "(no workflow selected)");
-	
-	if addon.editor.getCurrentPropertiesEditor() then -- TODO remove the IF when all object editors ar implemented
-		addon.editor.getCurrentPropertiesEditor():OnScriptsChange(scriptList);
-	end
 end
 
 function TRP3_Tools_EditorScriptMixin:UpdateTriggerList()
