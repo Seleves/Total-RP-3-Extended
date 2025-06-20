@@ -37,6 +37,8 @@ function TRP3_Tools_EditorCutsceneMixin:Initialize()
 		{loc.REG_RELATION_NONE, "NONE"}
 	});
 
+	self.content.step.text:SetupSuggestions(addon.editor.populateObjectTagMenu);
+
 	self.content.step.backgroundBrowse:SetScript("OnClick", function()
 		TRP3_API.popup.showPopup(TRP3_API.popup.IMAGES, {parent = TRP3_ToolFramePopupHolderTODO}, {function(image)
 			self.content.step.backgroundValue:SetText(image.url);
@@ -68,6 +70,7 @@ function TRP3_Tools_EditorCutsceneMixin:Initialize()
 	self.content.step.name:SetScript("OnClick", function()
 		self.content.step.nameValue:SetShown(self.content.step.name:GetChecked());
 	end);
+	self.content.step.nameValue:SetupSuggestions(addon.editor.populateObjectTagMenu);
 	
 	self.content.step.background:SetScript("OnClick", function()
 		self.content.step.backgroundBrowse:SetShown(self.content.step.background:GetChecked());
@@ -571,6 +574,7 @@ function TRP3_Tools_EditorCutsceneChoiceMixin:Initialize()
 	self.optionEditor.text.titleText = loc.DI_CHOICE;
 	self.optionEditor.text.helpText = loc.DI_CHOICE_TT;
 	self.optionEditor.text:Localize(function(x) return x; end);
+	self.optionEditor.text:SetupSuggestions(addon.editor.populateObjectTagMenu);
 	self.optionEditor.next.titleText = loc.DI_CHOICE_STEP;
 	self.optionEditor.next.helpText = loc.DI_CHOICE_STEP_TT;
 	self.optionEditor.next:Localize(function(x) return x; end);

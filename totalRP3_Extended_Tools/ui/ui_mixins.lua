@@ -566,6 +566,53 @@ function TRP3_Tools_TitledHelpEditBoxMixin:Localize(transform)
 	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.help, "RIGHT", 0, 5, self.titleText, self.helpText);
 end
 
+TRP3_Tools_TitledSuggestiveHelpEditBoxMixin = {};
+
+function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:Localize(transform)
+	self.titleText = transform(self.titleText);
+	self.helpText  = transform(self.helpText);
+	self.title:SetText(self.titleText);
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.help, "RIGHT", 0, 5, self.titleText, self.helpText);
+end
+
+function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:SetupSuggestions(dataProvider, replaceAllText)
+	self.dataProvider = dataProvider;
+	self.replaceAllText = replaceAllText;
+	if dataProvider then
+		self.suggestion:Show();
+		self.help:SetPoint("RIGHT", self.suggestion, "LEFT", -2, 0);
+		self:SetTextInsets(8, 43, 1, 0);
+	else
+		self.suggestion:Hide();
+		self.help:SetPoint("RIGHT", self, "RIGHT", -2, 0);
+		self:SetTextInsets(8, 16, 1, 0);
+	end
+end
+
+function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:AcceptSuggestion(value)
+	if self.replaceAllText then
+		self:SetText(value);
+	else
+		local index = self:GetCursorPosition();
+		local text = self:GetText();
+		local pre = text:sub(1, index);
+		local post = text:sub(index + 1);
+		text = strconcat(pre, value, post);
+		self:SetText(text);
+	end
+end
+
+function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:OpenSuggestions()
+	if self.dataProvider then
+		local onAccept = function(value) 
+			self:AcceptSuggestion(value);
+		end;
+		TRP3_MenuUtil.CreateContextMenu(self.suggestion, function(_, menu)
+			self.dataProvider(menu, onAccept);
+		end);
+	end
+end
+
 TRP3_Tools_CheckBoxMixin = {};
 
 function TRP3_Tools_CheckBoxMixin:Localize(transform)
@@ -609,13 +656,49 @@ function TRP3_Tools_TitledTextAreaMixin:GetCursorPosition()
 	return self.scroll.text:GetCursorPosition();
 end
 
-TRP3_Tools_TitledHelpTextAreaMixin = {};
+TRP3_Tools_TitledHelpTextAreaMixin = CreateFromMixins(TRP3_Tools_TitledTextAreaMixin);
 
 function TRP3_Tools_TitledHelpTextAreaMixin:Localize(transform)
 	self.titleText = transform(self.titleText);
 	self.helpText  = transform(self.helpText);
 	self.title:SetText(self.titleText);
 	TRP3_API.ui.tooltip.setTooltipAll(self.dummy, "RIGHT", 0, 5, self.titleText, self.helpText);
+end
+
+TRP3_Tools_TitledSuggestiveHelpTextAreaMixin = CreateFromMixins(TRP3_Tools_TitledHelpTextAreaMixin);
+
+function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:SetupSuggestions(dataProvider, replaceAllText)
+	self.dataProvider = dataProvider;
+	self.replaceAllText = replaceAllText;
+	if dataProvider then
+		self.suggestion:Show();
+	else
+		self.suggestion:Hide();
+	end
+end
+
+function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:AcceptSuggestion(value)
+	if self.replaceAllText then
+		self:SetText(value);
+	else
+		local index = self:GetCursorPosition();
+		local text = self:GetText();
+		local pre = text:sub(1, index);
+		local post = text:sub(index + 1);
+		text = strconcat(pre, value, post);
+		self:SetText(text);
+	end
+end
+
+function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:OpenSuggestions()
+	if self.dataProvider then
+		local onAccept = function(value) 
+			self:AcceptSuggestion(value);
+		end;
+		TRP3_MenuUtil.CreateContextMenu(self.suggestion, function(_, menu)
+			self.dataProvider(menu, onAccept);
+		end);
+	end
 end
 
 TRP3_Tools_TitledPopupMixin = {};

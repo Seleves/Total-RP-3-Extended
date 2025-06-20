@@ -1,3 +1,4 @@
+local _, addon = ...
 local loc = TRP3_API.loc;
 
 TRP3_Tools_EditorItemMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
@@ -12,6 +13,24 @@ function TRP3_Tools_EditorItemMixin:OnSizeChanged()
 	self.content.display.preview.Name:SetWidth(self:GetWidth()/8);
 	self.content.display.preview.InfoText:SetWidth(self:GetWidth()/8);
 end
+
+-- local function populateItemTagMenu(menu, onAccept)
+-- 	menu:CreateTitle("Insert tag");
+-- 	addon.script.addStaticTagsToMenu(menu, onAccept);
+-- 	local campaignVars = addon.editor.gatherVariables();
+-- 	local campaignVarsSorted = {};
+-- 	for variable, _ in pairs(campaignVars) do
+-- 		table.insert(campaignVarsSorted, variable);
+-- 	end
+-- 	table.sort(campaignVarsSorted);
+-- 	if TableHasAnyEntries(campaignVarsSorted) then
+-- 		local varsMenu = menu:CreateButton("Variable tags");
+-- 		varsMenu:SetScrollMode(400);
+-- 		for _, variable in ipairs(campaignVarsSorted) do
+-- 			varsMenu:CreateButton(variable, onAccept, "${" .. variable .. "}");
+-- 		end
+-- 	end
+-- end
 
 function TRP3_Tools_EditorItemMixin:Initialize()
 	
@@ -30,6 +49,10 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 	display.name:SetScript("OnTextChanged", function()
 		s:UpdatePreviews();
 	end);
+
+	display.left:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	display.right:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	display.description:SetupSuggestions(addon.editor.populateObjectTagMenu);
 
 	-- Quality
 	local qualityList = {
@@ -95,6 +118,8 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 	
 	-- Weight edit box title != tooltip title
 	gameplay.weight.title:SetText(loc.IT_TT_WEIGHT_FORMAT);
+
+	gameplay.usetext:SetupSuggestions(addon.editor.populateObjectTagMenu);
 
 	-- Pick up sound
 	local pickUpList = {};

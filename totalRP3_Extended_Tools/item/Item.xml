@@ -74,7 +74,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</DropdownButton>
 
-							<EditBox parentKey="left" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+							<EditBox parentKey="left" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${IT_TT_LEFT}" type="string"/>
 									<KeyValue key="helpText" value="${IT_TT_LEFT_TT}" type="string"/>
@@ -86,7 +86,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</EditBox>
 
-							<EditBox parentKey="right" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+							<EditBox parentKey="right" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${IT_TT_RIGHT}" type="string"/>
 									<KeyValue key="helpText" value="${IT_TT_RIGHT_TT}" type="string"/>
@@ -98,7 +98,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</EditBox>
 
-							<Frame parentKey="description" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+							<Frame parentKey="description" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${IT_TT_DESCRIPTION}" type="string"/>
 									<KeyValue key="helpText" value="${IT_TT_DESCRIPTION_TT}" type="string"/>
@@ -322,7 +322,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</CheckButton>
 
-							<EditBox parentKey="usetext" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+							<EditBox parentKey="usetext" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${IT_USE_TEXT}" type="string"/>
 									<KeyValue key="helpText" value="${IT_USE_TEXT_TT}" type="string"/>

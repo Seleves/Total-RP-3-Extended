@@ -90,6 +90,8 @@ function TRP3_Tools_EditorDocumentMixin:Initialize()
 		s:AddPage();
 	end);
 
+	pages.editor:SetupSuggestions(addon.editor.populateObjectTagMenu);
+
 	addon.utils.prepareForMultiSelectionMode(self.content.pages.list);
 
 	-- -- Pages

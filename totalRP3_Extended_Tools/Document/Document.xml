@@ -246,7 +246,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</Frame>
 
-							<Frame parentKey="editor" inherits="TRP3_TextArea">
+							<Frame parentKey="editor" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 								<Anchors>
 									<Anchor point="TOP" relativeKey="$parent.toolbar" relativePoint="BOTTOM"/>
 									<Anchor point="BOTTOM" y="25"/>

@@ -31,7 +31,8 @@ local templateMap = {
 	["loot"]       = "TRP3_Tools_ScriptParameterLootTemplate",
 	["operand"]    = "TRP3_Tools_ScriptParameterOperandTemplate",
 	["script"]     = "TRP3_Tools_ScriptParameterScriptTemplate",
-	["macro"]      = "TRP3_Tools_ScriptParameterMacroTemplate"
+	["macro"]      = "TRP3_Tools_ScriptParameterMacroTemplate",
+	["variable"]   = "TRP3_Tools_ScriptParameterVariableTemplate",
 };
 
 local function getGroupsFromParameterList(parameters)

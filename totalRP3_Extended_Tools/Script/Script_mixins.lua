@@ -384,6 +384,38 @@ function TRP3_Tools_EditorScriptMixin:InterfaceToClass(targetClass)
 
 end
 
+function TRP3_Tools_EditorScriptMixin:GetVariablesByScope(scope)
+	local result = {};
+	local variableManipulationEffects = addon.script.getVariableManipulationEffects();
+	for _, script in pairs(self.scripts) do
+		for _, effect in ipairs(script) do
+			if variableManipulationEffects[effect.id] then
+				local effectVarSpec = variableManipulationEffects[effect.id];
+				for _, variable in pairs(effectVarSpec) do
+					if (variable.scopeIndex and effect.parameters[variable.scopeIndex] or variable.scope) == scope then
+						if (effect.parameters[variable.nameIndex] or "") ~= "" then
+							result[effect.parameters[variable.nameIndex]] = true;
+						end
+					end
+				end
+			end
+		end
+	end
+	return result;
+end
+
+function TRP3_Tools_EditorScriptMixin:GetAuraVariablesSet(auraAbsoluteId)
+	local result = {};
+	for _, script in pairs(self.scripts) do
+		for _, effect in ipairs(script) do
+			if effect.id == "aura_var_set" and effect.parameters[1] == auraAbsoluteId and (effect.parameters[1] or "") ~= "" then
+				result[effect.parameters[3]] = true;
+			end
+		end
+	end
+	return result;
+end
+
 TRP3_Tools_ScriptTriggerListElementMixin = {};
 
 function TRP3_Tools_ScriptTriggerListElementMixin:Initialize(data)

@@ -121,7 +121,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</EditBox>
 
-							<Frame parentKey="description" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+							<Frame parentKey="description" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${QE_DESCRIPTION}" type="string"/>
 									<KeyValue key="helpText" value="${QE_DESCRIPTION_TT}" type="string"/>
@@ -215,7 +215,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 										</Anchors>
 									</EditBox>
 
-									<EditBox parentKey="text" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+									<EditBox parentKey="text" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 										<KeyValues>
 											<KeyValue key="titleText" value="${QE_OBJ_TEXT}" type="string"/>
 											<KeyValue key="helpText" value="${QE_OBJ_TEXT}" type="string"/>

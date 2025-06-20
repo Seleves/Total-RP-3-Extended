@@ -59,6 +59,41 @@ function TRP3_Tools_ScriptParameterDropdownMixin:GetValue()
 	return self.dropdown:GetSelectedValue();
 end
 
+TRP3_Tools_ScriptParameterVariableMixin = CreateFromMixins(TRP3_Tools_ScriptParameterMixin);
+
+function TRP3_Tools_ScriptParameterVariableMixin:Setup(widgetContext, nameParameter, scopeParameter)
+	self.name.titleText = nameParameter.title;
+	self.name.helpText = nameParameter.description;
+	self.name:Localize(IDENTITY);
+	if scopeParameter then
+		self.scope.titleText = scopeParameter.title;
+		self.scope.helpText = scopeParameter.description;
+		self.scope:Localize(IDENTITY);
+		self.scope:Show();
+		self.name:SetPoint("LEFT", self, "CENTER", 5, 0);
+		local onChangeCallback;
+		if scopeParameter.onChange then
+			onChangeCallback = function()
+				scopeParameter.onChange(self, widgetContext);
+			end
+		end
+		TRP3_API.ui.listbox.setupListBox(self.scope, scopeParameter.dropdownValues, onChangeCallback);
+	else
+		self.scope:Hide();
+		TRP3_API.ui.listbox.setupListBox(self.scope, TRP3_API.globals.empty);
+		self.name:SetPoint("LEFT");
+	end
+end
+
+function TRP3_Tools_ScriptParameterVariableMixin:SetValue(name, scope)
+	self.name:SetText(tostring(name or ""));
+	self.scope:SetSelectedValue(scope);
+end
+
+function TRP3_Tools_ScriptParameterVariableMixin:GetValue()
+	return self.name:GetText(), self.scope:GetSelectedValue();
+end
+
 TRP3_Tools_ScriptParameterCoordinateMixin = CreateFromMixins(TRP3_Tools_ScriptParameterMixin);
 
 function TRP3_Tools_ScriptParameterCoordinateMixin:Setup(widgetContext, parameterX, parameterY)
@@ -433,51 +468,86 @@ function TRP3_Tools_ScriptParameterScriptMixin:Setup(widgetContext, parameter)
 	self.script.titleText = parameter.title;
 	self.script.helpText = parameter.description;
 	self.script:Localize(IDENTITY);
-	
 	self.effect:SetText(loc.EFFECT_SCRIPT_I_EFFECT);
 	self.effect:SetScript("OnClick", function() 
-		TRP3_API.ui.listbox.displayDropDown(self.effect, addon.script.getEffectMenu(true), function(effectId)
-			local effect = addon.script.getEffectById(effectId);
-			local effectLua = "effect(\"" .. effectId .. "\", args";
-			local s = "";
-			if effect.boxed then
-				effectLua = effectLua .. ", {";
-			else
-				s = ", ";
+		local function selectEffect(effectId)
+			self:InsertEffectById(effectId);
+		end
+		TRP3_MenuUtil.CreateContextMenu(self.effect, function(_, menu)
+			for _, effectOrCategory in ipairs(addon.script.getEffectMenu(true)) do
+				if type(effectOrCategory[2]) == "table" then
+					local subMenu = menu:CreateButton(effectOrCategory[1]);
+					for _, effect in ipairs(effectOrCategory[2]) do
+						local button = subMenu:CreateButton(("|TInterface\\ICONS\\%s:16:16|t %s"):format(effect[4], effect[1]), selectEffect, effect[2]);
+						TRP3_MenuUtil.SetElementTooltip(button, effect[3]);
+					end
+				else
+					local button = menu:CreateButton(("|TInterface\\ICONS\\%s:16:16|t %s"):format(effectOrCategory[4], effectOrCategory[1]), selectEffect, effectOrCategory[2]);
+					TRP3_MenuUtil.SetElementTooltip(button, effectOrCategory[3]);
+				end
 			end
-			for _, parameter in ipairs(effect.parameters) do
-				effectLua = effectLua .. s .. addon.utils.gnirtsdaol(parameter.default);
-				s = ", ";
-			end
-			if effect.boxed then
-				effectLua = effectLua .. "}";
-			end
-			effectLua = effectLua .. ");";
-			local index = self.script:GetCursorPosition();
-			local text = self.script:GetText();
-			local pre = text:sub(1, index);
-			local post = text:sub(index + 1);
-			text = strconcat(pre, effectLua, post);
-			self.script:SetText(text);
 		end);
 	end);
 	self.operand:SetText("Insert operand");
 	self.operand:SetScript("OnClick", function() 
-		TRP3_API.ui.listbox.displayDropDown(self.operand, addon.script.getOperandMenu(false), function(operandId)
-			local operand = addon.script.getOperandById(operandId);
-			local operandLua = "op(\"" .. operandId .. "\", args";
-			for _, parameter in ipairs(operand.parameters) do
-				operandLua = operandLua .. ", " .. addon.utils.gnirtsdaol(parameter.default);
+		local function selectOperand(operandId)
+			self:InsertOperandById(operandId);
+		end
+		TRP3_MenuUtil.CreateContextMenu(self.operand, function(_, menu)
+			for _, operandOrCategory in ipairs(addon.script.getOperandMenu(false)) do
+				if type(operandOrCategory[2]) == "table" then
+					local subMenu = menu:CreateButton(operandOrCategory[1]);
+					for _, operand in ipairs(operandOrCategory[2]) do
+						local button = subMenu:CreateButton(operand[1], selectOperand, operand[2]);
+						TRP3_MenuUtil.SetElementTooltip(button, operand[3]);
+					end
+				else
+					local button = menu:CreateButton(operandOrCategory[1], selectOperand, operandOrCategory[2]);
+					TRP3_MenuUtil.SetElementTooltip(button, operandOrCategory[3]);
+				end
 			end
-			operandLua = operandLua .. ");";
-			local index = self.script:GetCursorPosition();
-			local text = self.script:GetText();
-			local pre = text:sub(1, index);
-			local post = text:sub(index + 1);
-			text = strconcat(pre, operandLua, post);
-			self.script:SetText(text);
 		end);
 	end);
+end
+
+function TRP3_Tools_ScriptParameterScriptMixin:InsertEffectById(effectId)
+	local effect = addon.script.getEffectById(effectId);
+	local effectLua = "effect(\"" .. effectId .. "\", args";
+	local s = "";
+	if effect.boxed then
+		effectLua = effectLua .. ", {";
+	else
+		s = ", ";
+	end
+	for _, parameter in ipairs(effect.parameters) do
+		effectLua = effectLua .. s .. addon.utils.gnirtsdaol(parameter.default);
+		s = ", ";
+	end
+	if effect.boxed then
+		effectLua = effectLua .. "}";
+	end
+	effectLua = effectLua .. ");";
+	local index = self.script:GetCursorPosition();
+	local text = self.script:GetText();
+	local pre = text:sub(1, index);
+	local post = text:sub(index + 1);
+	text = strconcat(pre, effectLua, post);
+	self.script:SetText(text);
+end
+
+function TRP3_Tools_ScriptParameterScriptMixin:InsertOperandById(operandId)
+	local operand = addon.script.getOperandById(operandId);
+	local operandLua = "op(\"" .. operandId .. "\", args";
+	for _, parameter in ipairs(operand.parameters) do
+		operandLua = operandLua .. ", " .. addon.utils.gnirtsdaol(parameter.default);
+	end
+	operandLua = operandLua .. ");";
+	local index = self.script:GetCursorPosition();
+	local text = self.script:GetText();
+	local pre = text:sub(1, index);
+	local post = text:sub(index + 1);
+	text = strconcat(pre, operandLua, post);
+	self.script:SetText(text);
 end
 
 function TRP3_Tools_ScriptParameterScriptMixin:SetValue(value)

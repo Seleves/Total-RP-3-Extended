@@ -68,7 +68,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</EditBox>
 
-							<EditBox parentKey="overlay" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+							<EditBox parentKey="overlay" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${AU_FIELD_OVERLAY}" type="string"/>
 									<KeyValue key="helpText" value="${AU_FIELD_OVERLAY_TT}" type="string"/>
@@ -80,7 +80,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</EditBox>
 
-							<Frame parentKey="description" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+							<Frame parentKey="description" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${AU_FIELD_DESCRIPTION}" type="string"/>
 									<KeyValue key="helpText" value="${AU_FIELD_DESCRIPTION_TT}" type="string"/>

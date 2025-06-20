@@ -110,7 +110,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<Anchor point="RIGHT" x="-10" y="0"/>
 						</Anchors>
 					</EditBox>
-					<EditBox parentKey="text" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+					<EditBox parentKey="text" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 						<Size y="25"/>
 						<Anchors>
 							<Anchor point="TOP" y="-10"/>
@@ -337,7 +337,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</Anchors>
 						<Frames>
 
-							<Frame parentKey="text" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+							<Frame parentKey="text" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${DI_STEP_TEXT}" type="string"/>
 									<KeyValue key="helpText" value="${DI_STEP_TEXT}" type="string"/>
@@ -437,7 +437,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</CheckButton>
 
-							<EditBox parentKey="nameValue" hidden="true" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+							<EditBox parentKey="nameValue" hidden="true" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="Name" type="string"/>
 									<KeyValue key="helpText" value="Set the new name [TODO]" type="string"/>

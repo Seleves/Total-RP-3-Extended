@@ -50,7 +50,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						
 						<Frames>
 
-							<Frame parentKey="pre" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+							<Frame parentKey="pre" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${QE_ST_PRE}" type="string"/>
 									<KeyValue key="helpText" value="${QE_ST_PRE}" type="string"/>
@@ -63,7 +63,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</Frame>
 
-							<Frame parentKey="post" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+							<Frame parentKey="post" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${QE_ST_POST}" type="string"/>
 									<KeyValue key="helpText" value="${QE_ST_POST}" type="string"/>

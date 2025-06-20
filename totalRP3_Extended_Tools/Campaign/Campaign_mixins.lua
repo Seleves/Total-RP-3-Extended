@@ -51,6 +51,8 @@ function TRP3_Tools_EditorCampaignMixin:Initialize()
 		self:UpdatePreview();
 	end);
 
+	self.content.main.description:SetupSuggestions(addon.editor.populateObjectTagMenu);
+
 	local vignetteMenu = {};
 	for _, value in ipairs(CAMPAIGN_PORTRAITS) do
 		table.insert(vignetteMenu, {

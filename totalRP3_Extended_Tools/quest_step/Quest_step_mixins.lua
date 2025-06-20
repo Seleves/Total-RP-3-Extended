@@ -15,6 +15,8 @@ end
 
 function TRP3_Tools_EditorQuestStepMixin:Initialize()
 	self.ScrollBar:SetHideIfUnscrollable(true);
+	self.content.main.pre:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	self.content.main.post:SetupSuggestions(addon.editor.populateObjectTagMenu);
 end
 
 function TRP3_Tools_EditorQuestStepMixin:ClassToInterface(class, creationClass)

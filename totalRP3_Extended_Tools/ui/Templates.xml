@@ -534,6 +534,52 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			</OnEditFocusLost>
 		</Scripts>
 	</EditBox>
+
+	<EditBox name="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate" inherits="TRP3_Tools_TitledEditBoxTemplate" virtual="true" mixin="TRP3_Tools_TitledSuggestiveHelpEditBoxMixin">
+		<Frames>
+			<Button name="$parentSuggestion" parentKey="suggestion" text="...">
+				<Size x="27" y="27"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="0"/>
+				</Anchors>
+				<NormalFont style="GameFontNormal"/>
+				<HighlightFont style="GameFontNormal"/>
+				<DisabledFont style="GameFontNormal"/>
+				<NormalTexture atlas="common-dropdown-c-button"/>
+				<PushedTexture atlas="common-dropdown-c-button-pressed-2"/>
+				<DisabledTexture atlas="common-dropdown-c-button-disabled"/>
+				<HighlightTexture atlas="common-dropdown-c-button-hover-2" alphaMode="ADD"/>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OpenSuggestions();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentHelp" parentKey="help" inherits="TRP3_HelpButton" hidden="true">
+				<Size x="14" y="14"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-2" relativePoint="LEFT" relativeKey="$parent.suggestion"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<TextInsets left="8" top="1" right="43"/>
+		<Scripts>
+			<OnEditFocusGained>
+				if self.disabled then
+					self:ClearFocus();
+				else
+					self:HighlightText();
+				end
+				if self.help.titleText then
+					self.help:Show();
+				end
+			</OnEditFocusGained>
+			<OnEditFocusLost>
+				self:HighlightText(0,0);
+				self.help:Hide();
+			</OnEditFocusLost>
+		</Scripts>
+	</EditBox>
 	
 	<CheckButton name="TRP3_Tools_CheckBoxTemplate" inherits="TRP3_CheckBox" virtual="true" mixin="TRP3_Tools_CheckBoxMixin">
 		<Size x="25" y="25"/>
@@ -636,6 +682,29 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	</Frame>
 	
 	<Frame name="TRP3_Tools_TitledHelpTextAreaTemplate" inherits="TRP3_Tools_TitledTextAreaTemplate" virtual="true" mixin="TRP3_Tools_TitledHelpTextAreaMixin">
+	</Frame>
+
+	<Frame name="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate" inherits="TRP3_Tools_TitledTextAreaTemplate" virtual="true" mixin="TRP3_Tools_TitledSuggestiveHelpTextAreaMixin">
+		<Frames>
+			<Button name="$parentSuggestion" parentKey="suggestion" text="...">
+				<Size x="27" y="27"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-3" y="3" relativePoint="TOPRIGHT"/>
+				</Anchors>
+				<NormalFont style="GameFontNormal"/>
+				<HighlightFont style="GameFontNormal"/>
+				<DisabledFont style="GameFontNormal"/>
+				<NormalTexture atlas="common-dropdown-c-button"/>
+				<PushedTexture atlas="common-dropdown-c-button-pressed-2"/>
+				<DisabledTexture atlas="common-dropdown-c-button-disabled"/>
+				<HighlightTexture atlas="common-dropdown-c-button-hover-2" alphaMode="ADD"/>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OpenSuggestions();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
 	</Frame>
 	
 	<Frame name="TRP3_Tools_TitledPopupTemplate" inherits="TRP3_AltHoveredFrame" virtual="true" mixin="TRP3_Tools_TitledPopupMixin" frameStrata="DIALOG">

@@ -323,6 +323,135 @@ function addon.editor.getCurrentObjectRelativeId()
 	end
 end
 
+function addon.editor.gatherVariables()
+	if not currentDraft then
+		return {};
+	end
+	local result = {};
+	local variableManipulationEffects = addon.script.getVariableManipulationEffects();
+	local isCutsceneOrDocument = currentObject.class.TY == TRP3_DB.types.DOCUMENT or currentObject.class.TY == TRP3_DB.types.DIALOG;
+	local cutsceneOrDocumentCallers = {};
+
+	-- 1. campaign variables from entire creation
+	for absoluteId, object in pairs(currentDraft.index) do
+		for scriptId, scriptData in pairs(object.class.SC or TRP3_API.globals.empty) do
+			for _, stepData in pairs(scriptData.ST or TRP3_API.globals.empty) do
+				if stepData.t == TRP3_DB.elementTypes.EFFECT and stepData.e and stepData.e[1] and stepData.e[1].id then
+					if variableManipulationEffects[stepData.e[1].id] then
+						local effectVarSpec = variableManipulationEffects[stepData.e[1].id];
+						local effectSpec = addon.script.getEffectById(stepData.e[1].id);
+						local args = stepData.e[1].args or TRP3_API.globals.empty;
+						if effectSpec.boxed then
+							args = args[1] or TRP3_API.globals.empty;
+						end
+						for _, variable in pairs(effectVarSpec) do
+							if (variable.scopeIndex and args[variable.scopeIndex] or variable.scope) == "c" then
+								if (args[variable.nameIndex] or "") ~= "" then
+									result[args[variable.nameIndex]] = true;
+								end
+							end
+						end
+					end
+					if isCutsceneOrDocument
+					and (stepData.e[1].id == "document_show" or stepData.e[1].id == "dialog_start") 
+					and stepData.e[1].args
+					and stepData.e[1].args[1] == currentEditor.cursor.objectId
+					then
+						cutsceneOrDocumentCallers[absoluteId] = cutsceneOrDocumentCallers[absoluteId] or {};
+						cutsceneOrDocumentCallers[absoluteId][scriptId] = true;
+					end
+				end
+			end
+		end
+	end
+	
+	-- 2. object variables in this object
+	for variable, _ in pairs(addon.editor.script:GetVariablesByScope("o")) do
+		result[variable] = true;
+	end
+	
+	-- 3. campaign variables in this object (most recent edits to script might not have yet been saved to draft)
+	for variable, _ in pairs(addon.editor.script:GetVariablesByScope("c")) do
+		result[variable] = true;
+	end
+
+	-- 4. aura variables set anywhere in the creation
+	if currentObject.class.TY == TRP3_DB.types.AURA then
+		for absoluteId, object in pairs(currentDraft.index) do
+			for _, scriptData in pairs(object.class.SC or TRP3_API.globals.empty) do
+				for _, stepData in pairs(scriptData.ST or TRP3_API.globals.empty) do
+					if stepData.t == TRP3_DB.elementTypes.EFFECT and stepData.e and stepData.e[1] and stepData.e[1].id then
+						if  stepData.e[1].id == "aura_var_set"
+						and stepData.e[1].args
+						and stepData.e[1].args[1] == currentEditor.cursor.objectId
+						and (stepData.e[1].args[3] or "") ~= ""
+						then
+							result[stepData.e[1].args[3]] = true;
+						end
+					end
+				end
+			end
+		end
+		for variable, _ in pairs(addon.editor.script:GetAuraVariablesSet(currentEditor.cursor.objectId)) do
+			result[variable] = true;
+		end
+	end
+
+	-- 5. if document or cutscene, object variables of the calling object
+	-- 6. if document or cutscene, workflow variables of the calling workflow
+	if isCutsceneOrDocument then
+		for absoluteId, callerScripts in pairs(cutsceneOrDocumentCallers) do
+			local object = currentDraft.index[absoluteId];
+			for scriptId, scriptData in pairs(object.class.SC or TRP3_API.globals.empty) do
+				for _, stepData in pairs(scriptData.ST or TRP3_API.globals.empty) do
+					if stepData.t == TRP3_DB.elementTypes.EFFECT and stepData.e and stepData.e[1] and stepData.e[1].id then
+						if variableManipulationEffects[stepData.e[1].id] then
+							local effectVarSpec = variableManipulationEffects[stepData.e[1].id];
+							local effectSpec = addon.script.getEffectById(stepData.e[1].id);
+							local args = stepData.e[1].args or TRP3_API.globals.empty;
+							if effectSpec.boxed then
+								args = args[1] or TRP3_API.globals.empty;
+							end
+							for _, variable in pairs(effectVarSpec) do
+								if (variable.scopeIndex and args[variable.scopeIndex] or variable.scope) == "o" then
+									if (args[variable.nameIndex] or "") ~= "" then
+										result[args[variable.nameIndex]] = true;
+									end
+								end
+								if callerScripts[scriptId] and (variable.scopeIndex and args[variable.scopeIndex] or variable.scope) == "w" then
+									if (args[variable.nameIndex] or "") ~= "" then
+										result[args[variable.nameIndex]] = true;
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return result;
+end
+
+function addon.editor.populateObjectTagMenu(menu, onAccept)
+	menu:CreateTitle("Insert tag");
+	addon.script.addStaticTagsToMenu(menu, onAccept);
+	local campaignVars = addon.editor.gatherVariables();
+	local campaignVarsSorted = {};
+	for variable, _ in pairs(campaignVars) do
+		table.insert(campaignVarsSorted, variable);
+	end
+	table.sort(campaignVarsSorted);
+	if TableHasAnyEntries(campaignVarsSorted) then
+		local varsMenu = menu:CreateButton("Variable tags");
+		varsMenu:SetScrollMode(400);
+		for _, variable in ipairs(campaignVarsSorted) do
+			varsMenu:CreateButton(variable, onAccept, "${" .. variable .. "}");
+		end
+	end
+end
+
 function addon.hidePopups()
 	TRP3_API.popup.hidePopups();
 	for _, popup in pairs(modalPopups) do

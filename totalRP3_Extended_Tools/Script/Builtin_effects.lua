@@ -840,19 +840,23 @@ function addon.script.registerBuiltinEffects()
 			{
 				title       = loc.EFFECT_ITEM_DICE_ROLL_VAR,
 				description = loc.EFFECT_ITEM_DICE_ROLL_VAR_TT,
-				type        = "string",
-				default     = ""
+				type        = "variable",
+				default     = "",
+				groupId     = "variable",
+				memberIndex = 1
 			},
 			{
 				title       = loc.EFFECT_SOURCE,
 				description = loc.EFFECT_SOURCE, -- TODO
-				type        = "string",
+				type        = "scope",
 				default     = "w",
 				values      = {
 					{"w", loc.EFFECT_SOURCE_WORKFLOW, loc.EFFECT_SOURCE_WORKFLOW_TT},
 					{"o", loc.EFFECT_SOURCE_OBJECT, loc.EFFECT_SOURCE_OBJECT_TT},
 					{"c", loc.EFFECT_SOURCE_CAMPAIGN, loc.EFFECT_SOURCE_CAMPAIGN_TT},
-				}
+				},
+				groupId     = "variable",
+				memberIndex = 2
 			}
 		},
 		category = loc.INV_PAGE_CHARACTER_INV
@@ -1025,8 +1029,11 @@ function addon.script.registerBuiltinEffects()
 			{
 				title       = loc.EFFECT_VAR,
 				description = loc.EFFECT_VAR,
-				type        = "string",
-				default     = "varName"
+				type        = "variable",
+				default     = "varName",
+				groupId     = "variable",
+				memberIndex = 1,
+				scope       = "a"
 			},
 			{
 				title       = loc.EFFECT_OPERATION_VALUE,
@@ -1346,13 +1353,15 @@ function addon.script.registerBuiltinEffects()
 			{
 				title       = loc.EFFECT_SOURCE,
 				description = loc.EFFECT_SOURCE, -- TODO
-				type        = "string",
+				type        = "scope",
 				default     = "w",
 				values      = {
 					{"w", loc.EFFECT_SOURCE_WORKFLOW, loc.EFFECT_SOURCE_WORKFLOW_TT},
 					{"o", loc.EFFECT_SOURCE_OBJECT, loc.EFFECT_SOURCE_OBJECT_TT},
 					{"c", loc.EFFECT_SOURCE_CAMPAIGN, loc.EFFECT_SOURCE_CAMPAIGN_TT},
-				}
+				},
+				groupId     = "variable",
+				memberIndex = 2
 			},
 			{
 				title       = loc.EFFECT_OPERATION_TYPE,
@@ -1371,8 +1380,10 @@ function addon.script.registerBuiltinEffects()
 			{
 				title       = loc.EFFECT_VAR,
 				description = loc.EFFECT_VAR,
-				type        = "string",
-				default     = "varName"
+				type        = "variable",
+				default     = "varName",
+				groupId     = "variable",
+				memberIndex = 1
 			},
 			{
 				title       = loc.EFFECT_OPERATION_VALUE,
@@ -1404,21 +1415,24 @@ function addon.script.registerBuiltinEffects()
 			{
 				title       = loc.EFFECT_VAR,
 				description = loc.EFFECT_VAR,
-				type        = "string",
+				type        = "variable",
 				default     = "varName",
-				layoutLeft  = 0
+				layoutLeft  = 0,
+				groupId     = "variable",
+				memberIndex = 1
 			},
 			{
 				title       = loc.EFFECT_SOURCE,
 				description = loc.EFFECT_SOURCE, -- TODO
-				type        = "string",
+				type        = "scope",
 				default     = "w",
 				values      = {
 					{"w", loc.EFFECT_SOURCE_WORKFLOW, loc.EFFECT_SOURCE_WORKFLOW_TT},
 					{"o", loc.EFFECT_SOURCE_OBJECT, loc.EFFECT_SOURCE_OBJECT_TT},
 					{"c", loc.EFFECT_SOURCE_CAMPAIGN, loc.EFFECT_SOURCE_CAMPAIGN_TT},
 				},
-				layoutLeft  = 1
+				groupId     = "variable",
+				memberIndex = 2
 			},
 			{
 				title       = "Operand",
@@ -1473,18 +1487,22 @@ function addon.script.registerBuiltinEffects()
 			{
 				title       = loc.EFFECT_PROMPT_VAR,
 				description = loc.EFFECT_PROMPT_VAR_TT,
-				type        = "string",
-				default     = "input"
+				type        = "variable",
+				default     = "input",
+				groupId     = "variable",
+				memberIndex = 1
 			},
 			{
 				title       = loc.EFFECT_SOURCE_V,
 				description = loc.EFFECT_SOURCE_V, -- TODO
-				type        = "string",
+				type        = "scope",
 				default     = "o",
 				values      = {
 					{"o", loc.EFFECT_SOURCE_OBJECT, loc.EFFECT_SOURCE_OBJECT_TT},
 					{"c", loc.EFFECT_SOURCE_CAMPAIGN, loc.EFFECT_SOURCE_CAMPAIGN_TT},
-				}
+				},
+				groupId     = "variable",
+				memberIndex = 2
 			},
 			{
 				title       = loc.EFFECT_PROMPT_CALLBACK,

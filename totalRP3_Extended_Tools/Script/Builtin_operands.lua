@@ -582,8 +582,11 @@ function addon.script.registerBuiltinOperands()
 			{
 				title       = loc.EFFECT_VAR,
 				description = loc.EFFECT_VAR,
-				type        = "string",
-				default     = "var"
+				type        = "variable",
+				default     = "var",
+				groupId     = "variable",
+				memberIndex = 1,
+				scope       = "a"
 			}
 		}
 	});
@@ -611,8 +614,11 @@ function addon.script.registerBuiltinOperands()
 			{
 				title       = loc.EFFECT_VAR,
 				description = loc.EFFECT_VAR,
-				type        = "string",
-				default     = "var"
+				type        = "variable",
+				default     = "var",
+				groupId     = "variable",
+				memberIndex = 1,
+				scope       = "a"
 			}
 		}
 	});
@@ -639,19 +645,23 @@ function addon.script.registerBuiltinOperands()
 			{
 				title       = loc.EFFECT_SOURCE,
 				description = loc.EFFECT_SOURCE, -- TODO
-				type        = "string",
+				type        = "scope",
 				default     = "w",
 				values      = {
 					{"w", loc.EFFECT_SOURCE_WORKFLOW, loc.EFFECT_SOURCE_WORKFLOW_TT},
 					{"o", loc.EFFECT_SOURCE_OBJECT, loc.EFFECT_SOURCE_OBJECT_TT},
 					{"c", loc.EFFECT_SOURCE_CAMPAIGN, loc.EFFECT_SOURCE_CAMPAIGN_TT},
-				}
+				},
+				groupId     = "variable",
+				memberIndex = 2
 			},
 			{
 				title       = loc.EFFECT_VAR,
 				description = loc.EFFECT_VAR,
-				type        = "string",
-				default     = "var"
+				type        = "variable",
+				default     = "var",
+				groupId     = "variable",
+				memberIndex = 1
 			}
 		}
 	});
@@ -672,19 +682,23 @@ function addon.script.registerBuiltinOperands()
 			{
 				title       = loc.EFFECT_SOURCE,
 				description = loc.EFFECT_SOURCE, -- TODO
-				type        = "string",
+				type        = "scope",
 				default     = "w",
 				values      = {
 					{"w", loc.EFFECT_SOURCE_WORKFLOW, loc.EFFECT_SOURCE_WORKFLOW_TT},
 					{"o", loc.EFFECT_SOURCE_OBJECT, loc.EFFECT_SOURCE_OBJECT_TT},
 					{"c", loc.EFFECT_SOURCE_CAMPAIGN, loc.EFFECT_SOURCE_CAMPAIGN_TT},
-				}
+				},
+				groupId     = "variable",
+				memberIndex = 2
 			},
 			{
 				title       = loc.EFFECT_VAR,
 				description = loc.EFFECT_VAR,
-				type        = "string",
-				default     = "var"
+				type        = "variable",
+				default     = "var",
+				groupId     = "variable",
+				memberIndex = 1
 			}
 		}
 	});

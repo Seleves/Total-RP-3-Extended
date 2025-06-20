@@ -10,6 +10,9 @@ local operandMenu;
 local operandMenuWithLiterals;
 local effectMenu;
 local effectMenuRestricted;
+local variableManipulationEffects;
+local STATIC_PLAYER_TAGS;
+local STATIC_TARGET_TAGS;
 
 addon.script = {};
 
@@ -229,11 +232,50 @@ function addon.script:Initialize()
 			},
 		},
 	};
+	-- TODO localize it
+	STATIC_PLAYER_TAGS = {
+		{"Name"         , "${wow:player}"                     , "Player's name, as returned by UnitName(\"player\")"},
+		{"Id"           , "${wow:player:id}"                  , "Player's id in the form of player_name-realm"},
+		{"Race"         , "${wow:player:race}"                , "Player's race"},
+		{"Class"        , "${wow:player:class}"               , "Player's class"},
+		{"RP full name" , "${trp:player:full}"                , "Player's TRP3 first name + last name"},
+		{"RP first name", "${trp:player:first}"               , "Player's TRP3 first name"},
+		{"RP last name" , "${trp:player:last}"                , "Player's TRP3 last name"},
+		{"RP race"      , "${trp:player:race}"                , "Player's TRP3 race"},
+		{"RP class"     , "${trp:player:class}"               , "Player's TRP3 class"},
+		{"Gender"       , "${gender:player:if_male:if_female}", "if_male if the player is male, if_female if is female"},
+	};
+	-- TODO localize it
+	STATIC_TARGET_TAGS = {
+		{"Name"         , "${wow:target}"                     , "Target's name, as returned by UnitName(\"target\") or \"No target\" if no target"},
+		{"Id"           , "${wow:target:id}"                  , "Target's id in the form of player_name-realm or \"No target\" if no target"},
+		{"Race"         , "${wow:target:race}"                , "Target's race or \"No target\" if no target"},
+		{"Class"        , "${wow:target:class}"               , "Target's class or \"No target\" if no target"},
+		{"RP full name" , "${trp:target:full}"                , "Target's TRP3 first name + last name or UnitName(\"target\") if does not have TRP3 profile or the NPC custom name if the target is a custom NPC from the active campaign or \"No target\" if no target"},
+		{"RP first name", "${trp:target:first}"               , "Target's TRP3 first name or \"No target\" if no target"},
+		{"RP last name" , "${trp:target:last}"                , "Target's TRP3 last name or \"No target\" if no target"},
+		{"RP race"      , "${trp:target:race}"                , "Target's TRP3 race or \"No target\" if no target"},
+		{"RP class"     , "${trp:target:class}"               , "Target's TRP3 class or \"No target\" if no target"},
+		{"Gender"       , "${gender:target:if_male:if_female}", "if_male if the target is male, if_female if is female. Unknown if the gender can't be determined"},
+	};
 
 	addon.script.formatters:Initialize();
 	addon.script.registerBuiltinEffects();
 	addon.script.registerBuiltinOperands();
 
+end
+
+function addon.script.addStaticTagsToMenu(menu, onClick)
+	local playerTagMenu = menu:CreateButton("Player tags");
+	for _, tag in ipairs(STATIC_PLAYER_TAGS) do
+		local tagButton = playerTagMenu:CreateButton(tag[1], onClick, tag[2]);
+		TRP3_MenuUtil.SetElementTooltip(tagButton, tag[3]);
+	end
+	local targetTagMenu = menu:CreateButton("Target tags");
+	for _, tag in ipairs(STATIC_PLAYER_TAGS) do
+		local tagButton = targetTagMenu:CreateButton(tag[1], onClick, tag[2]);
+		TRP3_MenuUtil.SetElementTooltip(tagButton, tag[3]);
+	end
 end
 
 function addon.script.getObjectTrigger(objectType, triggerId)
@@ -291,6 +333,7 @@ function addon.script.registerEffect(effect)
 	effects[effect.id] = effect;
 	effectMenu = nil;
 	effectMenuRestricted = nil;
+	variableManipulationEffects = nil;
 end
 TRP3_API.extended.tools.registerEffect = addon.script.registerEffect;
 
@@ -397,6 +440,36 @@ function addon.script.getEffectMenu(restricted)
 	effectMenu = effectMenu or buildEffectMenu();
 	effectMenuRestricted = effectMenuRestricted or buildEffectMenu(true);
 	return restricted and effectMenuRestricted or effectMenu;
+end
+
+local function buildVariableManipulationEffectMap()
+	local map = {};
+	local tmp = {};
+	for id, effect in pairs(effects) do
+		wipe(tmp);
+		for index, parameter in ipairs(effect.parameters) do
+			if parameter.type == "variable" then
+				tmp[parameter.groupId or tostring(index)] = {nameIndex = index, scope = parameter.scope};
+			end
+		end
+		for index, parameter in ipairs(effect.parameters) do
+			if parameter.type == "scope" and parameter.groupId and tmp[parameter.groupId] then
+				tmp[parameter.groupId].scopeIndex = index;
+			end
+		end
+		if TableHasAnyEntries(tmp) then
+			map[id] = {};
+			for _, manipulationParameter in pairs(tmp) do
+				table.insert(map[id], manipulationParameter);
+			end
+		end
+	end
+	return map;
+end
+
+function addon.script.getVariableManipulationEffects()
+	variableManipulationEffects = variableManipulationEffects or buildVariableManipulationEffectMap();
+	return variableManipulationEffects;
 end
 
 function addon.script.getComparatorText(comparator)
