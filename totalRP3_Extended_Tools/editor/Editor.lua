@@ -450,6 +450,28 @@ function addon.editor.populateObjectTagMenu(menu, onAccept)
 			varsMenu:CreateButton(variable, onAccept, "${" .. variable .. "}");
 		end
 	end
+	-- TODO all object types are taggable but I think it makes only sense for those that can have a distinct name
+	local objectsMenu = menu:CreateButton("Object tags");
+	objectsMenu:CreateButton(loc.TYPE_ITEM, function() 
+		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
+			onAccept("${" .. id .. "}");
+		end, TRP3_DB.types.ITEM});
+	end);
+	objectsMenu:CreateButton(loc.TYPE_AURA, function() 
+		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
+			onAccept("${" .. id .. "}");
+		end, TRP3_DB.types.AURA});
+	end);
+	objectsMenu:CreateButton(loc.TYPE_CAMPAIGN, function() 
+		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
+			onAccept("${" .. id .. "}");
+		end, TRP3_DB.types.CAMPAIGN});
+	end);
+	objectsMenu:CreateButton(loc.TYPE_QUEST, function() 
+		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
+			onAccept("${" .. id .. "}");
+		end, TRP3_DB.types.QUEST});
+	end);
 end
 
 function addon.hidePopups()

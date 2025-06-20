@@ -14,24 +14,6 @@ function TRP3_Tools_EditorItemMixin:OnSizeChanged()
 	self.content.display.preview.InfoText:SetWidth(self:GetWidth()/8);
 end
 
--- local function populateItemTagMenu(menu, onAccept)
--- 	menu:CreateTitle("Insert tag");
--- 	addon.script.addStaticTagsToMenu(menu, onAccept);
--- 	local campaignVars = addon.editor.gatherVariables();
--- 	local campaignVarsSorted = {};
--- 	for variable, _ in pairs(campaignVars) do
--- 		table.insert(campaignVarsSorted, variable);
--- 	end
--- 	table.sort(campaignVarsSorted);
--- 	if TableHasAnyEntries(campaignVarsSorted) then
--- 		local varsMenu = menu:CreateButton("Variable tags");
--- 		varsMenu:SetScrollMode(400);
--- 		for _, variable in ipairs(campaignVarsSorted) do
--- 			varsMenu:CreateButton(variable, onAccept, "${" .. variable .. "}");
--- 		end
--- 	end
--- end
-
 function TRP3_Tools_EditorItemMixin:Initialize()
 	
 	local s = self;
