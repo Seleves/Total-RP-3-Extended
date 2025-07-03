@@ -11,6 +11,14 @@ function TRP3_Tools_ScriptParameterMixin:Setup(widgetContext, parameter)
 	-- NOP
 end
 
+function TRP3_Tools_ScriptParameterMixin:GetScriptContext()
+	return nil, nil;
+end
+
+function TRP3_Tools_ScriptParameterMixin:SetScriptContext(contextFunction)
+	self.GetScriptContext = contextFunction;
+end
+
 function TRP3_Tools_ScriptParameterMixin:GetGridDimensions()
 	return 1, 1; -- gridWidth, gridHeight
 end
@@ -25,6 +33,13 @@ function TRP3_Tools_ScriptParameterEditBoxMixin:Setup(widgetContext, parameter)
 		self.editBox:SetScript("OnTextChanged", function()
 			parameter.onChange(self, widgetContext);
 		end);
+	end
+	if parameter.taggable then
+		self.editBox:SetupSuggestions(function(menu, onAccept) 
+			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
+		end);
+	else
+		self.editBox:SetupSuggestions(nil);
 	end
 end
 
@@ -141,6 +156,13 @@ function TRP3_Tools_ScriptParameterObjectMixin:Setup(widgetContext, parameter)
 			s.id:SetText(id);
 		end, addon.script.parameter.objectMap[parameter.type]});
 	end);
+	if parameter.taggable then
+		self.id:SetupSuggestions(function(menu, onAccept) 
+			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
+		end);
+	else
+		self.id:SetupSuggestions(nil);
+	end
 end
 
 function TRP3_Tools_ScriptParameterObjectMixin:SetValue(value)
@@ -148,7 +170,7 @@ function TRP3_Tools_ScriptParameterObjectMixin:SetValue(value)
 end
 
 function TRP3_Tools_ScriptParameterObjectMixin:GetValue()
-	return self.id:GetText();
+	return strtrim(self.id:GetText());
 end
 
 TRP3_Tools_ScriptParameterSoundMixin = CreateFromMixins(TRP3_Tools_ScriptParameterMixin);
@@ -209,6 +231,13 @@ function TRP3_Tools_ScriptParameterMultilineMixin:Setup(widgetContext, parameter
 	self.text.titleText = parameter.title;
 	self.text.helpText = parameter.description;
 	self.text:Localize(IDENTITY);
+	if parameter.taggable then
+		self.text:SetupSuggestions(function(menu, onAccept) 
+			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
+		end);
+	else
+		self.text:SetupSuggestions(nil);
+	end
 end
 
 function TRP3_Tools_ScriptParameterMultilineMixin:SetValue(value)
@@ -245,7 +274,7 @@ function TRP3_Tools_ScriptParameterMusicMixin:SetValue(value)
 end
 
 function TRP3_Tools_ScriptParameterMusicMixin:GetValue()
-	return self.id:GetText();
+	return strtrim(self.id:GetText());
 end
 
 TRP3_Tools_ScriptParameterEmoteMixin = CreateFromMixins(TRP3_Tools_ScriptParameterMixin);
@@ -266,7 +295,7 @@ function TRP3_Tools_ScriptParameterEmoteMixin:SetValue(value)
 end
 
 function TRP3_Tools_ScriptParameterEmoteMixin:GetValue()
-	return self.id:GetText();
+	return strtrim(self.id:GetText());
 end
 
 TRP3_Tools_ScriptParameterIconMixin = CreateFromMixins(TRP3_Tools_ScriptParameterMixin);
@@ -426,7 +455,7 @@ function TRP3_Tools_ScriptParameterOperandMixin:Setup(widgetContext, operandPara
 			addon.script.operand.getDefaultOperandEditorValues(operandData);
 		end
 		self.operandArguments = nil;
-		local skipList = addon.script.operand.acquireOperandEditor(operandData, self.parameterWidgets);
+		local skipList = addon.script.operand.acquireOperandEditor(operandData, self.parameterWidgets, self.GetScriptContext);
 		local offset = 1;
 		for index, widget in ipairs(self.parameterWidgets) do
 			if not skipList[index] then
@@ -568,6 +597,13 @@ function TRP3_Tools_ScriptParameterMacroMixin:Setup(widgetContext, parameter)
 	self.macro.titleText = parameter.title;
 	self.macro.helpText = parameter.description;
 	self.macro:Localize(IDENTITY);
+	if parameter.taggable then
+		self.macro:SetupSuggestions(function(menu, onAccept) 
+			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
+		end);
+	else
+		self.macro:SetupSuggestions(nil);
+	end
 
 	local MAX_CHARACTERS_IN_MACRO = 255;
 	local function checkCharactersLimit()

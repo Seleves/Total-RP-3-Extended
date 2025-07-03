@@ -578,6 +578,9 @@ function TRP3_Tools_EditorCutsceneChoiceMixin:Initialize()
 	self.optionEditor.next.titleText = loc.DI_CHOICE_STEP;
 	self.optionEditor.next.helpText = loc.DI_CHOICE_STEP_TT;
 	self.optionEditor.next:Localize(function(x) return x; end);
+	self.optionEditor.constraint:SetScriptContext(function() 
+		return nil, nil;
+	end);
 	
 	self.applyButton:SetScript("OnClick", function() 
 		self:OpenOption(0); -- will update whatever option is opened

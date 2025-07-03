@@ -54,10 +54,10 @@ function addon.script.registerBuiltinEffects()
 					{2, loc.WO_DELAY_TYPE_2, WO_DELAY_TYPE_2_TT}
 				},
 				onChange    = function(widget, widgets)
-					local type = widget:GetValue();
-					widgets[4]:SetShown(type == 2);
-					widgets[5]:SetShown(type == 2);
-					widgets[6]:SetShown(type == 2);
+					local isCast = widget:GetValue() == 2;
+					widgets[4]:SetShown(isCast);
+					widgets[5]:SetShown(isCast);
+					widgets[6]:SetShown(isCast);
 				end
 			},
 			{ -- "s"
@@ -81,6 +81,7 @@ function addon.script.registerBuiltinEffects()
 				description = loc.WO_DELAY_CAST_TEXT_TT,
 				type        = "string",
 				default     = "",
+				nillable    = true,
 				taggable    = true
 			},
 		},
@@ -104,13 +105,15 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.OP_FAIL,
 				description = loc.OP_FAIL_TT,
 				type        = "string",
-				default     = ""
+				default     = "",
+				nillable    = true
 			},
 			{ -- "failWorkflow"
 				title       = loc.OP_FAIL_W,
 				description = loc.OP_FAIL_W_TT,
 				type        = "string",
-				default     = ""
+				default     = "",
+				nillable    = true
 			},
 		},
 		category = loc.WO_EFFECT_CAT_COMMON
@@ -134,7 +137,8 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_TEXT_TEXT_TT,
 				type        = "multiline",
 				taggable    = true,
-				default     = loc.EFFECT_TEXT_TEXT_DEFAULT
+				default     = loc.EFFECT_TEXT_TEXT_DEFAULT,
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_TEXT_TYPE,
@@ -255,7 +259,8 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_SOUND_MUSIC_SELF_PATH,
 				description = loc.EFFECT_SOUND_MUSIC_SELF_PATH_TT,
 				type        = "music",
-				default     = "228575"
+				default     = "228575",
+				nillable    = true
 			}
 		},
 		category = loc.EFFECT_CAT_SOUND
@@ -381,7 +386,8 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_SOUND_MUSIC_SELF_PATH,
 				description = loc.EFFECT_SOUND_MUSIC_SELF_PATH_TT,
 				type        = "music",
-				default     = "228575"
+				default     = "228575",
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_SOUND_LOCAL_DISTANCE,
@@ -419,7 +425,8 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_SPEECH_NAR_TEXT_TT,
 				type        = "string",
 				default     = loc.EFFECT_SPEECH_NAR_DEFAULT,
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			}
 		},
 		category = loc.EFFECT_CAT_SPEECH
@@ -443,7 +450,8 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_SPEECH_NPC_NAME_TT,
 				type        = "string",
 				default     = "Tish",
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_SPEECH_TYPE,
@@ -461,7 +469,8 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_SPEECH_NAR_TEXT_TT,
 				type        = "string",
 				default     = loc.EFFECT_SPEECH_NPC_DEFAULT,
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 		},
 		category = loc.EFFECT_CAT_SPEECH
@@ -495,7 +504,8 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_SPEECH_NAR_TEXT_TT,
 				type        = "string",
 				default     = loc.EFFECT_SPEECH_PLAYER_DEFAULT,
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 		},
 		category = loc.EFFECT_CAT_SPEECH
@@ -605,7 +615,8 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_ITEM_ADD_ID,
 				description = loc.EFFECT_ITEM_ADD_ID_TT,
 				type        = "item",
-				default     = ""
+				default     = "",
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_ITEM_ADD_QT,
@@ -647,7 +658,8 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_ITEM_ADD_ID,
 				description = loc.EFFECT_ITEM_ADD_ID_TT,
 				type        = "item",
-				default     = ""
+				default     = "",
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_ITEM_ADD_QT,
@@ -785,7 +797,8 @@ function addon.script.registerBuiltinEffects()
 				onChange    = function(widget, widgets)
 					widgets[3].bag.Title:SetText(widget:GetValue());
 				end,
-				layoutLeft  = 0
+				layoutLeft  = 0,
+				nillable    = true
 			},
 			{
 				title       = loc.EDITOR_ICON,
@@ -876,7 +889,8 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_DOC_ID,
 				description = loc.EFFECT_DOC_ID_TT,
 				type        = "document",
-				default     = ""
+				default     = "",
+				nillable    = true
 			},
 		},
 		category = loc.TYPE_DOCUMENT
@@ -912,7 +926,8 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_AURA_ID_TT,
 				type        = "aura",
 				default     = "",
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_AURA_APPLY_MERGE_MODE,
@@ -947,14 +962,16 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_AURA_ID_TT,
 				type        = "aura",
 				default     = "",
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 			{
 				title       = loc.AU_FIELD_DURATION,
 				description = loc.AU_FIELD_DURATION_TT,
 				type        = "number",
 				default     = 0,
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 			{
 				title       = loc.AU_FIELD_DURATION,
@@ -985,7 +1002,8 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_AURA_ID_TT,
 				type        = "aura",
 				default     = "",
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			}
 		},
 		category = loc.TYPE_AURA
@@ -1063,7 +1081,8 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_AURA_ID_TT,
 				type        = "aura",
 				default     = "",
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_RUN_WORKFLOW_ID,
@@ -1091,7 +1110,8 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_QUEST_START_ID,
 				description = loc.EFFECT_QUEST_START_ID_TT,
 				type        = "quest",
-				default     = ""
+				default     = "",
+				nillable    = true
 			}
 		},
 		category = loc.EFFECT_CAT_CAMPAIGN
@@ -1112,7 +1132,8 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_QUEST_GOTOSTEP_ID,
 				description = loc.EFFECT_QUEST_GOTOSTEP_ID_TT,
 				type        = "step",
-				default     = ""
+				default     = "",
+				nillable    = true
 			}
 		},
 		category = loc.EFFECT_CAT_CAMPAIGN
@@ -1134,13 +1155,15 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_QUEST_START_ID,
 				description = loc.EFFECT_QUEST_START_ID_TT,
 				type        = "quest",
-				default     = ""
+				default     = "",
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_QUEST_OBJ_ID,
 				description = loc.EFFECT_QUEST_OBJ_ID_TT, -- TODO
 				type        = "string",
-				default     = ""
+				default     = "",
+				nillable    = true
 			}
 		},
 		category = loc.EFFECT_CAT_CAMPAIGN
@@ -1162,13 +1185,15 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_QUEST_START_ID,
 				description = loc.EFFECT_QUEST_START_ID_TT,
 				type        = "quest",
-				default     = ""
+				default     = "",
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_QUEST_OBJ_ID,
 				description = loc.EFFECT_QUEST_OBJ_ID_TT, -- TODO
 				type        = "string",
-				default     = ""
+				default     = "",
+				nillable    = true
 			}
 		},
 		category = loc.EFFECT_CAT_CAMPAIGN
@@ -1190,7 +1215,8 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_DIALOG_ID,
 				description = loc.EFFECT_DIALOG_ID,
 				type        = "dialog",
-				default     = ""
+				default     = "",
+				nillable    = true
 			},
 		},
 		category = loc.EFFECT_CAT_CAMPAIGN
@@ -1211,7 +1237,8 @@ function addon.script.registerBuiltinEffects()
 				title       = "Dialog text", -- TODO
 				description = "Dialog text",
 				type        = "multiline",
-				default     = loc.EFFECT_TEXT_TEXT_DEFAULT
+				default     = loc.EFFECT_TEXT_TEXT_DEFAULT,
+				nillable    = true
 			},
 		},
 		category = loc.EFFECT_CAT_CAMPAIGN
@@ -1540,14 +1567,16 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_SIGNAL_ID,
 				description = loc.EFFECT_SIGNAL_ID_TT,
 				type        = "string",
-				default     = "id"
+				default     = "id",
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_SIGNAL_VALUE,
 				description = loc.EFFECT_SIGNAL_VALUE_TT,
 				type        = "string",
 				default     = "value",
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			}
 		},
 		category = loc.MODE_EXPERT
@@ -1639,7 +1668,8 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_SECURE_MACRO_HELP,
 				type        = "macro", -- TODO implement special textbox type for macros with all those hooks
 				default     = "",
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 		},
 		category = loc.MODE_EXPERT
@@ -1658,7 +1688,8 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_SCRIPT_SCRIPT,
 				description = loc.EFFECT_SCRIPT_SCRIPT_TT,
 				type        = "script", 
-				default     = "-- Your script here"
+				default     = "-- Your script here",
+				nillable    = true
 			},
 		},
 		category = loc.MODE_EXPERT

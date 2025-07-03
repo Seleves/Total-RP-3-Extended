@@ -69,6 +69,10 @@ function TRP3_Tools_ScriptConstraintEditorMixin:LinkWithConstraint(constraint)
 	self:Update();
 end
 
+function TRP3_Tools_ScriptConstraintEditorMixin:SetScriptContext(scriptContextFunction)
+	self.GetScriptContext = scriptContextFunction;
+end
+
 function TRP3_Tools_ScriptConstraintEditorMixin:SetActiveIndex(index)
 	self.activeIndex = index;
 	self:Update();
@@ -207,7 +211,7 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:Refresh()
 		right:Show();
 
 		local offset;
-		local leftWidgetSkipList = addon.script.operand.acquireOperandEditor(self.data.equation.leftTerm, self.leftOperandEditor);
+		local leftWidgetSkipList = addon.script.operand.acquireOperandEditor(self.data.equation.leftTerm, self.leftOperandEditor, self:GetList().GetScriptContext);
 		offset = 1;
 		for index, widget in ipairs(self.leftOperandEditor) do
 			if not leftWidgetSkipList[index] then
@@ -220,7 +224,7 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:Refresh()
 		end
 
 		offset = 1;
-		local rightWidgetSkipList = addon.script.operand.acquireOperandEditor(self.data.equation.rightTerm, self.rightOperandEditor);
+		local rightWidgetSkipList = addon.script.operand.acquireOperandEditor(self.data.equation.rightTerm, self.rightOperandEditor, self:GetList().GetScriptContext);
 		for index, widget in ipairs(self.rightOperandEditor) do
 			if not rightWidgetSkipList[index] then
 				widget:SetParent(self);

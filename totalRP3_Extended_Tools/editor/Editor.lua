@@ -323,7 +323,7 @@ function addon.editor.getCurrentObjectRelativeId()
 	end
 end
 
-function addon.editor.gatherVariables()
+function addon.editor.gatherVariables(scriptContext)
 	if not currentDraft then
 		return {};
 	end
@@ -431,13 +431,19 @@ function addon.editor.gatherVariables()
 		end
 	end
 
+	if scriptContext then
+		for variable, _ in pairs(addon.editor.script:GetWorkflowVariablesFromScript(scriptContext)) do
+			result[variable] = true;
+		end
+	end
+
 	return result;
 end
 
-function addon.editor.populateObjectTagMenu(menu, onAccept)
+function addon.editor.populateObjectTagMenu(menu, onAccept, scriptContext, eventContext)
 	menu:CreateTitle("Insert tag");
 	addon.script.addStaticTagsToMenu(menu, onAccept);
-	local campaignVars = addon.editor.gatherVariables();
+	local campaignVars = addon.editor.gatherVariables(scriptContext);
 	local campaignVarsSorted = {};
 	for variable, _ in pairs(campaignVars) do
 		table.insert(campaignVarsSorted, variable);
@@ -472,6 +478,21 @@ function addon.editor.populateObjectTagMenu(menu, onAccept)
 			onAccept("${" .. id .. "}");
 		end, TRP3_DB.types.QUEST});
 	end);
+
+	if eventContext then
+		for _, system in pairs(addon.utils.getGameEvents()) do
+			for _, event in pairs(system.EV) do
+				if eventContext[event.NA] and TableHasAnyEntries(event.PA) then
+					local eventMenu = menu:CreateButton("Event argument");
+					TRP3_MenuUtil.SetElementTooltip(eventMenu, event.NA);
+					for index, argument in ipairs(event.PA) do
+						local argumentMenu = eventMenu:CreateButton(addon.script.formatters.taggable(("${event.%d}"):format(index)) .. ": " .. argument.NA .. " - " .. argument.TY, onAccept, ("${event.%d}"):format(index));
+					end
+				end
+			end
+		end
+	end
+	
 end
 
 function addon.hidePopups()

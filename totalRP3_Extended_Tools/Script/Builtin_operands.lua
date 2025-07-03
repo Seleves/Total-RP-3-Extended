@@ -384,7 +384,7 @@ function addon.script.registerBuiltinOperands()
 			{
 				title       = loc.EFFECT_USE_SLOT,
 				description = loc.EFFECT_USE_SLOT_TT,
-				type        = "number",
+				type        = "integer",
 				default     = 1
 			}
 		}
@@ -526,7 +526,8 @@ function addon.script.registerBuiltinOperands()
 					description = loc.EFFECT_AURA_ID_TT,
 					type        = "aura",
 					default     = "",
-					taggable    = true
+					taggable    = true,
+					nillable    = true
 				}
 			}
 		});
@@ -577,7 +578,8 @@ function addon.script.registerBuiltinOperands()
 				description = loc.EFFECT_AURA_ID_TT,
 				type        = "aura",
 				default     = "",
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_VAR,
@@ -609,7 +611,8 @@ function addon.script.registerBuiltinOperands()
 				description = loc.EFFECT_AURA_ID_TT,
 				type        = "aura",
 				default     = "",
-				taggable    = true
+				taggable    = true,
+				nillable    = true
 			},
 			{
 				title       = loc.EFFECT_VAR,

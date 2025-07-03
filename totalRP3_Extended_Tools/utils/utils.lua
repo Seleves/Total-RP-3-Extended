@@ -1,6 +1,8 @@
 local _, addon = ...
 local loc = TRP3_API.loc;
 
+local GAME_EVENTS;
+
 addon.utils = {};
 
 function addon.utils.deepCompare(object1, object2)
@@ -336,4 +338,100 @@ function addon.utils.gnirtsdaol(object) -- kill me later ok?
 		return out;
 	end
 	return "";
+end
+
+function addon.utils.getGameEvents()
+
+	if GAME_EVENTS then
+		return GAME_EVENTS;
+	end
+
+	GAME_EVENTS = {
+		{
+			NA = "Total RP 3 Extended events",
+			PR = true, -- priority in list
+			EV =
+			{
+				{
+					NA = "TRP3_KILL",
+					PA =
+					{
+						{ NA = "unitType", TY = "string" }, -- [1]
+						{ NA = "killerGUID", TY = "string" }, -- [2]
+						{ NA = "killerName", TY = "string" }, -- [3]
+						{ NA = "victimGUID", TY = "string" }, -- [4]
+						{ NA = "victimName", TY = "string" }, -- [5]
+						{ NA = "victimNPC_ID / victimPlayerClassID", TY = "string" }, -- [6]
+						{ NA = "victimPlayerClassName", TY = "string" }, -- [7]
+						{ NA = "victimPlayerRaceID", TY = "string" }, -- [8]
+						{ NA = "victimPlayerRaceName", TY = "string" }, -- [9]
+						{ NA = "victimPlayerGender", TY = "number" } -- [10]
+					}
+	
+				},
+				{
+					NA = "TRP3_SIGNAL",
+					PA =
+					{
+						{ NA = "signalID", TY = "string" }, -- [1]
+						{ NA = "signalValue", TY = "string" }, -- [2]
+						{ NA = "senderName", TY = "string" } -- [3]
+					}
+	
+				},
+				{
+					NA = "TRP3_EMOTE",
+					PA =
+					{
+						{ NA = "emoteToken", TY = "string" }, -- [1]
+					}
+				},
+				{
+					NA = "TRP3_ROLL",
+					PA =
+					{
+						{ NA = "diceRolled", TY = "string" }, -- [1]
+						{ NA = "result", TY = "number" } -- [2]
+					}
+	
+				},
+				{
+					NA = "TRP3_ITEM_USED",
+					PA =
+					{
+						{ NA = "itemID", TY = "string" }, -- [1]
+						{ NA = "errorMessage", TY = "string" } -- [2]
+					}
+	
+				}
+			}
+		}
+	};
+
+	APIDocumentation_LoadUI();
+
+	local apiTable = APIDocumentation:GetAPITableByTypeName("system");
+	for _, apiSystem in pairs(apiTable) do
+		if apiSystem.Events and issecurevariable(apiSystem, "Events") and TableHasAnyEntries(apiSystem.Events) then
+			local system = {NA = apiSystem.Name, EV = {}};
+			for _, apiEvent in pairs(apiSystem.Events) do
+				local event = {NA = apiEvent.LiteralName, PA = {}};
+				for argIndex, payloadArg in pairs(apiEvent.Payload or TRP3_API.globals.empty) do
+					table.insert(event.PA, {NA = payloadArg.Name, TY = payloadArg.Type, IX = argIndex});
+				end
+				table.sort(event.PA, function(a, b) return a.IX < b.IX; end);
+				table.insert(system.EV, event);
+			end
+			table.sort(system.EV, function(a, b) return a.NA < b.NA; end);
+			table.insert(GAME_EVENTS, system);
+		end
+	end
+	table.sort(GAME_EVENTS, function(a, b) 
+		if a.PR ~= b.PR then 
+			return a.PR or false;
+		end
+		return a.NA < b.NA;
+	end);
+
+	return GAME_EVENTS;
 end

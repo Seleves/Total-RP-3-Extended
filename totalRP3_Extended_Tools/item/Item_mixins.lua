@@ -226,7 +226,7 @@ end
 function TRP3_Tools_EditorItemMixin:UpdatePreviews(icon)
 	icon = icon or self.content.display.preview.selectedIcon;
 	self.content.display.preview.Icon:SetTexture("Interface\\ICONS\\" .. (icon or "TEMP"));
-	self.content.display.preview.selectedIcon = icon;
+	self.content.display.preview.selectedIcon = icon or "TEMP";
 	
 	local durability = "";
 	local durabilityValue = tonumber(self.content.display.containerDurability:GetText());

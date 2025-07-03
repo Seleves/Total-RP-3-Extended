@@ -3,12 +3,12 @@ local loc = TRP3_API.loc;
 
 local effectEditors = {};
 
-local function buildEffectEditor(effect)
+local function buildEffectEditor(effect, scriptContextFunction)
 	local editor = CreateFrame("Frame", "TRP3_ToolFrameEffectEditor_" .. effect.id, nil, "BackdropTemplate");
 	editor:SetBackdrop(TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555);
 	editor.widgets = {};
 	editor.effect = effect;
-	editor.widgets, editor.groups = addon.script.parameter.acquireWidgets(effect.parameters, editor.widgets);
+	editor.widgets, editor.groups = addon.script.parameter.acquireWidgets(effect.parameters, editor.widgets, scriptContextFunction);
 	
 	local leftOffset = 0;
 	local rightOffset = 0;
@@ -58,11 +58,11 @@ local function buildEffectEditor(effect)
 	return editor;
 end
 
-local function getEffectEditor(effectId)
+local function getEffectEditor(effectId, scriptContextFunction)
 	local effect = addon.script.getEffectById(effectId);
 	if TableHasAnyEntries(effect.parameters) then
 		if not effectEditors[effect.id] then
-			effectEditors[effect.id] = buildEffectEditor(effect);
+			effectEditors[effect.id] = buildEffectEditor(effect, scriptContextFunction);
 		end
 		return effectEditors[effect.id];
 	else
@@ -123,7 +123,9 @@ function TRP3_Tools_EditorEffectMixin:SetEffect(effectId)
 		self.effectEditor:SetParent(nil);
 	end
 
-	self.effectEditor = getEffectEditor(self.effectData.id);
+	self.effectEditor = getEffectEditor(self.effectData.id, function() 
+		return self:GetScriptContext();
+	end);
 	if self.effectEditor then
 		self.effectEditor:SetParent(self);
 		self.effectEditor:ClearAllPoints();
@@ -194,8 +196,12 @@ function TRP3_Tools_EditorEffectMixin:ShowEffectMain()
 
 end
 
-function TRP3_Tools_EditorEffectMixin:OpenForEffect(effectData)
+function TRP3_Tools_EditorEffectMixin:GetScriptContext()
+	return self.scriptId, addon.editor.script:GetTriggeringGameEventsForScript(self.scriptId);
+end
 
+function TRP3_Tools_EditorEffectMixin:OpenForEffect(effectData, scriptId)
+	self.scriptId = scriptId;
 	self.originalEffectData = effectData;
 
 	self.effectData = self.effectData or {};
@@ -207,6 +213,9 @@ function TRP3_Tools_EditorEffectMixin:OpenForEffect(effectData)
 	self.effectData.parameters = self.effectData.parameters or {};
 
 	self.constraint.list:LinkWithConstraint(self.effectData.constraint);
+	self.constraint.list:SetScriptContext(function() 
+		return self:GetScriptContext();
+	end);
 
 	if effectData then
 		self:SetEffect(self.effectData.id);

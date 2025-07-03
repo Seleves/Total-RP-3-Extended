@@ -404,6 +404,24 @@ function TRP3_Tools_EditorScriptMixin:GetVariablesByScope(scope)
 	return result;
 end
 
+function TRP3_Tools_EditorScriptMixin:GetWorkflowVariablesFromScript(scriptId)
+	local result = {};
+	local variableManipulationEffects = addon.script.getVariableManipulationEffects();
+	for _, effect in ipairs(self.scripts[scriptId] or TRP3_API.globals.empty) do
+		if variableManipulationEffects[effect.id] then
+			local effectVarSpec = variableManipulationEffects[effect.id];
+			for _, variable in pairs(effectVarSpec) do
+				if (variable.scopeIndex and effect.parameters[variable.scopeIndex] or variable.scope) == "w" then
+					if (effect.parameters[variable.nameIndex] or "") ~= "" then
+						result[effect.parameters[variable.nameIndex]] = true;
+					end
+				end
+			end
+		end
+	end
+	return result;
+end
+
 function TRP3_Tools_EditorScriptMixin:GetAuraVariablesSet(auraAbsoluteId)
 	local result = {};
 	for _, script in pairs(self.scripts) do
@@ -411,6 +429,17 @@ function TRP3_Tools_EditorScriptMixin:GetAuraVariablesSet(auraAbsoluteId)
 			if effect.id == "aura_var_set" and effect.parameters[1] == auraAbsoluteId and (effect.parameters[1] or "") ~= "" then
 				result[effect.parameters[3]] = true;
 			end
+		end
+	end
+	return result;
+end
+
+function TRP3_Tools_EditorScriptMixin:GetTriggeringGameEventsForScript(scriptId)
+	local result;
+	for _, trigger in pairs(self.triggers) do
+		if trigger.script == scriptId and trigger.type == addon.script.triggerType.EVENT then
+			result = result or {};
+			result[trigger.id] = true;
 		end
 	end
 	return result;
@@ -571,7 +600,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 			effectIndex = effectIndex,
 			replace     = not self.data.isAddButton
 		};
-		addon.editor.effect:OpenForEffect(effect);
+		addon.editor.effect:OpenForEffect(effect, scriptId);
 	elseif button == "RightButton" and not self.data.isAddButton then
 		TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
 			local editOption = contextMenu:CreateButton("Edit effect...", function()
@@ -580,7 +609,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 					effectIndex = effectIndex,
 					replace     = true
 				};
-				addon.editor.effect:OpenForEffect(effect);
+				addon.editor.effect:OpenForEffect(effect, scriptId);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(editOption, "Edit effect...");
 

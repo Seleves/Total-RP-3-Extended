@@ -576,7 +576,7 @@ end
 function addon.closeAllDrafts(creationId)
 	local tabsToClose = {};
 	for _, tab in ipairs(tabBar.tabs) do
-		if tab.data.type == TAB_TYPE.CREATION and tab.data.creationId == data.creationId then
+		if tab.data.type == TAB_TYPE.CREATION and tab.data.creationId == creationId then
 			table.insert(tabsToClose, tab);
 		end
 	end
@@ -848,8 +848,8 @@ local function onStart()
 
 	TRP3_API.RegisterCallback(TRP3_Addon, Events.WORKFLOW_ON_FINISH, function()
 		if TRP3_Tools_Flags.has_seen_disclaimer then
-			addon.openDisclaimer(); -- TODO remove
-			--addon.openDatabase(); -- TODO uncomment
+			--addon.openDisclaimer(); -- TODO remove
+			addon.openDatabase(); -- TODO uncomment
 		else
 			addon.openDisclaimer();
 		end

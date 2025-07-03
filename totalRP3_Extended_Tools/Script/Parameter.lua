@@ -51,7 +51,7 @@ local function getGroupsFromParameterList(parameters)
 	return groups;
 end
 
-function addon.script.parameter.acquireWidgets(parameters, widgetList)
+function addon.script.parameter.acquireWidgets(parameters, widgetList, scriptContextFunction)
 	widgetList = widgetList or {};
 	local groups = getGroupsFromParameterList(parameters);
 	for index, parameter in ipairs(parameters) do
@@ -88,6 +88,7 @@ function addon.script.parameter.acquireWidgets(parameters, widgetList)
 			widget = getWidget("TRP3_Tools_ScriptParameterEditBoxTemplate");
 			widget:Setup(widgetList, parameter);
 		end
+		widget:SetScriptContext(scriptContextFunction);
 		table.insert(widgetList, widget);
 	end
 	return widgetList, groups;
@@ -120,12 +121,19 @@ function addon.script.parameter.getValues(widgets, parameters, values)
 		else
 			value = widgets[index]:GetValue();
 		end
-		if parameter.type == "number" or parameter.type == "achievement" or parameter.type == "coordinate" then
-			if parameter.taggable then
-				value = tonumber(value) or value;
-			else
-				value = tonumber(value) or 0;
+		if parameter.type == "number" or parameter.type == "integer" or parameter.type == "achievement" or parameter.type == "coordinate" then
+			local numericValue = tonumber(value);
+			if numericValue and (parameter.type == "integer" or parameter.type == "achievement") then
+				numericValue = math.floor(numericValue);
 			end
+			if parameter.taggable then
+				value = numericValue or value or parameter.default;
+			else
+				value = numericValue or parameter.default;
+			end
+		end
+		if parameter.nillable and value == "" then
+			value = nil;
 		end
 		table.insert(values, value);
 	end

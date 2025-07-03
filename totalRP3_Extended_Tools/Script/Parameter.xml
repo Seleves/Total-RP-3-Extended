@@ -10,7 +10,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Frame name="TRP3_Tools_ScriptParameterEditBoxTemplate" virtual="true" mixin="TRP3_Tools_ScriptParameterEditBoxMixin">
 		<Size y="25"/>
 		<Frames>
-			<EditBox parentKey="editBox" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+			<EditBox parentKey="editBox" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT"/>
 					<Anchor point="TOPRIGHT"/>
@@ -86,7 +86,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Anchor point="RIGHT"/>
 				</Anchors>
 			</Button>
-			<EditBox parentKey="id" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+			<EditBox parentKey="id" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT"/>
 					<Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.browse" x="-5"/>
@@ -132,7 +132,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Frame name="TRP3_Tools_ScriptParameterMultilineTemplate" virtual="true" mixin="TRP3_Tools_ScriptParameterMultilineMixin">
 		<Size y="65"/>
 		<Frames>
-			<Frame parentKey="text" inherits="TRP3_Tools_TitledHelpTextAreaTemplate" setAllPoints="true">
+			<Frame parentKey="text" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate" setAllPoints="true">
 			</Frame>
 		</Frames>
 	</Frame>
@@ -306,7 +306,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame parentKey="macro" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+			<Frame parentKey="macro" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT"/>
 					<Anchor point="TOPRIGHT"/>

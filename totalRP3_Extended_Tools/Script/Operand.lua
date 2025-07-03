@@ -16,9 +16,9 @@ function addon.script.operand.getOperandEditorExtent(operandId)
 	return extent;
 end
 
-function addon.script.operand.acquireOperandEditor(operandData, widgetList)
+function addon.script.operand.acquireOperandEditor(operandData, widgetList, scriptContextFunction)
 	local operandSpec = addon.script.getOperandById(operandData.id);
-	local _, groups = addon.script.parameter.acquireWidgets(operandSpec.parameters, widgetList);
+	local _, groups = addon.script.parameter.acquireWidgets(operandSpec.parameters, widgetList, scriptContextFunction);
 	addon.script.parameter.setValues(widgetList, operandSpec.parameters, operandData.parameters, groups);
 	local widgetSkipList = {};
 	for groupId, group in pairs(groups) do

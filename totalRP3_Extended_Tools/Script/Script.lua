@@ -272,7 +272,7 @@ function addon.script.addStaticTagsToMenu(menu, onClick)
 		TRP3_MenuUtil.SetElementTooltip(tagButton, tag[3]);
 	end
 	local targetTagMenu = menu:CreateButton("Target tags");
-	for _, tag in ipairs(STATIC_PLAYER_TAGS) do
+	for _, tag in ipairs(STATIC_TARGET_TAGS) do
 		local tagButton = targetTagMenu:CreateButton(tag[1], onClick, tag[2]);
 		TRP3_MenuUtil.SetElementTooltip(tagButton, tag[3]);
 	end
