@@ -8,7 +8,7 @@ If you want to test this out I highly recommend making a database backup before.
 # TODO list
 
 - ~~cutscene, campaign, quest, step editor~~
-- handle nils properly in parameters (empty string input should mean nil in several cases)
+- ~~handle nils properly in parameters (empty string input should mean nil in several cases)~~
 - make each tab remember what the user was looking at ("cursor")
 - add multi selection mode where feasible
 - add copy&paste for most structures
@@ -16,7 +16,7 @@ If you want to test this out I highly recommend making a database backup before.
 - cut&paste maybe?
 - fix UI position and sizes in the effect editor
 - fix layering issues for some popups
-- integrate variable tags into the UI
+- ~~integrate variable tags into the UI~~
 - integrate a lint like function
 - localization
 - remove unused code
