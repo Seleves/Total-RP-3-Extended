@@ -13,6 +13,7 @@ If you want to test this out I highly recommend making a database backup before.
 - add multi selection mode where feasible
 - add copy&paste for most structures
 - reconsider the Notes frame accessibility, it should be more promiment
+- streamline the object browser, add a "this creation only" filter
 - cut&paste maybe?
 - fix UI position and sizes in the effect editor
 - fix layering issues for some popups
