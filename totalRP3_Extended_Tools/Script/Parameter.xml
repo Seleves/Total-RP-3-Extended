@@ -19,6 +19,18 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</Frames>
 	</Frame>
 
+	<Frame name="TRP3_Tools_ScriptParameterObjectiveTemplate" virtual="true" mixin="TRP3_Tools_ScriptParameterObjectiveMixin">
+		<Size y="25"/>
+		<Frames>
+			<EditBox parentKey="objectiveId" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="TOPRIGHT"/>
+				</Anchors>
+			</EditBox>
+		</Frames>
+	</Frame>
+
 	<Frame name="TRP3_Tools_ScriptParameterDropdownTemplate" virtual="true" mixin="TRP3_Tools_ScriptParameterDropdownMixin">
 		<Size y="25"/>
 		<Frames>

@@ -33,6 +33,7 @@ local templateMap = {
 	["script"]     = "TRP3_Tools_ScriptParameterScriptTemplate",
 	["macro"]      = "TRP3_Tools_ScriptParameterMacroTemplate",
 	["variable"]   = "TRP3_Tools_ScriptParameterVariableTemplate",
+	["objective"]  = "TRP3_Tools_ScriptParameterObjectiveTemplate",
 };
 
 local function getGroupsFromParameterList(parameters)

@@ -434,12 +434,15 @@ function addon.script.registerBuiltinOperands()
 				title       = loc.QUEST_ID,
 				description = loc.QUEST_ID,
 				type        = "quest",
-				default     = ""
+				default     = "",
+				onChange    = function(widget, widgets)
+					widgets[2]:SetQuestContext(widget:GetValue());
+				end
 			},
 			{
 				title       = loc.QE_OBJ_ID,
 				description = loc.QE_OBJ_ID,
-				type        = "string", -- TODO make a context sensitive objective browser
+				type        = "objective",
 				default     = ""
 			}
 		}

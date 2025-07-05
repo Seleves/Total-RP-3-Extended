@@ -87,6 +87,18 @@ function TRP3_Tools_EditorQuestMixin:InterfaceToClass(targetClass)
 	end
 end
 
+function TRP3_Tools_EditorQuestMixin:ListObjectives()
+	local OB = {};
+	for _, objectiveData in self.content.objective.list.model:EnumerateEntireRange() do
+		if not objectiveData.isAddButton and objectiveData.ID then
+			OB[objectiveData.ID] = {
+				TX = objectiveData.TX,
+				AA = objectiveData.AA,
+			};
+		end
+	end
+	return OB;
+end
 
 function TRP3_Tools_EditorQuestMixin:SaveActiveObjectiveIndex()
 	for index, data in self.content.objective.list.model:EnumerateEntireRange() do

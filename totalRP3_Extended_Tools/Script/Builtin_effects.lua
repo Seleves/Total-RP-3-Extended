@@ -588,8 +588,8 @@ function addon.script.registerBuiltinEffects()
 		icon        = "ability_hunter_beastcall",
 		parameters  = {
 			{
-				title       = loc.EFFECT_RANDSUM_SUMMON_FAV,
-				description = loc.EFFECT_RANDSUM_SUMMON_FAV,
+				title       = loc.EFFECT_SUMMOUNT, -- TODO
+				description = loc.EFFECT_SUMMOUNT, -- TODO
 				type        = "mount",
 				default     = 0
 			}
@@ -1156,12 +1156,15 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_QUEST_START_ID_TT,
 				type        = "quest",
 				default     = "",
-				nillable    = true
+				nillable    = true,
+				onChange    = function(widget, widgets)
+					widgets[2]:SetQuestContext(widget:GetValue());
+				end
 			},
 			{
 				title       = loc.EFFECT_QUEST_OBJ_ID,
 				description = loc.EFFECT_QUEST_OBJ_ID_TT, -- TODO
-				type        = "string",
+				type        = "objective",
 				default     = "",
 				nillable    = true
 			}
@@ -1186,12 +1189,15 @@ function addon.script.registerBuiltinEffects()
 				description = loc.EFFECT_QUEST_START_ID_TT,
 				type        = "quest",
 				default     = "",
-				nillable    = true
+				nillable    = true,
+				onChange    = function(widget, widgets)
+					widgets[2]:SetQuestContext(widget:GetValue());
+				end
 			},
 			{
 				title       = loc.EFFECT_QUEST_OBJ_ID,
 				description = loc.EFFECT_QUEST_OBJ_ID_TT, -- TODO
-				type        = "string",
+				type        = "objective",
 				default     = "",
 				nillable    = true
 			}

@@ -37,7 +37,7 @@ function addon.script.formatters:Initialize()
 		if sanitizedMountId == 0 then
 			return loc.EFFECT_SUMMOUNT_RANDOMMOUNT, false;
 		end
-		local mountName = GetMountInfoByID(sanitizedMountId);
+		local mountName = C_MountJournal.GetMountInfoByID(sanitizedMountId);
 		if mountName then
 			return mountName, false;
 		else

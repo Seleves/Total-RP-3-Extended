@@ -33,6 +33,8 @@ function TRP3_Tools_ScriptParameterEditBoxMixin:Setup(widgetContext, parameter)
 		self.editBox:SetScript("OnTextChanged", function()
 			parameter.onChange(self, widgetContext);
 		end);
+	else
+		self.editBox:SetScript("OnTextChanged", nil);
 	end
 	if parameter.taggable then
 		self.editBox:SetupSuggestions(function(menu, onAccept) 
@@ -49,6 +51,71 @@ end
 
 function TRP3_Tools_ScriptParameterEditBoxMixin:GetValue()
 	return self.editBox:GetText();
+end
+
+TRP3_Tools_ScriptParameterObjectiveMixin = CreateFromMixins(TRP3_Tools_ScriptParameterMixin);
+
+function TRP3_Tools_ScriptParameterObjectiveMixin:Setup(widgetContext, parameter)
+	self.objectiveId.titleText = parameter.title;
+	self.objectiveId.helpText = parameter.description;
+	self.objectiveId:Localize(IDENTITY);
+	if parameter.onChange then
+		self.objectiveId:SetScript("OnTextChanged", function()
+			parameter.onChange(self, widgetContext);
+		end);
+	else
+		self.objectiveId:SetScript("OnTextChanged", nil);
+	end
+	self:SetQuestContext(nil);
+end
+
+function TRP3_Tools_ScriptParameterObjectiveMixin:SetQuestContext(questId)
+	self.questId = strtrim(questId or "");
+	if self.questId == "" then
+		self.questId = nil;
+	end
+	if self.questId then
+		self.objectiveId:SetupSuggestions(function(menu, onAccept) 
+			local OB;
+			if addon.getCurrentDraftCreationId() == self.questId then
+				OB = addon.editor.getCurrentPropertiesEditor():ListObjectives();
+			elseif addon.getCurrentDraftClass(self.questId) then
+				local questClass = addon.getCurrentDraftClass(self.questId);
+				if questClass.TY == TRP3_DB.types.QUEST then
+					OB = questClass.OB;
+				end
+			else
+				local questClass = TRP3_API.extended.getClass(self.questId);
+				if questClass ~= TRP3_DB.missing and questClass.TY == TRP3_DB.types.QUEST then
+					OB = questClass.OB;
+				end
+			end
+			if OB and TableHasAnyEntries(OB) then
+				local objectives = {};
+				for id, objective in pairs(OB) do
+					table.insert(objectives, {ID = id, TX = objective.TX});
+				end
+				table.sort(objectives, function(a, b) return a.ID < b.ID; end)
+				for _, objective in ipairs(objectives) do
+					local objectiveButton = menu:CreateButton(objective.ID, onAccept, objective.ID);
+					TRP3_MenuUtil.SetElementTooltip(objectiveButton, objective.TX);
+				end
+			else
+				local dummyOption = menu:CreateButton("(no objectives available)", onAccept);
+				dummyOption:SetEnabled(false);
+			end
+		end, true);
+	else
+		self.objectiveId:SetupSuggestions(nil);
+	end
+end
+
+function TRP3_Tools_ScriptParameterObjectiveMixin:SetValue(value)
+	self.objectiveId:SetText(tostring(value or ""));
+end
+
+function TRP3_Tools_ScriptParameterObjectiveMixin:GetValue()
+	return self.objectiveId:GetText();
 end
 
 TRP3_Tools_ScriptParameterDropdownMixin = CreateFromMixins(TRP3_Tools_ScriptParameterMixin);
@@ -156,6 +223,13 @@ function TRP3_Tools_ScriptParameterObjectMixin:Setup(widgetContext, parameter)
 			s.id:SetText(id);
 		end, addon.script.parameter.objectMap[parameter.type]});
 	end);
+	if parameter.onChange then
+		self.id:SetScript("OnTextChanged", function()
+			parameter.onChange(self, widgetContext);
+		end);
+	else
+		self.id:SetScript("OnTextChanged", nil);
+	end
 	if parameter.taggable then
 		self.id:SetupSuggestions(function(menu, onAccept) 
 			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
