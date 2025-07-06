@@ -91,6 +91,7 @@ function TRP3_Tools_ScriptParameterObjectiveMixin:SetQuestContext(questId)
 				end
 			end
 			if OB and TableHasAnyEntries(OB) then
+				menu:SetScrollMode(400);
 				local objectives = {};
 				for id, objective in pairs(OB) do
 					table.insert(objectives, {ID = id, TX = objective.TX});
@@ -147,6 +148,23 @@ function TRP3_Tools_ScriptParameterVariableMixin:Setup(widgetContext, nameParame
 	self.name.titleText = nameParameter.title;
 	self.name.helpText = nameParameter.description;
 	self.name:Localize(IDENTITY);
+	self.name:SetupSuggestions(function(menu, onAccept) 
+		local variables = addon.editor.gatherVariables(select(1, self:GetScriptContext()), nameParameter.scope or self.scope:GetSelectedValue());
+		if variables and TableHasAnyEntries(variables) then
+			menu:SetScrollMode(400);
+			local varsSorted = {};
+			for name, objective in pairs(variables) do
+				table.insert(varsSorted, name);
+			end
+			table.sort(varsSorted)
+			for _, name in ipairs(varsSorted) do
+				menu:CreateButton(name, onAccept, name);
+			end
+		else
+			local dummyOption = menu:CreateButton("(no suggestions available)", onAccept);
+			dummyOption:SetEnabled(false);
+		end
+	end, true);
 	if scopeParameter then
 		self.scope.titleText = scopeParameter.title;
 		self.scope.helpText = scopeParameter.description;

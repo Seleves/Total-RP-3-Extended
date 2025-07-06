@@ -591,7 +591,7 @@ function addon.script.registerBuiltinOperands()
 				default     = "var",
 				groupId     = "variable",
 				memberIndex = 1,
-				scope       = "a"
+				scope       = "o"
 			}
 		}
 	});
@@ -624,7 +624,7 @@ function addon.script.registerBuiltinOperands()
 				default     = "var",
 				groupId     = "variable",
 				memberIndex = 1,
-				scope       = "a"
+				scope       = "o"
 			}
 		}
 	});

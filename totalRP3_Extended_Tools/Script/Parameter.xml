@@ -52,7 +52,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Anchor point="RIGHT" relativePoint="CENTER" x="-5"/>
 				</Anchors>
 			</DropdownButton>
-			<EditBox parentKey="name" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+			<EditBox parentKey="name" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativePoint="CENTER" x="5"/>
 					<Anchor point="RIGHT"/>

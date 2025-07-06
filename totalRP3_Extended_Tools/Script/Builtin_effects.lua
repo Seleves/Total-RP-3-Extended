@@ -1051,7 +1051,7 @@ function addon.script.registerBuiltinEffects()
 				default     = "varName",
 				groupId     = "variable",
 				memberIndex = 1,
-				scope       = "a"
+				scope       = "o"
 			},
 			{
 				title       = loc.EFFECT_OPERATION_VALUE,

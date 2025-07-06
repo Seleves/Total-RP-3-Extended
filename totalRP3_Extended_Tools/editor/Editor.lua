@@ -323,10 +323,13 @@ function addon.editor.getCurrentObjectRelativeId()
 	end
 end
 
-function addon.editor.gatherVariables(scriptContext)
+function addon.editor.gatherVariables(scriptContext, restrictScope)
 	if not currentDraft then
 		return {};
 	end
+	local acceptScopeW = (restrictScope or "w") == "w";
+	local acceptScopeO = (restrictScope or "o") == "o";
+	local acceptScopeC = (restrictScope or "c") == "c";
 	local result = {};
 	local variableManipulationEffects = addon.script.getVariableManipulationEffects();
 	local isCutsceneOrDocument = currentObject.class.TY == TRP3_DB.types.DOCUMENT or currentObject.class.TY == TRP3_DB.types.DIALOG;
@@ -337,7 +340,7 @@ function addon.editor.gatherVariables(scriptContext)
 		for scriptId, scriptData in pairs(object.class.SC or TRP3_API.globals.empty) do
 			for _, stepData in pairs(scriptData.ST or TRP3_API.globals.empty) do
 				if stepData.t == TRP3_DB.elementTypes.EFFECT and stepData.e and stepData.e[1] and stepData.e[1].id then
-					if variableManipulationEffects[stepData.e[1].id] then
+					if acceptScopeC and variableManipulationEffects[stepData.e[1].id] then
 						local effectVarSpec = variableManipulationEffects[stepData.e[1].id];
 						local effectSpec = addon.script.getEffectById(stepData.e[1].id);
 						local args = stepData.e[1].args or TRP3_API.globals.empty;
@@ -366,17 +369,21 @@ function addon.editor.gatherVariables(scriptContext)
 	end
 	
 	-- 2. object variables in this object
-	for variable, _ in pairs(addon.editor.script:GetVariablesByScope("o")) do
-		result[variable] = true;
+	if acceptScopeO then
+		for variable, _ in pairs(addon.editor.script:GetVariablesByScope("o")) do
+			result[variable] = true;
+		end
 	end
 	
 	-- 3. campaign variables in this object (most recent edits to script might not have yet been saved to draft)
-	for variable, _ in pairs(addon.editor.script:GetVariablesByScope("c")) do
-		result[variable] = true;
+	if acceptScopeC then
+		for variable, _ in pairs(addon.editor.script:GetVariablesByScope("c")) do
+			result[variable] = true;
+		end
 	end
 
 	-- 4. aura variables set anywhere in the creation
-	if currentObject.class.TY == TRP3_DB.types.AURA then
+	if acceptScopeO and currentObject.class.TY == TRP3_DB.types.AURA then
 		for absoluteId, object in pairs(currentDraft.index) do
 			for _, scriptData in pairs(object.class.SC or TRP3_API.globals.empty) do
 				for _, stepData in pairs(scriptData.ST or TRP3_API.globals.empty) do
@@ -413,12 +420,12 @@ function addon.editor.gatherVariables(scriptContext)
 								args = args[1] or TRP3_API.globals.empty;
 							end
 							for _, variable in pairs(effectVarSpec) do
-								if (variable.scopeIndex and args[variable.scopeIndex] or variable.scope) == "o" then
+								if acceptScopeO and (variable.scopeIndex and args[variable.scopeIndex] or variable.scope) == "o" then
 									if (args[variable.nameIndex] or "") ~= "" then
 										result[args[variable.nameIndex]] = true;
 									end
 								end
-								if callerScripts[scriptId] and (variable.scopeIndex and args[variable.scopeIndex] or variable.scope) == "w" then
+								if acceptScopeW and callerScripts[scriptId] and (variable.scopeIndex and args[variable.scopeIndex] or variable.scope) == "w" then
 									if (args[variable.nameIndex] or "") ~= "" then
 										result[args[variable.nameIndex]] = true;
 									end
@@ -431,7 +438,7 @@ function addon.editor.gatherVariables(scriptContext)
 		end
 	end
 
-	if scriptContext then
+	if acceptScopeW and scriptContext then
 		for variable, _ in pairs(addon.editor.script:GetWorkflowVariablesFromScript(scriptContext)) do
 			result[variable] = true;
 		end
