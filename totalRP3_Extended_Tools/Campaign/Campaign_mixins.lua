@@ -104,7 +104,7 @@ function TRP3_Tools_EditorCampaignMixin:Initialize()
 	
 end
 
-function TRP3_Tools_EditorCampaignMixin:ClassToInterface(class, creationClass)
+function TRP3_Tools_EditorCampaignMixin:ClassToInterface(class, creationClass, cursor)
 	local BA = class.BA or TRP3_API.globals.empty;
 	self.content.main.name:SetText(BA.NA or "");
 	self.content.main.description:SetText(BA.DE or "");
@@ -133,7 +133,7 @@ function TRP3_Tools_EditorCampaignMixin:ClassToInterface(class, creationClass)
 	self.content.npc.sharedNPCEditor:Hide();
 end
 
-function TRP3_Tools_EditorCampaignMixin:InterfaceToClass(targetClass)
+function TRP3_Tools_EditorCampaignMixin:InterfaceToClass(targetClass, targetCursor)
 	self:SaveActiveNPCIndex();
 	targetClass.BA = targetClass.BA or {};
 	

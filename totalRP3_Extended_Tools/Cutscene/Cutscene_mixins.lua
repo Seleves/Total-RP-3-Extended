@@ -122,7 +122,7 @@ function TRP3_Tools_EditorCutsceneMixin:Initialize()
 
 end
 
-function TRP3_Tools_EditorCutsceneMixin:ClassToInterface(class, creationClass)
+function TRP3_Tools_EditorCutsceneMixin:ClassToInterface(class, creationClass, cursor)
 	local BA = class.BA or TRP3_API.globals.empty;
 	self.content.main.distance:SetText(BA.DI or "0");
 
@@ -134,11 +134,12 @@ function TRP3_Tools_EditorCutsceneMixin:ClassToInterface(class, creationClass)
 	table.insert(steps, {isAddButton = true});
 	self.content.main.list.model:Flush();
 	self.content.main.list.model:InsertTable(steps);
-	self.content.main.alternate:SetChecked(false); -- TODO get this from cursor
+	self.content.main.alternate:SetChecked(cursor and cursor.alternate);
 	self.deferShowStep = true; -- wait for the OnScriptsChanged from the scripts frame to load workflow ids, then show first step
+	self.cursor = cursor;
 end
 
-function TRP3_Tools_EditorCutsceneMixin:InterfaceToClass(targetClass)
+function TRP3_Tools_EditorCutsceneMixin:InterfaceToClass(targetClass, targetCursor)
 	self:SaveCurrentStep();
 	targetClass.BA = targetClass.BA or {};
 	targetClass.BA.DI = tonumber(strtrim(self.content.main.distance:GetText())) or 0;
@@ -152,6 +153,10 @@ function TRP3_Tools_EditorCutsceneMixin:InterfaceToClass(targetClass)
 			copy.selected = nil;
 			table.insert(targetClass.DS, copy);
 		end
+	end
+	if targetCursor then
+		targetCursor.stepIndex = self.content.main.list.model:FindByPredicate(function(e) return e.active end);
+		targetCursor.alternate = self.content.main.alternate:GetChecked();
 	end
 end
 
@@ -178,7 +183,11 @@ function TRP3_Tools_EditorCutsceneMixin:OnScriptsChanged(changes)
 	end
 
 	if self.deferShowStep then
-		self:ShowStep(1); -- TODO get step from cursor
+		if self.cursor and self:StepExists(self.cursor.stepIndex) then
+			self:ShowStep(self.cursor.stepIndex);
+		else
+			self:ShowStep(1);
+		end
 		self.deferShowStep = nil;
 	else
 		local index, stepData = self.content.main.list.model:FindByPredicate(function(e) return e.active end);

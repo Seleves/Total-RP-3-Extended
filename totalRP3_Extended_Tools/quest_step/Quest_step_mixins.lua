@@ -19,7 +19,7 @@ function TRP3_Tools_EditorQuestStepMixin:Initialize()
 	self.content.main.post:SetupSuggestions(addon.editor.populateObjectTagMenu);
 end
 
-function TRP3_Tools_EditorQuestStepMixin:ClassToInterface(class, creationClass)
+function TRP3_Tools_EditorQuestStepMixin:ClassToInterface(class, creationClass, cursor)
 	local BA = class.BA or TRP3_API.globals.empty;
 	self.content.main.pre:SetText(BA.TX or "");
 	self.content.main.post:SetText(BA.DX or "");
@@ -27,7 +27,7 @@ function TRP3_Tools_EditorQuestStepMixin:ClassToInterface(class, creationClass)
 	self.content.main.final:SetChecked(BA.FI or false);
 end
 
-function TRP3_Tools_EditorQuestStepMixin:InterfaceToClass(targetClass)
+function TRP3_Tools_EditorQuestStepMixin:InterfaceToClass(targetClass, targetCursor)
 	targetClass.BA = targetClass.BA or {};
 	targetClass.BA.NA = addon.editor.getCurrentObjectRelativeId(); -- TODO why is this needed?
 	targetClass.BA.TX = TRP3_API.utils.str.emptyToNil(strtrim(self.content.main.pre:GetText()));

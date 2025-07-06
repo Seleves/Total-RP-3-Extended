@@ -152,10 +152,6 @@ function TRP3_Tools_EditorScriptMixin:OnScriptsChanged(deletions, insertions, re
 end
 
 function TRP3_Tools_EditorScriptMixin:OnTriggerChanged(originalTrigger, newTrigger)
-	if newTrigger.script and not self.scripts[newTrigger.script] then
-		self.scripts[newTrigger.script] = {};
-		self:OnScriptsChanged(nil, {[newTrigger.script] = newTrigger.script}, nil);
-	end
 	if originalTrigger then
 		wipe(originalTrigger);
 		TRP3_API.utils.table.copy(originalTrigger, newTrigger);
@@ -163,6 +159,10 @@ function TRP3_Tools_EditorScriptMixin:OnTriggerChanged(originalTrigger, newTrigg
 		local newTriggerCopy = {};
 		TRP3_API.utils.table.copy(newTriggerCopy, newTrigger);
 		table.insert(self.triggers, newTriggerCopy);
+	end
+	if newTrigger.script and not self.scripts[newTrigger.script] then
+		self.scripts[newTrigger.script] = {};
+		self:OnScriptsChanged(nil, {[newTrigger.script] = newTrigger.script}, nil);
 	end
 	self:UpdateTriggerList();
 	self.scriptList:SetSelectedValue(newTrigger.script);
@@ -286,7 +286,7 @@ function TRP3_Tools_EditorScriptMixin:TriggerToPreview(class, trigger)
 	return triggerPreview;
 end
 
-function TRP3_Tools_EditorScriptMixin:ClassToInterface(class, creationClass)
+function TRP3_Tools_EditorScriptMixin:ClassToInterface(class, creationClass, cursor)
 	
 	local s = self;
 
@@ -297,12 +297,12 @@ function TRP3_Tools_EditorScriptMixin:ClassToInterface(class, creationClass)
 		self.scripts[scriptId] = addon.script.getNormalizedEffectListData(scriptData or TRP3_API.globals.empty);
 	end
 
-	self:OnScriptsChanged(nil, nil, nil);
 	self.triggers = addon.script.getNormalizedTriggerData(class, self.scripts);
+	self:OnScriptsChanged(nil, nil, nil);
 
 	self:UpdateTriggerList();
 
-	self.scriptList:SetSelectedValue(nil);
+	self.scriptList:SetSelectedValue(cursor and cursor.scriptId);
 
 end
 
@@ -341,7 +341,7 @@ function TRP3_Tools_EditorScriptMixin:UpdateTriggerList()
 	self.triggerList.model:InsertTable(triggerList);
 end
 
-function TRP3_Tools_EditorScriptMixin:InterfaceToClass(targetClass)
+function TRP3_Tools_EditorScriptMixin:InterfaceToClass(targetClass, targetCursor)
 
 	targetClass.SC = nil;
 	for scriptId, script in pairs(self.scripts) do
@@ -380,6 +380,10 @@ function TRP3_Tools_EditorScriptMixin:InterfaceToClass(targetClass)
 				CO = addon.script.getSaveFormatConstraintData(trigger.constraint);
 			});
 		end
+	end
+
+	if targetCursor then
+		targetCursor.scriptId = self.scriptList:GetSelectedValue();
 	end
 
 end
@@ -443,6 +447,15 @@ function TRP3_Tools_EditorScriptMixin:GetTriggeringGameEventsForScript(scriptId)
 		end
 	end
 	return result;
+end
+
+function TRP3_Tools_EditorScriptMixin:HasScriptForTrigger(triggerId, triggerType)
+	for _, trigger in pairs(self.triggers) do
+		if trigger.id == triggerId and trigger.type == triggerType and trigger.script then
+			return true;
+		end
+	end
+	return false;
 end
 
 TRP3_Tools_ScriptTriggerListElementMixin = {};

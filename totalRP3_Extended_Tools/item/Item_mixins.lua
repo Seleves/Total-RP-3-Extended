@@ -137,7 +137,7 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 
 end
 
-function TRP3_Tools_EditorItemMixin:ClassToInterface(class)
+function TRP3_Tools_EditorItemMixin:ClassToInterface(class, _, cursor)
 	local BA = class.BA or TRP3_API.globals.empty;
 	local US = class.US or TRP3_API.globals.empty;
 	
@@ -179,7 +179,7 @@ function TRP3_Tools_EditorItemMixin:ClassToInterface(class)
 	
 end
 
-function TRP3_Tools_EditorItemMixin:InterfaceToClass(targetClass)
+function TRP3_Tools_EditorItemMixin:InterfaceToClass(targetClass, targetCursor)
 	targetClass.BA = targetClass.BA or {};
 	targetClass.US = targetClass.US or {};
 	
@@ -246,7 +246,6 @@ function TRP3_Tools_EditorItemMixin:UpdatePreviews(icon)
 		preview.WeightText:SetText(TRP3_API.extended.formatWeight(0) .. TRP3_API.utils.str.texture("Interface\\GROUPFRAME\\UI-Group-MasterLooter", 15));
 	end
 	
-	
 end
 
 function TRP3_Tools_EditorItemMixin:UpdateElementVisibility()
@@ -289,5 +288,15 @@ function TRP3_Tools_EditorItemMixin:UpdateElementVisibility()
 		self.content.display.containerDurability:Hide();
 		self.content.display.containerMaxweight:Hide();
 		self.content.display.containerOnlyinner:Hide();
+	end
+end
+
+function TRP3_Tools_EditorItemMixin:OnScriptsChanged(changes)
+	-- TODO presence of an "onUse" workflow and Usable should be equivalent, so both things should be linked
+	-- on the other hand, the UI should probably not auto-sync those settings.
+	-- temporary solution: activate Usable when the user creates an onUse, but don't deactivate if onUse is deleted
+	if not self.content.gameplay.use:GetChecked() and addon.editor.script:HasScriptForTrigger("OU", addon.script.triggerType.OBJECT) then
+		self.content.gameplay.use:SetChecked(true);
+		self:UpdateElementVisibility();
 	end
 end

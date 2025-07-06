@@ -150,7 +150,7 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 
 end
 
-function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass)
+function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, cursor)
 	local BA = class.BA or TRP3_API.globals.empty;
 
 	self.content.display.name:SetText(BA.NA or "");
@@ -189,7 +189,7 @@ function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass)
 	self.content.gameplay.inspectable:SetChecked(BA.WE or false);
 end
 
-function TRP3_Tools_EditorAuraMixin:InterfaceToClass(targetClass)
+function TRP3_Tools_EditorAuraMixin:InterfaceToClass(targetClass, targetCursor)
 	targetClass.BA = targetClass.BA or {};
 	
 	targetClass.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.name:GetText()));

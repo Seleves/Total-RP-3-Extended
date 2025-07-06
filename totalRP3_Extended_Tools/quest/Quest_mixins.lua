@@ -37,7 +37,7 @@ function TRP3_Tools_EditorQuestMixin:Initialize()
 	
 end
 
-function TRP3_Tools_EditorQuestMixin:ClassToInterface(class, creationClass)
+function TRP3_Tools_EditorQuestMixin:ClassToInterface(class, creationClass, cursor)
 	local BA = class.BA or TRP3_API.globals.empty;
 
 	self.content.main.name:SetText(BA.NA or "");
@@ -65,7 +65,7 @@ function TRP3_Tools_EditorQuestMixin:ClassToInterface(class, creationClass)
 	self.content.objective.sharedObjectiveEditor:Hide();
 end
 
-function TRP3_Tools_EditorQuestMixin:InterfaceToClass(targetClass)
+function TRP3_Tools_EditorQuestMixin:InterfaceToClass(targetClass, targetCursor)
 	self:SaveActiveObjectiveIndex();
 
 	targetClass.BA = targetClass.BA or {};

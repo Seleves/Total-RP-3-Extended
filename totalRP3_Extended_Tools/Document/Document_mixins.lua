@@ -121,7 +121,7 @@ function TRP3_Tools_EditorDocumentMixin:Initialize()
 
 end
 
-function TRP3_Tools_EditorDocumentMixin:ClassToInterface(class, creationClass)
+function TRP3_Tools_EditorDocumentMixin:ClassToInterface(class, creationClass, cursor)
 	self.content.display.border:SetSelectedValue(class.BO or TRP3_API.extended.document.BorderType.PARCHMENT);
 	self.content.display.height:SetText(class.HE or "600");
 	self.content.display.width:SetText(class.WI or "450");
@@ -134,10 +134,14 @@ function TRP3_Tools_EditorDocumentMixin:ClassToInterface(class, creationClass)
 
 	self.BCK = class.BCK or 8;
 	self:ClassToPages(class);
-	self:ShowPage(1); -- TODO get page from cursor
+	if cursor and cursor.page and self.content.pages.list.model:Find(cursor.page) then
+		self:ShowPage(cursor.page);
+	else
+		self:ShowPage(1);
+	end
 end
 
-function TRP3_Tools_EditorDocumentMixin:InterfaceToClass(targetClass)
+function TRP3_Tools_EditorDocumentMixin:InterfaceToClass(targetClass, targetCursor)
 
 	self:SaveCurrentPage();
 
@@ -153,6 +157,9 @@ function TRP3_Tools_EditorDocumentMixin:InterfaceToClass(targetClass)
 
 	targetClass.BCK = self.BCK or 8;
 	self:PagesToClass(targetClass);
+	if targetCursor then
+		targetCursor.page = self.content.pages.list.model:FindByPredicate(function(e) return e.active; end);
+	end
 end
 
 function TRP3_Tools_EditorDocumentMixin:ClassToPages(class)

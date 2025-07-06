@@ -58,7 +58,7 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 	if button == "LeftButton" then
 		if IsControlKeyDown() then
 			self.node.data.selected = not self.node.data.selected;
-			addon.refreshObjectTree();
+			addon.editor.refreshObjectTree();
 		elseif IsShiftKeyDown() then
 			local parent = self.node:GetParent();
 			local targetElementIndex;
@@ -103,11 +103,11 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 					parent:GetNodes()[index].data.selected = true;
 				end
 			end
-			addon.refreshObjectTree();
+			addon.editor.refreshObjectTree();
 		elseif not self.node.data.active then
 			addon.updateCurrentObjectDraft();
 			addon.displayObject(self.node.data.absoluteId);
-			addon.refreshObjectTree();
+			addon.editor.refreshObjectTree();
 		end
 	elseif button == "RightButton" then
 		TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
@@ -118,16 +118,17 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 			local openOption = contextMenu:CreateButton("Open", function()
 				addon.updateCurrentObjectDraft();
 				addon.displayObject(self.node.data.absoluteId);
-				addon.refreshObjectTree();
+				addon.editor.refreshObjectTree();
 			end);
 			TRP3_MenuUtil.SetElementTooltip(openOption, "Open element...");
 
 			local openNewOption = contextMenu:CreateButton("Open in new tab", function()
 				addon.updateCurrentObjectDraft();
-				addon.openDraft(addon.getCurrentDraftCreationId(), true, {
-					objectId = self.node.data.absoluteId
-				});
-				-- TODO clone the cursor
+				addon.saveEditor();
+				local clonedCursor = {};
+				TRP3_API.utils.table.copy(clonedCursor, addon.getCurrentDraftCursor());
+				clonedCursor.objectId = self.node.data.absoluteId;
+				addon.openDraft(addon.getCurrentDraftCreationId(), true, clonedCursor);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(openNewOption, "Open element in new tab...");
 
@@ -249,5 +250,5 @@ end
 
 function TRP3_Tools_CreationTreeNodeMixin:OnToggleChildren()
 	self.node:ToggleCollapsed();
-	addon.refreshObjectTree();
+	addon.editor.refreshObjectTree();
 end

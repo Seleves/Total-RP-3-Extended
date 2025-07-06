@@ -439,6 +439,10 @@ function TRP3_Tools_SplitPaneMixin:SetRatio(newRatio)
 	end
 end
 
+function TRP3_Tools_SplitPaneMixin:GetRatio()
+	return self.ratio;
+end
+
 function TRP3_Tools_SplitPaneMixin:OnSizeChanged()
 	self:SetRatio();
 end

@@ -148,6 +148,10 @@ function addon.utils.isInnerId(ancestorId, descendantId)
 	return descendantId:sub(1, ancestorId:len()) == ancestorId and descendantId:sub(ancestorId:len() + 1, ancestorId:len() + 1) == TRP3_API.extended.ID_SEPARATOR;
 end
 
+function addon.utils.isInnerIdOrEqual(ancestorId, descendantId)
+	return ancestorId == descendantId or addon.utils.isInnerId(ancestorId, descendantId);
+end
+
 -- simplified multi selection mode
 -- single select equivalent to CTRL+click in a common OS
 -- SHIFT+click is different, because the unmodified click is reserved for something more important

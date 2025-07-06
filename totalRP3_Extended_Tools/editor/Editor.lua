@@ -14,6 +14,8 @@ local currentEditor;
 local currentDraft;
 local currentObject;
 
+local DUMMY_TREE_MODEL = CreateTreeDataProvider();
+
 local function updateTabBar()
 	addon.forEachTab(function(editor) 
 		if editor.creationId == currentEditor.creationId then
@@ -101,19 +103,35 @@ local function buildObjectTree(creationId, creationClass)
 		end
 	end
 	model:CollapseAll();
-	model:GetFirstChildNode():SetCollapsed(false); -- expand level 1
 	return model, index;
 end
 
 function rebuildTreeAndShow(absoluteId)
+
+	currentEditor.cursor.objects = currentEditor.cursor.objects or {};
+	for id, object in pairs(currentDraft.index or TRP3_API.globals.empty) do
+		currentEditor.cursor.objects[id] = currentEditor.cursor.objects[id] or {};
+		currentEditor.cursor.objects[id].collapsed = object.node:IsCollapsed();
+	end
+
 	local model, index = buildObjectTree(currentEditor.creationId, currentDraft.class);
 	currentObject = nil;
 	currentDraft.model = model;
 	currentDraft.index = index;
+
+	objectTree.widget:SetDataProvider(DUMMY_TREE_MODEL);
+	for absoluteId, objectCursor in pairs(currentEditor.cursor.objects) do
+		if currentDraft.index[absoluteId] then
+			currentDraft.index[absoluteId].node:SetCollapsed(objectCursor.collapsed);
+		else
+			currentEditor.cursor.objects[absoluteId] = nil;
+		end
+	end
+
 	objectTree.model = currentDraft.model;
 	objectTree.widget:SetDataProvider(currentDraft.model);
 	addon.displayObject(absoluteId);
-	addon.refreshObjectTree();
+	addon.editor.refreshObjectTree();
 end
 
 function addon.getCurrentDraftClass(absoluteId)
@@ -126,6 +144,10 @@ end
 
 function addon.getCurrentDraftCreationId()
 	return currentEditor.creationId;
+end
+
+function addon.getCurrentDraftCursor()
+	return currentEditor.cursor;
 end
 
 -----------------------
@@ -172,7 +194,8 @@ function addon.pasteClipboardAsInnerObjects(absoluteId)
 				object.class.IN[newRelativeId] = innerClass;
 			end
 		end
-		
+		currentEditor.cursor.objects[absoluteId] = currentEditor.cursor.objects[absoluteId] or {};
+		currentEditor.cursor.objects[absoluteId].collapsed = false;
 		rebuildTreeAndShow(absoluteId);
 		return true;
 	else
@@ -188,6 +211,12 @@ function addon.appendInnerObject(absoluteId, relativeId, type)
 		object.class[field] = object.class[field] or {};
 		object.class[field][relativeId] = innerClass;
 		local innerAbsoluteId = absoluteId .. TRP3_API.extended.ID_SEPARATOR .. relativeId;
+		
+		currentEditor.cursor.objects[absoluteId] = currentEditor.cursor.objects[absoluteId] or {};
+		currentEditor.cursor.objects[absoluteId].collapsed = false;
+		currentEditor.cursor.objects[innerAbsoluteId] = currentEditor.cursor.objects[innerAbsoluteId] or {};
+		currentEditor.cursor.objects[innerAbsoluteId].collapsed = false;
+		
 		rebuildTreeAndShow(innerAbsoluteId);
 		return true;
 	else
@@ -218,6 +247,13 @@ function addon.deleteInnerObjectById(absoluteId)
 	else
 		parent.class.IN[relativeId] = nil;
 	end
+
+	addon.forEachTab(function(editor) 
+		if editor.creationId == currentEditor.creationId and addon.utils.isInnerIdOrEqual(absoluteId, editor.cursor.objectId) then
+			editor.cursor.objectId = parentId;
+		end
+	end);
+
 	rebuildTreeAndShow(parentId);
 end
 
@@ -246,6 +282,15 @@ function addon.changeRelativeId(absoluteId, newRelativeId)
 		elseif addon.utils.isInnerId(absoluteId, currentObjectId) then
 			currentObjectId = newAbsoluteId .. currentObjectId:sub(absoluteId:len() + 1);
 		end
+
+		currentEditor.cursor.objects[newAbsoluteId] = currentEditor.cursor.objects[absoluteId] or {};
+
+		addon.forEachTab(function(editor) 
+			if editor.creationId == currentEditor.creationId and addon.utils.isInnerIdOrEqual(absoluteId, editor.cursor.objectId) then
+				editor.cursor.objectId = editor.cursor.objectId:gsub(absoluteId, newAbsoluteId);
+			end
+		end);
+
 		rebuildTreeAndShow(currentObjectId);
 		return true;
 	else
@@ -259,19 +304,33 @@ function addon.updateCurrentObjectDraft()
 		return
 	end
 	
+	currentEditor.cursor.objects[currentEditor.cursor.objectId] = currentEditor.cursor.objects[currentEditor.cursor.objectId] or {};
+	local objectCursor = currentEditor.cursor.objects[currentEditor.cursor.objectId];
+
 	if currentObject.class.TY and editorsByType[currentObject.class.TY] then
-		editorsByType[currentObject.class.TY]:InterfaceToClass(currentObject.class);
+		objectCursor.objectRatio = TRP3_ToolFrameEditor.split.split:GetRatio();
+		editorsByType[currentObject.class.TY]:InterfaceToClass(currentObject.class, objectCursor);
 		currentObject.node.data.icon, currentObject.node.data.link = addon.utils.getObjectIconAndLink(currentObject.class);
-		addon.refreshObjectTree();
+		addon.editor.refreshObjectTree();
 		updateTabBar();
 	end
 	
 	noteFrame:InterfaceToClass(currentObject.class);
-	addon.editor.script:InterfaceToClass(currentObject.class);
+	addon.editor.script:InterfaceToClass(currentObject.class, objectCursor);
 end
 
 function addon.saveEditor()
 	-- TODO save window positions, inner items scroll positions etc.
+	if not currentEditor or not currentDraft then
+		return
+	end
+	currentEditor.cursor.treeRatio = TRP3_ToolFrameEditor.split:GetRatio();
+
+	currentEditor.cursor.objects = currentEditor.cursor.objects or {};
+	for absoluteId, object in pairs(currentDraft.index or TRP3_API.globals.empty) do
+		currentEditor.cursor.objects[absoluteId] = currentEditor.cursor.objects[absoluteId] or {};
+		currentEditor.cursor.objects[absoluteId].collapsed = object.node:IsCollapsed();
+	end
 end
 
 function addon.resetEditor()
@@ -302,13 +361,18 @@ function addon.displayObject(objectId)
 			typeEditor:Hide();
 		end
 	end
+
+	currentEditor.cursor.objects[objectId] = currentEditor.cursor.objects[objectId] or {};
+	local objectCursor = currentEditor.cursor.objects[objectId];
+
 	if currentObject.class.TY and editorsByType[currentObject.class.TY] then
+		TRP3_ToolFrameEditor.split.split:SetRatio(objectCursor.objectRatio or 1);
 		editorsByType[currentObject.class.TY]:Show();
-		editorsByType[currentObject.class.TY]:ClassToInterface(currentObject.class, currentDraft.class);
+		editorsByType[currentObject.class.TY]:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
 	end
 	
 	noteFrame:ClassToInterface(currentObject.class);
-	addon.editor.script:ClassToInterface(currentObject.class, currentDraft.class);
+	addon.editor.script:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
 end
 
 function addon.editor.getCurrentPropertiesEditor()
@@ -544,18 +608,49 @@ function addon.showEditor(editor)
 	
 	displayRootInfo();
 	
+	local numObjects = 0;
 	for absoluteId, object in pairs(currentDraft.index) do
 		object.node.data.selected = false;
 		object.node.data.active = absoluteId == currentEditor.cursor.objectId;
+		numObjects = numObjects + 1;
 	end
 	
+	if not currentEditor.cursor.treeRatio then
+		if numObjects > 1 then
+			currentEditor.cursor.treeRatio = 1; -- show tree if there are any inner objects
+		else
+			currentEditor.cursor.treeRatio = 0;
+		end
+	end
+	TRP3_ToolFrameEditor.split:SetRatio(currentEditor.cursor.treeRatio);
+	
+	objectTree.widget:SetDataProvider(DUMMY_TREE_MODEL);
+	if currentEditor.cursor.objects then
+		currentDraft.model:CollapseAll();
+		for absoluteId, objectCursor in pairs(currentEditor.cursor.objects) do
+			if currentDraft.index[absoluteId] then
+				currentDraft.index[absoluteId].node:SetCollapsed(objectCursor.collapsed);
+			else
+				currentEditor.cursor.objects[absoluteId] = nil;
+			end
+		end
+	else
+		currentEditor.cursor.objects = {};
+		if numObjects <= 20 then
+			currentDraft.model:UncollapseAll();
+		else
+			currentDraft.model:CollapseAll();
+			currentDraft.model:GetFirstChildNode():SetCollapsed(false);
+		end
+	end
+
 	objectTree.model = currentDraft.model;
 	objectTree.widget:SetDataProvider(currentDraft.model);
 	
 	addon.displayObject(currentEditor.cursor.objectId);
 end
 
-function addon.refreshObjectTree()
+function addon.editor.refreshObjectTree()
 	objectTree:Refresh();
 end
 
