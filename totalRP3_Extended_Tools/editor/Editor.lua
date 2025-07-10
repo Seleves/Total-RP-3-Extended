@@ -136,7 +136,7 @@ end
 
 function addon.getCurrentDraftClass(absoluteId)
 	if absoluteId then
-		return currentDraft.index[absoluteId] and currentDraft.index[absoluteId].class or nil;
+		return currentDraft and currentDraft.index and currentDraft.index[absoluteId] and currentDraft.index[absoluteId].class or nil;
 	else
 		return currentObject and currentObject.class or nil;
 	end

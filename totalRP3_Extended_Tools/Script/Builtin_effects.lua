@@ -604,9 +604,9 @@ function addon.script.registerBuiltinEffects()
 		description = loc.EFFECT_ITEM_ADD_TT,
 		GetPreview  = function(self, effect, itemId, quantity, isCrafted, source)
 			if isCrafted then
-				return ("Adds %s x %s to %s"):format(fmt(self.parameters[2], quantity), fmt(self.parameters[1], itemId), fmt(self.parameters[4], source));
-			else
 				return ("Adds %s x %s to %s and mark them as crafted"):format(fmt(self.parameters[2], quantity), fmt(self.parameters[1], itemId), fmt(self.parameters[4], source));
+			else
+				return ("Adds %s x %s to %s"):format(fmt(self.parameters[2], quantity), fmt(self.parameters[1], itemId), fmt(self.parameters[4], source));
 			end
 		end,
 		icon        = "garrison_weaponupgrade",
