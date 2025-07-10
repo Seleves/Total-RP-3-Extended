@@ -26,10 +26,21 @@ function TRP3_Tools_CreationTreeNodeMixin:Refresh()
 	end
 	self:SetHighlight(self.node.data.active);
 	self:SetSelected(self.node.data.selected);
+
+	local tooltipText = 
+		"Inner id: " .. self.node.data.relativeId .. "|n" ..
+		"Type: " .. TRP3_API.extended.tools.getTypeLocale(addon.getCurrentDraftClass(self.node.data.absoluteId).TY or "") .. "|n|n" ..
+		TRP3_API.FormatShortcutWithInstruction("LCLICK", "edit object") .. "|n" ..
+		TRP3_API.FormatShortcutWithInstruction("RCLICK", "more options") .. "|n" ..
+		TRP3_API.FormatShortcutWithInstruction("SHIFT-CLICK", "select range") .. "|n" ..
+		TRP3_API.FormatShortcutWithInstruction("CTRL-CLICK", "select this object")
+	;
+
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, self.node.data.link, tooltipText);
 end
 
 function TRP3_Tools_CreationTreeNodeMixin:OnEnter()
-
+	TRP3_RefreshTooltipForFrame(self);
 end
 
 function TRP3_Tools_CreationTreeNodeMixin:OnLeave()

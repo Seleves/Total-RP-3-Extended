@@ -102,10 +102,10 @@ function addon.script.parameter.setValues(widgets, parameters, values, groups)
 			local group = groups[parameter.groupId];
 			if index == group[1] then
 				local v = {};
-				for _, mIndex in ipairs(group) do
-					table.insert(v, values[mIndex]);
+				for gIndex, mIndex in ipairs(group) do
+					v[gIndex] = values[mIndex]; -- table.insert(v, values[mIndex]);
 				end
-				widgets[index]:SetValue(unpack(v));
+				widgets[index]:SetValue(unpack(v, 1, #group));
 			end
 		else
 			widgets[index]:SetValue(values[index]);
@@ -136,7 +136,7 @@ function addon.script.parameter.getValues(widgets, parameters, values)
 		if parameter.nillable and value == "" then
 			value = nil;
 		end
-		table.insert(values, value);
+		values[index] = value; --table.insert(values, value); -- TODO attention, some values might be nil
 	end
 	return values;
 end

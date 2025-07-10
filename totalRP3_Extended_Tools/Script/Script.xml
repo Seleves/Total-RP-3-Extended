@@ -131,6 +131,25 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</Texture>
 			</Layer>
 
+			<Layer level="BACKGROUND">
+				<Texture parentKey="backgroundNormal" hidden="true" file="Interface\BUTTONS\ScrollBarProportionalHorizontal" horizTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords top="0.515625" bottom="0.6875" left="0" right="1"/>
+					<Color r="1" g="1" b="1" a="0.5"/>
+				</Texture>
+				
+				<Texture parentKey="backgroundSelected" hidden="true" file="Interface\BUTTONS\ScrollBarProportionalHorizontal" horizTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords top="0.515625" bottom="0.6875" left="0" right="1"/>
+					<Color r="0.8" g="0.4" b="0.1" a="0.8"/>
+				</Texture>
+			</Layer>
 		</Layers>
 		<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
 			<Anchors>

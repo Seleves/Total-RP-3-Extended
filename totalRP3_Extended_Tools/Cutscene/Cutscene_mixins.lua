@@ -541,13 +541,13 @@ function TRP3_Tools_CutsceneStepListElementMixin:OnClick(button)
 				end);
 				TRP3_MenuUtil.SetElementTooltip(pasteBeforeOption, beforeText);
 
-				local pasteBeforeOption = contextMenu:CreateButton(afterText, function()
+				local pasteAfterOption = contextMenu:CreateButton(afterText, function()
 					for index = 1, count do
 						cutsceneEditor:AddStep(stepIndex + index, addon.clipboard.retrieve(index), true);
 					end
 					cutsceneEditor:ShowStep(stepIndex + count);
 				end);
-				TRP3_MenuUtil.SetElementTooltip(pasteBeforeOption, afterText);
+				TRP3_MenuUtil.SetElementTooltip(pasteAfterOption, afterText);
 			end
 
 			contextMenu:CreateDivider();

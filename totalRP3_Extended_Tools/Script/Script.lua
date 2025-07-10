@@ -760,7 +760,8 @@ function addon.script.getEffectIcon(effect)
 end
 
 function addon.script.getEffectPreview(effect)
-	return (effects[effect.id or ""] or UNKNOWN_EFFECT):GetPreview(effect, unpack(effect.parameters));
+	local effectSpec = effects[effect.id or ""] or UNKNOWN_EFFECT;
+	return effectSpec:GetPreview(effect, unpack(effect.parameters, 1, #effectSpec.parameters));
 end
 
 function addon.script.getEffectSecurity(effect)
@@ -772,7 +773,8 @@ function addon.script.getEffectSecurity(effect)
 end
 
 function addon.script.getOperandPreview(operand)
-	return (operands[operand.id or ""] or UNKNOWN_OPERAND):GetPreview(operand, unpack(operand.parameters));
+	local operandSpec = operands[operand.id or ""] or UNKNOWN_OPERAND;
+	return operandSpec:GetPreview(operand, unpack(operand.parameters, 1, #operandSpec.parameters));
 end
 
 function addon.script.getOperandById(id)

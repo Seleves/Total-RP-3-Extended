@@ -54,6 +54,7 @@ function TRP3_Tools_EditorScriptMixin:Initialize()
 	self.scriptControls.delete:SetScript("OnClick", function()
 		self:DeleteSelectedScript();
 	end);
+	addon.utils.prepareForMultiSelectionMode(self.effectList);
 end
 
 function TRP3_Tools_EditorScriptMixin:RenameSelectedScript()
@@ -586,6 +587,8 @@ function TRP3_Tools_ScriptEffectListElementMixin:Refresh()
 		self.preview:SetText("");
 		applySecurityColorToTexture(0, self.securityIndicator);
 	end
+	self.backgroundNormal:SetShown(not self.data.selected);
+	self.backgroundSelected:SetShown(self.data.selected);
 end
 
 function TRP3_Tools_ScriptEffectListElementMixin:GetElementExtent(data)
@@ -606,32 +609,172 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 		return;
 	end
 	local effectIndex = addon.editor.script.effectList.model:FindIndex(self.data);
-	local effect = addon.editor.script.scripts[scriptId][effectIndex];
-	if button == "LeftButton" then
-		addon.editor.script.effectEditorTarget = {
-			scriptId    = scriptId,
-			effectIndex = effectIndex,
-			replace     = not self.data.isAddButton
-		};
-		addon.editor.effect:OpenForEffect(effect, scriptId);
-	elseif button == "RightButton" and not self.data.isAddButton then
-		TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
-			local editOption = contextMenu:CreateButton("Edit effect...", function()
+
+	if self.data.isAddButton then
+		if button == "LeftButton" then
+			addon.editor.script.effectEditorTarget = {
+				scriptId    = scriptId,
+				effectIndex = effectIndex,
+				replace     = false
+			};
+			addon.editor.effect:OpenForEffect(nil, scriptId);
+		elseif button == "RightButton" then
+			TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
+				local addOption = contextMenu:CreateButton("Add effect...", function()
+					addon.editor.script.effectEditorTarget = {
+						scriptId    = scriptId,
+						effectIndex = effectIndex,
+						replace     = false
+					};
+					addon.editor.effect:OpenForEffect(nil, scriptId);
+				end);
+				TRP3_MenuUtil.SetElementTooltip(addOption, "Add effect...");
+
+				if addon.clipboard.isPasteCompatible(addon.clipboard.types.EFFECT) then
+					local count = addon.clipboard.count();
+					local script = addon.editor.script.scripts[scriptId];
+					local optionText;
+					if count == 1 then
+						optionText = "Paste effect";
+					else
+						optionText = "Paste " .. count .. " effects";
+					end
+
+					local pasteOption = contextMenu:CreateButton(optionText, function()
+						for index = 1, count do
+							table.insert(script, index, addon.clipboard.retrieve(index));
+						end
+						addon.editor.script:OnScriptSelected(scriptId);
+					end);
+					TRP3_MenuUtil.SetElementTooltip(pasteOption, optionText);
+				end
+
+			end);
+		end
+	else
+		local effect = addon.editor.script.scripts[scriptId][effectIndex];
+		if button == "LeftButton" then
+			if IsControlKeyDown() then
+				addon.editor.script.effectList:ToggleSingleSelect(self.data);
+			elseif IsShiftKeyDown() then
+				addon.editor.script.effectList:ToggleRangeSelect(self.data);
+			else
 				addon.editor.script.effectEditorTarget = {
 					scriptId    = scriptId,
 					effectIndex = effectIndex,
 					replace     = true
 				};
 				addon.editor.effect:OpenForEffect(effect, scriptId);
-			end);
-			TRP3_MenuUtil.SetElementTooltip(editOption, "Edit effect...");
+			end
+		elseif button == "RightButton" then
+			TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
+				local editOption = contextMenu:CreateButton("Edit effect...", function()
+					addon.editor.script.effectEditorTarget = {
+						scriptId    = scriptId,
+						effectIndex = effectIndex,
+						replace     = true
+					};
+					addon.editor.effect:OpenForEffect(effect, scriptId);
+				end);
+				TRP3_MenuUtil.SetElementTooltip(editOption, "Edit effect...");
 
-			contextMenu:CreateDivider();
-			
-			local deleteTriggerOption = contextMenu:CreateButton("Delete effect", function()
-				addon.editor.script:DeleteEffect(scriptId, effectIndex);
+				contextMenu:CreateDivider();
+
+				local addBeforeOption = contextMenu:CreateButton("Insert effect before", function()
+					addon.editor.script.effectEditorTarget = {
+						scriptId    = scriptId,
+						effectIndex = effectIndex,
+						replace     = false
+					};
+					addon.editor.effect:OpenForEffect(nil, scriptId);
+				end);
+				TRP3_MenuUtil.SetElementTooltip(addBeforeOption, "Insert a new effect before this effect");
+
+				local addAfterOption = contextMenu:CreateButton("Insert effect after", function()
+					addon.editor.script.effectEditorTarget = {
+						scriptId    = scriptId,
+						effectIndex = effectIndex + 1,
+						replace     = false
+					};
+					addon.editor.effect:OpenForEffect(nil, scriptId);
+				end);
+				TRP3_MenuUtil.SetElementTooltip(addAfterOption, "Insert a new effect after this effect");
+
+				contextMenu:CreateDivider();
+
+				local copyOption = contextMenu:CreateButton("Copy", function()
+					addon.clipboard.clear();
+					addon.clipboard.append(effect, addon.clipboard.types.EFFECT);
+				end);
+				TRP3_MenuUtil.SetElementTooltip(copyOption, "Copy this effect");
+
+				if self.data.selected then
+					local copySelectionOption = contextMenu:CreateButton("Copy selected effects", function()
+						addon.clipboard.clear();
+						for index, element in addon.editor.script.effectList.model:EnumerateEntireRange() do
+							if element.selected then
+								addon.clipboard.append(addon.editor.script.scripts[scriptId][index], addon.clipboard.types.EFFECT);
+							end
+						end
+						addon.editor.script.effectList:SetAllSelected(false);
+					end);
+					TRP3_MenuUtil.SetElementTooltip(copySelectionOption, "Copy all selected effects");
+				end
+
+				if addon.clipboard.isPasteCompatible(addon.clipboard.types.EFFECT) then
+					local count = addon.clipboard.count();
+					local script = addon.editor.script.scripts[scriptId];
+
+					local beforeText, afterText;
+					if count == 1 then
+						beforeText = "Paste effect before";
+						afterText = "Paste effect after";
+					else
+						beforeText = "Paste " .. count .. " effects before";
+						afterText = "Paste " .. count .. " effects after";
+					end
+
+					local pasteBeforeOption = contextMenu:CreateButton(beforeText, function()
+						for index = 1, count do
+							table.insert(script, effectIndex + index - 1, addon.clipboard.retrieve(index));
+						end
+						addon.editor.script:OnScriptSelected(scriptId);
+					end);
+					TRP3_MenuUtil.SetElementTooltip(pasteBeforeOption, beforeText);
+
+					local pasteAfterOption = contextMenu:CreateButton(afterText, function()
+						for index = 1, count do
+							table.insert(script, effectIndex + index, addon.clipboard.retrieve(index));
+						end
+						addon.editor.script:OnScriptSelected(scriptId);
+					end);
+					TRP3_MenuUtil.SetElementTooltip(pasteAfterOption, afterText);
+				end
+
+				contextMenu:CreateDivider();
+				
+				local deleteTriggerOption = contextMenu:CreateButton("Delete effect", function()
+					addon.editor.script:DeleteEffect(scriptId, effectIndex);
+				end);
+				TRP3_MenuUtil.SetElementTooltip(deleteTriggerOption, "Delete effect");
+
+				if self.data.selected then
+					local deleteSelectionOption = contextMenu:CreateButton("Delete selected effects", function()
+						local newScript = {};
+						for index, element in addon.editor.script.effectList.model:EnumerateEntireRange() do
+							if not element.isAddButton and not element.selected then
+								table.insert(newScript, addon.editor.script.scripts[scriptId][index]);
+							end
+						end
+						wipe(addon.editor.script.scripts[scriptId]);
+						addon.editor.script.scripts[scriptId] = newScript;
+						addon.editor.script:OnScriptSelected(scriptId);
+					end);
+					TRP3_MenuUtil.SetElementTooltip(deleteSelectionOption, "Delete selected effects");
+				end
+
 			end);
-			TRP3_MenuUtil.SetElementTooltip(deleteTriggerOption, "Delete effect");
-		end);
+		end
 	end
+
 end

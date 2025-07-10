@@ -15,6 +15,7 @@ addon.clipboard.types = {
 	DIALOG_STEP   = "DI_ST",
 	DOCUMENT_PAGE = "DO_PA",
 	CAMPAIGN_NPC  = "CA_NPC",
+	EFFECT        = "SC_ST", -- "script step"
 };
 
 local TYPES_WITH_MD = {
