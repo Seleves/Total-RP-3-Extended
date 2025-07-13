@@ -713,6 +713,7 @@ localize = function(frame)
 		localize(child);
 	end
 end
+addon.localize = localize;
 
 local function onStart()
 

@@ -7,58 +7,28 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 	<Script file="Global_popups_mixins.lua"/>
 
-	<!-- Object browser line  -->
-	<Button name="TRP3_ObjectBrowserLine" virtual="true" inherits="TRP3_TooltipBackdropTemplate">
-		<Size x="0" y="28"/>
-		<KeyValues>
-			<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_GREY" type="global"/>
-		</KeyValues>
-		<Anchors>
-			<Anchor point="LEFT" x="8" y="0"/>
-			<Anchor point="RIGHT" x="-25" y="0"/>
-		</Anchors>
+	<!-- Object browser -->
+
+	<Button name="TRP3_Tools_ObjectsBrowserListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_ObjectsBrowserListElementMixin">
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString name="$parentText" text="[placeholder_line]" inherits="GameFontNormal" justifyH="LEFT">
-					<Size x="0" y="10"/>
+				<FontString parentKey="title" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
 					<Anchors>
-						<Anchor point="LEFT" x="15" y="0"/>
-						<Anchor point="RIGHT" x="-15" y="0"/>
+						<Anchor point="LEFT" x="4"/>
+						<Anchor point="RIGHT" x="-4"/>
 					</Anchors>
 					<Color b="0.95" r="0.95" g="0.95"/>
 				</FontString>
 			</Layer>
 		</Layers>
-		<Frames>
-			<Frame name="$parentHighlight" inherits="TRP3_GlowBorderTemplate" hidden="true">
-				<Anchors>
-					<Anchor point="TOPLEFT" x="0" y="0"/>
-					<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-				</Anchors>
-				<Scripts>
-					<OnLoad>
-						self:SetAlpha(0.35);
-					</OnLoad>
-				</Scripts>
-			</Frame>
-		</Frames>
 		<Scripts>
-			<OnLoad inherit="prepend">
-				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-			</OnLoad>
-			<OnEnter>
-				TRP3_RefreshTooltipForFrame(self);
-				_G[self:GetName().."Highlight"]:Show();
-			</OnEnter>
-			<OnLeave>
-				TRP3_MainTooltip:Hide();
-				_G[self:GetName().."Highlight"]:Hide();
-			</OnLeave>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
+			<OnClick method="OnClick"/>
 		</Scripts>
 	</Button>
 
-	<!-- Object browser  -->
-	<Frame name="TRP3_ObjectBrowser" hidden="true" enableMouse="true" inherits="TRP3_BrowserDialogBackdropTemplate">
+	<Frame name="TRP3_Tools_ObjectsBrowser" hidden="true" enableMouse="true" inherits="TRP3_BrowserDialogBackdropTemplate" mixin="TRP3_Tools_ObjectsBrowserMixin">
 		<KeyValues>
 			<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_GREY" type="global"/>
 		</KeyValues>
@@ -68,15 +38,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Anchor point="CENTER" x="0" y="0"/>
 		</Anchors>
 
-		<Scripts>
-			<OnHide>
-				self:Hide();
-			</OnHide>
-		</Scripts>
-
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString parentKey="title" text="[placeholder]" inherits="GameFontNormalLarge">
+				<FontString parentKey="title" text="Objects" inherits="GameFontNormalLarge">
 					<Size x="0" y="10"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="0" y="-17"/>
@@ -93,6 +57,11 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-5" y="-5"/>
 				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Close();
+					</OnClick>
+				</Scripts>
 			</Button>
 
 			<Frame parentKey="content" inherits="TRP3_TooltipBackdropTemplate">
@@ -109,28 +78,19 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</Anchors>
 
 				<Frames>
-					<Slider parentKey="slider" inherits="OptionsSliderTemplate" name="$parentSlider">
-						<Size x="15" y="0"/>
+					<Frame name="$parentList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
+						<KeyValues>
+							<KeyValue key="listElementTemplate" value="TRP3_Tools_ObjectsBrowserListElementTemplate" type="string"/>
+							<KeyValue key="listElementMixin" value="TRP3_Tools_ObjectsBrowserListElementMixin" type="global"/>
+						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" x="0" y="-5"/>
-							<Anchor point="RIGHT" x="0" y="0"/>
-							<Anchor point="BOTTOM" x="0" y="5"/>
+							<Anchor point="TOPLEFT" x="5" y="-5"/>
+							<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
 						</Anchors>
-						<Scripts>
-							<OnLoad>
-								TRP3_ObjectBrowserSliderText:SetText("");
-								TRP3_ObjectBrowserSliderHigh:SetText("");
-								TRP3_ObjectBrowserSliderLow:SetText("");
-								self:SetMinMaxValues(0, 6);
-								self:SetValueStep(1);
-								self:SetOrientation("VERTICAL");
-							</OnLoad>
-						</Scripts>
-					</Slider>
+					</Frame>
 				</Frames>
 			</Frame>
 
-			<!-- Filter section -->
 			<Frame parentKey="filter" inherits="TRP3_TooltipBackdropTemplate">
 				<Size x="0" y="60"/>
 				<KeyValues>
@@ -142,7 +102,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString parentKey="total" text="[placeholder total]" inherits="GameFontNormal">
+						<FontString parentKey="total" inherits="GameFontNormal">
 							<Size x="0" y="10"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="0" y="-12"/>
@@ -153,13 +113,21 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					</Layer>
 				</Layers>
 				<Frames>
-
-					<EditBox parentKey="box" inherits="TRP3_TitledEditBox">
+					<EditBox parentKey="box" inherits="TRP3_Tools_TitledEditBoxTemplate">
+						<Size x="100" y="25"/>
 						<Anchors>
 							<Anchor point="BOTTOM" x="0" y="10"/>
 						</Anchors>
 					</EditBox>
-
+					<CheckButton parentKey="restrictToCreation" inherits="TRP3_Tools_CheckBoxTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="This creation only" type="string"/>
+							<KeyValue key="helpText" value="Show only objects within this creation" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="LEFT" x="10" relativePoint="RIGHT" relativeKey="$parent.box"/>
+						</Anchors>
+					</CheckButton>
 				</Frames>
 			</Frame>
 		</Frames>
@@ -167,7 +135,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 	<!-- Emote browser -->
 
-	<Button name="TRP3_Tools_EmotesListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_EmotesListElementMixin">
+	<Button name="TRP3_Tools_EmotesBrowserListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_EmotesBrowserListElementMixin">
 		<Layers>
 			<Layer level="OVERLAY">
 				<FontString parentKey="token" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
@@ -244,8 +212,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<Frames>
 					<Frame name="$parentList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
 						<KeyValues>
-							<KeyValue key="listElementTemplate" value="TRP3_Tools_EmotesListElementTemplate" type="string"/>
-							<KeyValue key="listElementMixin" value="TRP3_Tools_EmotesListElementMixin" type="global"/>
+							<KeyValue key="listElementTemplate" value="TRP3_Tools_EmotesBrowserListElementTemplate" type="string"/>
+							<KeyValue key="listElementMixin" value="TRP3_Tools_EmotesBrowserListElementMixin" type="global"/>
 						</KeyValues>
 						<Anchors>
 							<Anchor point="TOPLEFT" x="5" y="-5"/>
@@ -255,7 +223,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</Frames>
 			</Frame>
 
-			<!-- Filter section -->
 			<Frame parentKey="filter" inherits="TRP3_TooltipBackdropTemplate">
 				<Size x="0" y="60"/>
 				<KeyValues>
@@ -278,14 +245,12 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					</Layer>
 				</Layers>
 				<Frames>
-
 					<EditBox parentKey="box" inherits="TRP3_Tools_TitledEditBoxTemplate">
 						<Size x="100" y="25"/>
 						<Anchors>
 							<Anchor point="BOTTOM" x="0" y="10"/>
 						</Anchors>
 					</EditBox>
-
 				</Frames>
 			</Frame>
 		</Frames>

@@ -145,7 +145,10 @@ function addon.utils.replaceId(object, oldId, newId)
 end
 
 function addon.utils.isInnerId(ancestorId, descendantId)
-	return descendantId:sub(1, ancestorId:len()) == ancestorId and descendantId:sub(ancestorId:len() + 1, ancestorId:len() + 1) == TRP3_API.extended.ID_SEPARATOR;
+	return
+		ancestorId 
+	and (descendantId:sub(1, ancestorId:len()) == ancestorId)
+	and (descendantId:sub(ancestorId:len() + 1, ancestorId:len() + 1) == TRP3_API.extended.ID_SEPARATOR);
 end
 
 function addon.utils.isInnerIdOrEqual(ancestorId, descendantId)

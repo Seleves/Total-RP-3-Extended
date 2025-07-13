@@ -143,11 +143,21 @@ function addon.getCurrentDraftClass(absoluteId)
 end
 
 function addon.getCurrentDraftCreationId()
-	return currentEditor.creationId;
+	return currentEditor and currentEditor.creationId;
 end
 
 function addon.getCurrentDraftCursor()
 	return currentEditor.cursor;
+end
+
+-- callback(absoluteId, relativeId, class)
+function addon.editor.forEachObjectInCurrentDraft(callback)
+	if not currentDraft then 
+		return;
+	end
+	for absoluteId, object in pairs(currentDraft.index or TRP3_API.globals.empty) do
+		callback(absoluteId, object.node.relativeId, object.class);
+	end
 end
 
 -----------------------
