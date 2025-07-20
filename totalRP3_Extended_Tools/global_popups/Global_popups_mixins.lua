@@ -67,7 +67,7 @@ local function generateObjectsBrowserLineData(absoluteId, classSource)
 	local title = "";
 	for relativeId in absoluteId:gmatch("[^%" .. TRP3_API.extended.ID_SEPARATOR .. "]+") do
 		partialId = partialId .. relativeId;
-		local _, link = addon.utils.getObjectIconAndLink(classSource(partialId));
+		local _, link = addon.utils.getObjectIconAndLink(classSource(partialId), relativeId);
 		if title == "" then
 			title = link;
 			rootClass = classSource(partialId);

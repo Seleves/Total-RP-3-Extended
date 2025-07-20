@@ -12,7 +12,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Button name="TRP3_Tools_ObjectsBrowserListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_ObjectsBrowserListElementMixin">
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString parentKey="title" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+				<FontString parentKey="title" inherits="GameFontNormal" maxLines="1" justifyH="LEFT" justifyV="CENTER">
 					<Anchors>
 						<Anchor point="LEFT" x="4"/>
 						<Anchor point="RIGHT" x="-4"/>

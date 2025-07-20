@@ -114,3 +114,16 @@ function addon.script.formatParameter(parameter, value, ...)
 		return addon.script.formatters.constant(paramText);
 	end
 end
+
+function addon.script.formatters.colorCodePreview(value)
+	if type(value) == "nil" then
+		return "|cff6666ffnil|r";
+	elseif type(value) == "boolean" then
+		return ("|cff6666ff%s|r"):format(value and loc.OP_BOOL_TRUE or loc.OP_BOOL_FALSE);
+	elseif type(value) == "number" then
+		return ("|cff00ff00%s|r"):format(tostring(value));
+	elseif type(value) == "string" then
+		return ("|cffffffff\"%s\"|r"):format(value);
+	end
+	return "";
+end

@@ -93,10 +93,22 @@ function addon.script.registerBuiltinEffects()
 		title       = "Condition",
 		description = "Continue if the condition is met",
 		GetPreview  = function(self, effect, failMessage, failWorkflow)
-			return ("Continue if the condition is met, and if not show message %s and run workflow %s."):format(
-				fmt(self.parameters[1], failMessage),
-				fmt(self.parameters[2], failWorkflow)
-			); -- TODO conditionally show the "else" texts
+			if failMessage and failWorkflow then
+				return ("Continue if the condition is met, otherwise show message %s and run workflow %s."):format(
+					fmt(self.parameters[1], failMessage),
+					fmt(self.parameters[2], failWorkflow)
+				);
+			elseif failMessage then
+				return ("Continue if the condition is met, otherwise show message %s."):format(
+					fmt(self.parameters[1], failMessage)
+				);
+			elseif failWorkflow then
+				return ("Continue if the condition is met, otherwise run workflow %s."):format(
+					fmt(self.parameters[2], failWorkflow)
+				);
+			else
+				return "Continue if the condition is met.";
+			end
 		end,
 		icon        = "Ability_druid_balanceofpower",
 		type        = TRP3_DB.elementTypes.CONDITION,
@@ -622,6 +634,7 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_ITEM_ADD_QT,
 				description = loc.EFFECT_ITEM_ADD_QT_TT,
 				type        = "integer",
+				taggable    = true,
 				default     = 1
 			},
 			{
@@ -665,6 +678,7 @@ function addon.script.registerBuiltinEffects()
 				title       = loc.EFFECT_ITEM_ADD_QT,
 				description = loc.EFFECT_ITEM_ADD_QT_TT,
 				type        = "integer",
+				taggable    = true,
 				default     = 1
 			},
 			{

@@ -5,17 +5,18 @@ local clipboardData = {};
 addon.clipboard = {};
 
 addon.clipboard.types = {
-	ITEM          = TRP3_DB.types.ITEM,
-	AURA          = TRP3_DB.types.AURA,
-	DOCUMENT      = TRP3_DB.types.DOCUMENT,
-	DIALOG        = TRP3_DB.types.DIALOG,
-	CAMPAIGN      = TRP3_DB.types.CAMPAIGN,
-	QUEST         = TRP3_DB.types.QUEST,
-	QUEST_STEP    = TRP3_DB.types.QUEST_STEP,
-	DIALOG_STEP   = "DI_ST",
-	DOCUMENT_PAGE = "DO_PA",
-	CAMPAIGN_NPC  = "CA_NPC",
-	EFFECT        = "SC_ST", -- "script step"
+	ITEM            = TRP3_DB.types.ITEM,
+	AURA            = TRP3_DB.types.AURA,
+	DOCUMENT        = TRP3_DB.types.DOCUMENT,
+	DIALOG          = TRP3_DB.types.DIALOG,
+	CAMPAIGN        = TRP3_DB.types.CAMPAIGN,
+	QUEST           = TRP3_DB.types.QUEST,
+	QUEST_STEP      = TRP3_DB.types.QUEST_STEP,
+	DIALOG_STEP     = "DI_ST",
+	DOCUMENT_PAGE   = "DO_PA",
+	CAMPAIGN_NPC    = "CA_NPC",
+	EFFECT          = "SC_ST", -- "script step"
+	CONDITION_TEST  = "CO_EQ"
 };
 
 local TYPES_WITH_MD = {

@@ -232,7 +232,7 @@ function TRP3_Tools_EditorScriptMixin:OnScriptSelected(scriptId)
 		self.effectList.model:InsertTable(effects);
 
 		for index, trigger in self.triggerList.model:EnumerateEntireRange() do
-			trigger.active = self.triggers[index] and self.triggers[index].script == scriptId;
+			trigger.active = trigger.index and self.triggers[trigger.index].script == scriptId;
 		end
 		self.triggerList:Refresh();
 	end
@@ -272,8 +272,9 @@ function TRP3_Tools_EditorScriptMixin:ConstraintToPreview(constraint, qualifier)
 	return constraintPreview;
 end
 
-function TRP3_Tools_EditorScriptMixin:TriggerToPreview(class, trigger)
+function TRP3_Tools_EditorScriptMixin:TriggerToPreview(class, trigger, index)
 	local triggerPreview = {};
+	triggerPreview.index = index;
 
 	triggerPreview.icon, triggerPreview.whenText, triggerPreview.tooltipTitle, triggerPreview.tooltipText = addon.script.getTriggerPreview(class.TY, trigger.id, trigger.type);
 
@@ -327,7 +328,7 @@ function TRP3_Tools_EditorScriptMixin:UpdateTriggerList()
 		if trigger.type == addon.script.triggerType.OBJECT then
 			usedObjectTriggerCount = usedObjectTriggerCount + 1;
 		end
-		table.insert(triggerList, self:TriggerToPreview(class, trigger));
+		table.insert(triggerList, self:TriggerToPreview(class, trigger, index));
 	end
 	sortTriggers(triggerList);
 	
@@ -515,7 +516,7 @@ function TRP3_Tools_ScriptTriggerListElementMixin:OnClick(button)
 	if self.data.isAddButton then
 		addon.editor.trigger:OpenForTrigger();
 	else
-		local trigger = addon.editor.script.triggers[addon.editor.script.triggerList.model:FindIndex(self.data)];
+		local trigger = addon.editor.script.triggers[self.data.index];
 		if button == "LeftButton" then
 			if self.data.active or not trigger.script then
 				addon.editor.trigger:OpenForTrigger(trigger);
@@ -630,9 +631,9 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 				end);
 				TRP3_MenuUtil.SetElementTooltip(addOption, "Add effect...");
 
-				if addon.clipboard.isPasteCompatible(addon.clipboard.types.EFFECT) then
-					local count = addon.clipboard.count();
-					local script = addon.editor.script.scripts[scriptId];
+				local script = addon.editor.script.scripts[scriptId];
+				if not TableHasAnyEntries(script) and addon.clipboard.isPasteCompatible(addon.clipboard.types.EFFECT) then
+					local count = addon.clipboard.count();	
 					local optionText;
 					if count == 1 then
 						optionText = "Paste effect";

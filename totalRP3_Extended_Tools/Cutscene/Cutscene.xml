@@ -60,7 +60,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Anchors>
 						<Anchor point="TOP" y="-5" />
 						<Anchor point="LEFT" x="10" />
-						<Anchor point="RIGHT" x="-100"/>
+						<Anchor point="RIGHT" x="-120"/>
 						<Anchor point="BOTTOM" y="5"/>
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />
@@ -69,7 +69,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<FontString parentKey="next" inherits="GameFontNormal" justifyH="RIGHT" maxLines="1" justifyV="CENTER">
 					<Anchors>
 						<Anchor point="TOP" y="-5" />
-						<Anchor point="LEFT" x="-90" relativePoint="RIGHT"/>
+						<Anchor point="LEFT" x="-110" relativePoint="RIGHT"/>
 						<Anchor point="RIGHT" x="-10"/>
 						<Anchor point="BOTTOM" y="5"/>
 					</Anchors>

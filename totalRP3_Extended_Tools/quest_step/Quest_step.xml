@@ -55,7 +55,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<KeyValue key="titleText" value="${QE_ST_PRE}" type="string"/>
 									<KeyValue key="helpText" value="${QE_ST_PRE}" type="string"/>
 								</KeyValues>
-								<Size x="0" y="89"/>
+								<Size x="0" y="128"/>
 								<Anchors>
 									<Anchor point="TOP" y="-45" />
 									<Anchor point="RIGHT" x="-20" y="0"/>
@@ -68,7 +68,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<KeyValue key="titleText" value="${QE_ST_POST}" type="string"/>
 									<KeyValue key="helpText" value="${QE_ST_POST}" type="string"/>
 								</KeyValues>
-								<Size x="0" y="89"/>
+								<Size x="0" y="128"/>
 								<Anchors>
 									<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.pre"/>
 									<Anchor point="RIGHT" x="-20" y="0"/>
