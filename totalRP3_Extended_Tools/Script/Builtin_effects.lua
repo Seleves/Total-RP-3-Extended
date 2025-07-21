@@ -450,7 +450,7 @@ function addon.script.registerBuiltinEffects()
 		description = loc.EFFECT_SPEECH_NPC_TT,
 		GetPreview  = function(self, effect, name, type, text) 
 			return TRP3_API.ui.misc.getSpeechPrefixText(
-				fmt(self.parameters[2], type),
+				type,
 				fmt(self.parameters[1], name),
 				fmt(self.parameters[3], text)
 			);
@@ -495,7 +495,7 @@ function addon.script.registerBuiltinEffects()
 		GetPreview  = function(self, effect, type, text) 
 			return TRP3_API.ui.misc.getSpeech(
 				fmt(self.parameters[2], text),
-				fmt(self.parameters[1], type)
+				type
 			);
 		end,
 		icon        = "ability_warrior_warcry",
@@ -508,7 +508,7 @@ function addon.script.registerBuiltinEffects()
 				values      = {
 					{TRP3_API.ui.misc.SPEECH_PREFIX.SAYS, loc.NPC_SAYS},
 					{TRP3_API.ui.misc.SPEECH_PREFIX.YELLS, loc.NPC_YELLS},
-					{TRP3_API.ui.misc.SPEECH_PREFIX.WHISPERS, loc.NPC_WHISPERS},
+					{TRP3_API.ui.misc.SPEECH_PREFIX.EMOTES, loc.NPC_EMOTES},
 				}
 			},
 			{
@@ -1686,7 +1686,7 @@ function addon.script.registerBuiltinEffects()
 			{
 				title       = loc.EFFECT_SECURE_MACRO_HELP_TITLE,
 				description = loc.EFFECT_SECURE_MACRO_HELP,
-				type        = "macro", -- TODO implement special textbox type for macros with all those hooks
+				type        = "macro",
 				default     = "",
 				taggable    = true,
 				nillable    = true

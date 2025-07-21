@@ -213,33 +213,41 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 	<Frame name="TRP3_Tools_ScriptParameterLootTemplate" virtual="true" mixin="TRP3_Tools_ScriptParameterLootMixin">
 		<Frames>
-			<Frame parentKey="bag" inherits="TRP3_Container2x4Template" name="$parent2x4" frameLevel="50" hidden="false" toplevel="false" movable="false" clampedToScreen="false">
+			<Frame parentKey="bag" scale="0.8" inherits="TRP3_Container2x4Template" name="$parent2x4" frameLevel="50" hidden="false" toplevel="false" movable="false" clampedToScreen="false">
 				<Anchors>
-					<Anchor point="LEFT"/>
+					<Anchor point="TOPLEFT"/>
 				</Anchors>
 				<Frames>
-					<Frame parentKey="editor" inherits="TRP3_HoveredFrame" enableMouse="true" hidden="true">
+					<Frame parentKey="editor" scale="1.25" inherits="TRP3_HoveredFrame" enableMouse="true" hidden="true">
 						<Size x="200" y="130"/>
 						<Frames>
-							<EditBox parentKey="id" inherits="TRP3_TitledHelpEditBox">
-								<Size x="0" y="18"/>
+							
+							<Button parentKey="browse" inherits="TRP3_Tools_BrowseButtonTemplate">
 								<Anchors>
-									<Anchor point="TOP" x="0" y="-15"/>
-									<Anchor point="LEFT" x="20" y="0"/>
-									<Anchor point="RIGHT" x="-20" y="0"/>
+									<Anchor point="TOP" y="-15"/>
+									<Anchor point="RIGHT" x="-20"/>
+								</Anchors>
+							</Button>
+							
+							<EditBox parentKey="id" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+								<KeyValues>
+									<KeyValue key="titleText" value="${EFFECT_ITEM_ADD_ID}" type="string"/>
+									<KeyValue key="helpText" value="${EFFECT_ITEM_ADD_ID_TT}" type="string"/>
+								</KeyValues>
+								<Anchors>
+									<Anchor point="TOP" y="-15"/>
+									<Anchor point="LEFT" x="20"/>
+									<Anchor point="RIGHT" x="-5" relativePoint="LEFT" relativeKey="$parent.browse"/>
 								</Anchors>
 							</EditBox>
 
-							<Button parentKey="browse" inherits="TRP3_Tools_BrowseButtonTemplate">
+							<EditBox parentKey="count" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+								<KeyValues>
+									<KeyValue key="titleText" value="${OP_OP_INV_COUNT}" type="string"/>
+									<KeyValue key="helpText" value="${OP_OP_INV_COUNT}" type="string"/>
+								</KeyValues>
 								<Anchors>
-									<Anchor point="TOP" x="0" y="-10" relativePoint="BOTTOM" relativeKey="$parent.id"/>
-								</Anchors>
-							</Button>
-
-							<EditBox parentKey="count" inherits="TRP3_TitledHelpEditBox">
-								<Size x="0" y="18"/>
-								<Anchors>
-									<Anchor point="TOP" x="0" y="-10" relativePoint="BOTTOM" relativeKey="$parent.browse"/>
+									<Anchor point="TOP" x="0" y="-14" relativePoint="BOTTOM" relativeKey="$parent.id"/>
 									<Anchor point="LEFT" x="20" y="0"/>
 									<Anchor point="RIGHT" x="-20" y="0"/>
 								</Anchors>
@@ -293,6 +301,12 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<Size x="90" y="22"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="0" y="-35"/>
+				</Anchors>
+			</Button>
+			<Button parentKey="other" inherits="TRP3_CommonButton">
+				<Size x="90" y="22"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-70"/>
 				</Anchors>
 			</Button>
 			<Frame parentKey="script" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">

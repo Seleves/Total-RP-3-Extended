@@ -201,8 +201,13 @@ function TRP3_Tools_EditorItemMixin:InterfaceToClass(targetClass, targetCursor)
 	targetClass.BA.CT = self.content.display.container:GetChecked();
 	targetClass.BA.PA = self.content.gameplay.noAdd:GetChecked();
 	targetClass.BA.US = self.content.gameplay.use:GetChecked();
-	targetClass.US.AC = TRP3_API.utils.str.emptyToNil(strtrim(self.content.gameplay.usetext:GetText()));
-	targetClass.US.SC = "onUse";
+	if targetClass.BA.US then
+		targetClass.US.AC = TRP3_API.utils.str.emptyToNil(strtrim(self.content.gameplay.usetext:GetText()));
+		targetClass.US.SC = "onUse";
+	else
+		targetClass.US.AC = nil;
+		targetClass.US.SC = nil;
+	end
 	targetClass.BA.PS = self.content.gameplay.pickSound:GetSelectedValue() or 1186;
 	targetClass.BA.DS = self.content.gameplay.dropSound:GetSelectedValue() or 1203;
 	

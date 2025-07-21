@@ -487,6 +487,8 @@ function TRP3_Tools_ScriptParameterLootMixin:Setup(widgetContext, parameter)
 			TRP3_API.utils.message.displayMessage("Unknown item", 4);
 		end
 	end);
+	addon.localize(self.bag.editor.id);
+	addon.localize(self.bag.editor.count);
 end
 
 function TRP3_Tools_ScriptParameterLootMixin:SetValue(slotData)
@@ -629,6 +631,28 @@ function TRP3_Tools_ScriptParameterScriptMixin:Setup(widgetContext, parameter)
 			end
 		end);
 	end);
+	self.other:SetText("Insert term");
+	self.other:SetScript("OnClick", function() 
+		local function selectCode(code)
+			self:InsertCode(code);
+		end
+		TRP3_MenuUtil.CreateContextMenu(self.operand, function(_, menu)
+			menu:CreateButton("getVar", selectCode, "getVar(args, \"w\", \"varName\")");
+			menu:CreateButton("setVar", selectCode, "setVar(args, \"w\", \"varName\", \"value\")");
+			for _, globalVarName in pairs{"string", "table", "math", "pairs", "ipairs", "next", "select", "unpack", "type", "tonumber", "tostring", "date"} do
+				local g = _G[globalVarName];
+				if type(g) == "table" then
+					local category = menu:CreateButton(globalVarName);
+					category:SetScrollMode(400);
+					for key, _ in pairs(g) do
+						category:CreateButton(globalVarName .. "." .. key, selectCode, globalVarName .. "." .. key);
+					end
+				elseif type(g) == "function" then
+					menu:CreateButton(globalVarName, selectCode, globalVarName);
+				end
+			end
+		end);
+	end);
 end
 
 function TRP3_Tools_ScriptParameterScriptMixin:InsertEffectById(effectId)
@@ -668,6 +692,15 @@ function TRP3_Tools_ScriptParameterScriptMixin:InsertOperandById(operandId)
 	local pre = text:sub(1, index);
 	local post = text:sub(index + 1);
 	text = strconcat(pre, operandLua, post);
+	self.script:SetText(text);
+end
+
+function TRP3_Tools_ScriptParameterScriptMixin:InsertCode(code)
+	local index = self.script:GetCursorPosition();
+	local text = self.script:GetText();
+	local pre = text:sub(1, index);
+	local post = text:sub(index + 1);
+	text = strconcat(pre, code, post);
 	self.script:SetText(text);
 end
 
