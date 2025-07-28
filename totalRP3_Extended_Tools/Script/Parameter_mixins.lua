@@ -527,7 +527,7 @@ function TRP3_Tools_ScriptParameterLootMixin:GetValue()
 end
 
 function TRP3_Tools_ScriptParameterLootMixin:GetGridDimensions()
-	return 1, 5; -- gridWidth, gridHeight
+	return 1, 4; -- gridWidth, gridHeight
 end
 
 TRP3_Tools_ScriptParameterOperandMixin = CreateFromMixins(TRP3_Tools_ScriptParameterMixin);

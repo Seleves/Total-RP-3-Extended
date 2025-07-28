@@ -36,8 +36,7 @@ end
 
 function TRP3_Tools_EditorDocumentMixin:Initialize()
 	self.ScrollBar:SetHideIfUnscrollable(true);
-	local s = self;
-
+	
 	local display = self.content.display;
 	local pages = self.content.pages;
 	
@@ -46,7 +45,7 @@ function TRP3_Tools_EditorDocumentMixin:Initialize()
 		TRP3_API.popup.showPopup(
 			TRP3_API.popup.BACKGROUNDS, 
 			{parent = TRP3_ToolFrame, point = "CENTER", parentPoint = "CENTER"}, 
-			{function(imageInfo) s.BCK = imageInfo and imageInfo.id or 8; end, nil, nil, s.BCK or 8}
+			{function(imageInfo) self.BCK = imageInfo and imageInfo.id or 8; end, nil, nil, self.BCK or 8}
 		);
 	end);
 
@@ -78,46 +77,17 @@ function TRP3_Tools_EditorDocumentMixin:Initialize()
 
 	display.preview:SetScript("OnClick", function()
 		local temp = {};
-		s:InterfaceToClass(temp);
+		self:InterfaceToClass(temp);
 		TRP3_API.extended.document.showDocumentClass(temp, nil);
 	end);
 	
 	display.importBook:SetScript("OnClick", function()
-		s:ImportItemTextFrame();
-	end);
-	
-	pages.addPage:SetScript("OnClick", function() 
-		s:AddPage();
+		self:ImportItemTextFrame();
 	end);
 
 	pages.editor:SetupSuggestions(addon.editor.populateObjectTagMenu);
 
-	addon.utils.prepareForMultiSelectionMode(self.content.pages.list);
-
-	-- -- Pages
-	-- pages = toolFrame.document.normal.pages;
-	-- TRP3_API.ui.text.setupToolbar(pages.toolbar, pages.editor.scroll.text, pages, "RIGHT", "LEFT");
-	-- pages.remove:SetText(loc.DO_PAGE_REMOVE);
-	-- pages.remove:SetScript("OnClick", removePage);
-
-	-- -- Manager
-	-- manager = toolFrame.document.normal.summary;
-	-- manager.title:SetText(loc.DO_PAGE_MANAGER);
-	-- manager.add:SetText(loc.DO_PAGE_ADD);
-	-- setTooltipForSameFrame(manager.next, "BOTTOM", 0, -5, loc.DO_PAGE_NEXT);
-	-- setTooltipForSameFrame(manager.previous, "BOTTOM", 0, -5, loc.DO_PAGE_PREVIOUS);
-	-- setTooltipForSameFrame(manager.first, "BOTTOM", 0, -5, loc.DO_PAGE_FIRST);
-	-- setTooltipForSameFrame(manager.last, "BOTTOM", 0, -5, loc.DO_PAGE_LAST);
-	-- manager.next:SetText(">");
-	-- manager.previous:SetText("<");
-	-- manager.first:SetText("<<");
-	-- manager.last:SetText(">>");
-	-- manager.add:SetScript("OnClick", addPage);
-	-- manager.first:SetScript("OnClick", function() loadPage(1); end);
-	-- manager.previous:SetScript("OnClick", function() loadPage(manager.current - 1); end);
-	-- manager.next:SetScript("OnClick", function() loadPage(manager.current + 1); end);
-	-- manager.last:SetScript("OnClick", function() loadPage(#toolFrame.specificDraft.PA); end);
-
+	addon.utils.prepareForMultiSelectionMode(self.content.display.list);
 
 end
 
@@ -134,7 +104,7 @@ function TRP3_Tools_EditorDocumentMixin:ClassToInterface(class, creationClass, c
 
 	self.BCK = class.BCK or 8;
 	self:ClassToPages(class);
-	if cursor and cursor.page and self.content.pages.list.model:Find(cursor.page) then
+	if cursor and cursor.page and self.content.display.list.model:Find(cursor.page) then
 		self:ShowPage(cursor.page);
 	else
 		self:ShowPage(1);
@@ -158,28 +128,30 @@ function TRP3_Tools_EditorDocumentMixin:InterfaceToClass(targetClass, targetCurs
 	targetClass.BCK = self.BCK or 8;
 	self:PagesToClass(targetClass);
 	if targetCursor then
-		targetCursor.page = self.content.pages.list.model:FindByPredicate(function(e) return e.active; end);
+		targetCursor.page = self.content.display.list.model:FindByPredicate(function(e) return e.active; end);
 	end
 end
 
 function TRP3_Tools_EditorDocumentMixin:ClassToPages(class)
-	local list = self.content.pages.list;
+	local list = self.content.display.list;
 	local pages = {};
 	if class.PA and TableHasAnyEntries(class.PA) then
 		for index, page in ipairs(class.PA) do
 			table.insert(pages, {
 				active = index == 1,
-				label = "Page " .. index,
-				content = page.TX
+				page = {TX = page.TX}
 			});
 		end
 	else
 		table.insert(pages, {
 			active = true,
-			label = "Page 1",
-			content = ""
+			page = {TX = ""}
 		});
 	end
+
+	table.insert(pages, {
+		isAddButton = true
+	});
 
 	--local scrollPct = list.widget:GetScrollPercentage();
 	list.model:Flush();
@@ -191,69 +163,60 @@ end
 function TRP3_Tools_EditorDocumentMixin:PagesToClass(targetClass)
 	targetClass.PA = targetClass.PA or {};
 	wipe(targetClass.PA);
-	local list = self.content.pages.list;
-	for index, element in list.model:EnumerateEntireRange() do
-		table.insert(targetClass.PA, {
-			TX = element.content
-		});
+	for index, element in self.content.display.list.model:EnumerateEntireRange() do
+		if element.page then
+			table.insert(targetClass.PA, {
+				TX = element.page.TX
+			});
+		end
 	end
 end
 
 function TRP3_Tools_EditorDocumentMixin:SaveCurrentPage()
-	local list = self.content.pages.list;
-	local index, element = list.model:FindByPredicate(function(e) return e.active end);
-	if element then
-		element.content = self.content.pages.editor.scroll.text:GetText();
+	local index, element = self.content.display.list.model:FindByPredicate(function(e) return e.active; end);
+	if element and element.page then
+		element.page.TX = self.content.pages.editor.scroll.text:GetText();
 	end
 end
 
 function TRP3_Tools_EditorDocumentMixin:ShowPage(pageIndex)
-	local list = self.content.pages.list;
+	local list = self.content.display.list;
 	for index, element in list.model:EnumerateEntireRange() do
-		element.active = index == pageIndex;
+		element.active = element.page ~= nil and index == pageIndex;
 	end
 	list.widget:ScrollToElementDataIndex(pageIndex);
 	list:Refresh();
-	if list.model:Find(pageIndex) then
-		self.content.pages.editor.scroll.text:SetText(list.model:Find(pageIndex).content or "");
+	local elementToShow = list.model:Find(pageIndex);
+	if elementToShow.page then
+		self.content.pages.editor.scroll.text:SetText(elementToShow.page.TX or "");
 	else
 		self.content.pages.editor.scroll.text:SetText("");
 	end
 	self.content.pages.editor.scroll.text:SetFocus();
 end
 
-function TRP3_Tools_EditorDocumentMixin:UpdatePageLabels()
-	for index, element in self.content.pages.list.model:EnumerateEntireRange() do
-		element.label = "Page " .. index;
-	end
-end
-
-function TRP3_Tools_EditorDocumentMixin:AddPage(targetIndex, content, noUpdate)
-	local list = self.content.pages.list;
-	targetIndex = targetIndex or list.model:GetSize() + 1;
+function TRP3_Tools_EditorDocumentMixin:AddPage(targetIndex, page, noUpdate)
+	local list = self.content.display.list;
+	targetIndex = targetIndex or list.model:GetSize();
 	list.model:InsertAtIndex({
-		content = content or ""
+		page = page or {TX = ""}
 	}, targetIndex);
 	if noUpdate then
 		return
 	end
-	self:UpdatePageLabels();
 	self:ShowPage(targetIndex);
 end
 
-function TRP3_Tools_EditorDocumentMixin:DeletePage(pageData)
-	local list = self.content.pages.list;
-	local pageIndex = list.model:FindIndex(pageData);
+function TRP3_Tools_EditorDocumentMixin:DeletePage(pageElement)
+	local list = self.content.display.list;
+	local pageIndex = list.model:FindIndex(pageElement);
 	if pageIndex then
 		list.model:RemoveIndex(pageIndex);
 		
-		if list.model:GetSize() <= 0 then
-			list.model:Insert({
-				content = ""
-			});
+		if list.model:GetSize() <= 1 then
+			list.model:InsertAtIndex({page = {TX = ""}}, 1);
 		end
-		self:UpdatePageLabels();
-		if pageData.active then
+		if pageElement.active then
 			self:ShowPage(math.max(pageIndex-1, 1));
 		else
 			list:Refresh();
@@ -262,57 +225,64 @@ function TRP3_Tools_EditorDocumentMixin:DeletePage(pageData)
 end
 
 function TRP3_Tools_EditorDocumentMixin:DeleteSelectedPages()
-	local list = self.content.pages.list;
+	local list = self.content.display.list;
 	local pages = {};
 	local pageIndex;
 	for index, element in list.model:EnumerateEntireRange() do
-		if not element.selected then
-			table.insert(pages, element);
-		elseif element.active then
-			pageIndex = #pages;
+		if element.page then
+			if not element.selected then
+				table.insert(pages, element);
+			elseif element.active then
+				pageIndex = #pages;
+			end
 		end
 	end
 	if not TableHasAnyEntries(pages) then
 		table.insert(pages, {
-			content = ""
+			page = {TX = ""}
 		});
 	end
+
+	table.insert(pages, {
+		isAddButton = true
+	});
+
 	list.model:Flush();
 	list.model:InsertTable(pages);
-	self:UpdatePageLabels();
-	pageIndex = math.max(1, pageIndex or list.model:FindByPredicate(function(e) return e.active end) or 1);
+	pageIndex = math.max(1, pageIndex or list.model:FindByPredicate(function(e) return e.active; end) or 1);
 	self:ShowPage(pageIndex);
 end
 
 function TRP3_Tools_EditorDocumentMixin:ImportItemTextFrame()
 	if ItemTextFrame:IsShown() then
-		local list = self.content.pages.list;
-		if list.model:GetSize() == 1 and list.model:Find(1).content == nil or list.model:Find(1).content == "" then
+		self:SaveCurrentPage();
+		local list = self.content.display.list;
+		if list.model:GetSize() == 2 and list.model:Find(1).page.TX == nil or list.model:Find(1).page.TX == "" then
 			list.model:RemoveIndex(1);
 		end
-		local firstPageInserted = list.model:GetSize() + 1;
+		local insertIndex = list.model:GetSize();
 		local currPage = ItemTextGetPage();
 		for i = 1,currPage-1 do
 			ItemTextPrevPage();
 		end
 		if ItemTextGetItem() ~= nil and ItemTextGetItem() ~= "" then
-			list.model:Insert({
-				content = "{h1:c}" .. (ItemTextGetItem() or "") .. "{/h1}\n" .. ItemTextGetText()
-			});
+			list.model:InsertAtIndex({
+				page = {TX = "{h1:c}" .. (ItemTextGetItem() or "") .. "{/h1}\n" .. ItemTextGetText()}
+			}, insertIndex);
 		else
-			list.model:Insert({
-				content = ItemTextGetText()
-			});
+			list.model:InsertAtIndex({
+				page = {TX = ItemTextGetText()}
+			}, insertIndex);
 		end
+		insertIndex = insertIndex + 1;
 		while ItemTextHasNextPage() do
 			ItemTextNextPage();
-			list.model:Insert({
-				content = ItemTextGetText()
-			});
+			list.model:InsertAtIndex({
+				page = {TX = ItemTextGetText()}
+			}, insertIndex);
+			insertIndex = insertIndex + 1;
 		end
-		self:UpdatePageLabels();
-		self:SaveCurrentPage();
-		self:ShowPage(firstPageInserted);
+		self:ShowPage(insertIndex - 1);
 	else
 		TRP3_API.utils.message.displayMessage("Please open the object from which you want to import text.", 4);
 	end
@@ -320,23 +290,35 @@ end
 
 TRP3_Tools_DocumentPageListElementMixin = {};
 
-function TRP3_Tools_DocumentPageListElementMixin:Initialize(data)
-	self.data = data;
-
-	local tooltipText = 
-		TRP3_API.FormatShortcutWithInstruction("LCLICK", "edit page") .. "|n" ..
-		TRP3_API.FormatShortcutWithInstruction("RCLICK", "more options") .. "|n" ..
-		TRP3_API.FormatShortcutWithInstruction("SHIFT-CLICK", "select range") .. "|n" ..
-		TRP3_API.FormatShortcutWithInstruction("CTRL-CLICK", "select this page")
-	;
-	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, "Document page", tooltipText);
+function TRP3_Tools_DocumentPageListElementMixin:Initialize(element)
+	self.element = element;
 	self:Refresh();
 end
 
 function TRP3_Tools_DocumentPageListElementMixin:Refresh()
-	self.label:SetText(self.data.label);
-	self:SetHighlight(self.data.active);
-	self:SetSelected(self.data.selected);
+	local tooltipTitle;
+	local tooltipText;
+	if self.element.isAddButton then
+		self.label:SetText("|TInterface\\PaperDollInfoFrame\\Character-Plus:16:16|t " .. loc.DO_PAGE_ADD);
+		self:SetHighlight(false);
+		self:SetSelected(false);
+		self.delete:Hide();
+		tooltipTitle = loc.DO_PAGE_ADD;
+		tooltipText = TRP3_API.FormatShortcutWithInstruction("LCLICK", loc.DO_PAGE_ADD);
+	elseif self.element.page then
+		self.label:SetText("Page " .. self:GetElementDataIndex());
+		self:SetHighlight(self.element.active);
+		self:SetSelected(self.element.selected);
+		self.delete:Show();
+		tooltipTitle = "Page " .. self:GetElementDataIndex();
+		tooltipText = 
+			TRP3_API.FormatShortcutWithInstruction("LCLICK", "edit page") .. "|n" ..
+			TRP3_API.FormatShortcutWithInstruction("RCLICK", "more options") .. "|n" ..
+			TRP3_API.FormatShortcutWithInstruction("SHIFT-CLICK", "select range") .. "|n" ..
+			TRP3_API.FormatShortcutWithInstruction("CTRL-CLICK", "select this page")
+		;
+	end
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, "Document page", tooltipText);
 end
 
 function TRP3_Tools_DocumentPageListElementMixin:OnEnter()
@@ -349,20 +331,25 @@ end
 
 function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
 	local documentEditor = addon.editor.getCurrentPropertiesEditor();
-	local pageIndex = documentEditor.content.pages.list.model:FindIndex(self.data);
+	local pageIndex = self:GetElementDataIndex();
 	
-	if button == "LeftButton" then
+	if self.element.isAddButton then
+		if button == "LeftButton" and not IsModifierKeyDown() then
+			documentEditor:SaveCurrentPage();
+			documentEditor:AddPage(stepIndex);
+		end
+	elseif button == "LeftButton" then
 		if IsControlKeyDown() then
-			documentEditor.content.pages.list:ToggleSingleSelect(self.data);
+			documentEditor.content.display.list:ToggleSingleSelect(self.element);
 		elseif IsShiftKeyDown() then
-			documentEditor.content.pages.list:ToggleRangeSelect(self.data);
+			documentEditor.content.display.list:ToggleRangeSelect(self.element);
 		else
 			documentEditor:SaveCurrentPage();
 			documentEditor:ShowPage(self:GetElementDataIndex());
 		end
 	elseif button == "RightButton" then
 		TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
-			contextMenu:CreateTitle(self.data.label);
+			contextMenu:CreateTitle("Page " .. pageIndex);
 			
 			local addBeforeOption = contextMenu:CreateButton("Insert page before", function()
 				documentEditor:SaveCurrentPage();
@@ -379,18 +366,18 @@ function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
 			contextMenu:CreateDivider();
 			local copyOption = contextMenu:CreateButton("Copy", function()
 				addon.clipboard.clear();
-				addon.clipboard.append({TX = self.data.content}, addon.clipboard.types.DOCUMENT_PAGE);
+				addon.clipboard.append(self.element.page, addon.clipboard.types.DOCUMENT_PAGE);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(copyOption, "Copy this page");
-			if self.data.selected then
+			if self.element.selected then
 				local copySelectionOption = contextMenu:CreateButton("Copy selected pages", function()
 					addon.clipboard.clear();
-					for index, element in documentEditor.content.pages.list.model:EnumerateEntireRange() do
+					for index, element in documentEditor.content.display.list.model:EnumerateEntireRange() do
 						if element.selected then
-							addon.clipboard.append({TX = element.content}, addon.clipboard.types.DOCUMENT_PAGE);
+							addon.clipboard.append(element.page, addon.clipboard.types.DOCUMENT_PAGE);
 						end
 					end
-					documentEditor.content.pages.list:SetAllSelected(false);
+					documentEditor.content.display.list:SetAllSelected(false);
 				end);
 				TRP3_MenuUtil.SetElementTooltip(copySelectionOption, "Copy all selected pages");
 			end
@@ -408,21 +395,19 @@ function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
 				end
 
 				local pasteBeforeOption = contextMenu:CreateButton(beforeText, function()
-					for index = 1, count do
-						documentEditor:AddPage(pageIndex + index - 1, addon.clipboard.retrieveShallow(index).TX, true);
-					end
 					documentEditor:SaveCurrentPage();
-					documentEditor:UpdatePageLabels();
+					for index = 1, count do
+						documentEditor:AddPage(pageIndex + index - 1, addon.clipboard.retrieve(index), true);
+					end
 					documentEditor:ShowPage(pageIndex + count - 1);
 				end);
 				TRP3_MenuUtil.SetElementTooltip(pasteBeforeOption, beforeText);
 
 				local pasteBeforeOption = contextMenu:CreateButton(afterText, function()
-					for index = 1, count do
-						documentEditor:AddPage(pageIndex + index, addon.clipboard.retrieveShallow(index).TX, true);
-					end
 					documentEditor:SaveCurrentPage();
-					documentEditor:UpdatePageLabels();
+					for index = 1, count do
+						documentEditor:AddPage(pageIndex + index, addon.clipboard.retrieve(index), true);
+					end
 					documentEditor:ShowPage(pageIndex + count);
 				end);
 				TRP3_MenuUtil.SetElementTooltip(pasteBeforeOption, afterText);
@@ -434,7 +419,7 @@ function TRP3_Tools_DocumentPageListElementMixin:OnClick(button)
 			end);
 			TRP3_MenuUtil.SetElementTooltip(deleteOption, "Delete this page");
 
-			if self.data.selected then
+			if self.element.selected then
 				local deleteSelectionOption = contextMenu:CreateButton("Delete selection", function()
 					documentEditor:SaveCurrentPage();
 					documentEditor:DeleteSelectedPages();
@@ -448,5 +433,5 @@ end
 
 function TRP3_Tools_DocumentPageListElementMixin:OnDelete()
 	addon.editor.getCurrentPropertiesEditor():SaveCurrentPage();
-	addon.editor.getCurrentPropertiesEditor():DeletePage(self.data);
+	addon.editor.getCurrentPropertiesEditor():DeletePage(self.element);
 end

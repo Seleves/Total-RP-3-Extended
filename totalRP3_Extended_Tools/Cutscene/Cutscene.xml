@@ -104,6 +104,10 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</KeyValues>
 				<Frames>
 					<EditBox parentKey="next" inherits="TRP3_Tools_TitledHelpEditBoxTemplate" numeric="true">
+						<KeyValues>
+							<KeyValue key="titleText" value="${DI_CHOICE_STEP}" type="string"/>
+							<KeyValue key="helpText" value="${DI_CHOICE_STEP_TT}" type="string"/>
+						</KeyValues>
 						<Size x="120" y="25"/>
 						<Anchors>
 							<Anchor point="TOP" y="-10"/>
@@ -111,6 +115,10 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</Anchors>
 					</EditBox>
 					<EditBox parentKey="text" inherits="TRP3_Tools_TitledSuggestiveHelpEditBoxTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="${DI_CHOICE}" type="string"/>
+							<KeyValue key="helpText" value="${DI_CHOICE_TT}" type="string"/>
+						</KeyValues>
 						<Size y="25"/>
 						<Anchors>
 							<Anchor point="TOP" y="-10"/>
@@ -121,12 +129,23 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Frame parentKey="constraint" inherits="TRP3_Tools_ScriptConstraintEditorTemplate">
 						<Anchors>
 							<Anchor point="TOP" y="-10" relativePoint="BOTTOM" relativeKey="$parent.text"/>
-							<Anchor point="LEFT" x="10"/>
+							<Anchor point="LEFT" x="30"/>
 							<Anchor point="BOTTOM" y="10"/>
 							<Anchor point="RIGHT" x="-10"/>
 						</Anchors>
 					</Frame>
 				</Frames>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="title" inherits="GameFontNormal" text="${WO_CONDITION}" justifyH="CENTER" justifyV="MIDDLE">
+							<Size x="100" y="20"/>
+							<Anchors>
+								<Anchor point="CENTER" relativePoint="LEFT" x="10" y="-10"/>
+							</Anchors>
+							<Color r="0.95" g="0.95" b="0.95" />
+						</FontString>
+					</Layer>
+				</Layers>
 			</Frame>
 
 			<Frame parentKey="option1">

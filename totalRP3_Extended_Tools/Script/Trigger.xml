@@ -220,12 +220,24 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Frame name="$parentConstraintList" parentKey="list" inherits="TRP3_Tools_ScriptConstraintEditorTemplate">
 						<Anchors>
 							<Anchor point="TOP" y="-10"/>
-							<Anchor point="LEFT" x="10"/>
+							<Anchor point="LEFT" x="30"/>
 							<Anchor point="BOTTOM" y="10"/>
 							<Anchor point="RIGHT" x="-10"/>
 						</Anchors>
 					</Frame>
 				</Frames>
+
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="title" inherits="GameFontNormal" text="${WO_CONDITION}" justifyH="CENTER" justifyV="MIDDLE">
+							<Size x="100" y="20"/>
+							<Anchors>
+								<Anchor point="CENTER" relativePoint="LEFT" x="10"/>
+							</Anchors>
+							<Color r="0.95" g="0.95" b="0.95" />
+						</FontString>
+					</Layer>
+				</Layers>
 			</Frame>
 
 			<Button parentKey="triggerCancelButton" text="CANCEL" inherits="TRP3_CommonButton">

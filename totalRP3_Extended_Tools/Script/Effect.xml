@@ -132,23 +132,35 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<KeyValues>
 					<KeyValue key="backdropInfo" value="TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555" type="global"/>
 				</KeyValues>
-				<Size y="150"/>
 				<Anchors>
 					<Anchor point="TOP" y="-10" relativeKey="$parent.effect" relativePoint="BOTTOM"/>
 					<Anchor point="LEFT" x="20"/>
 					<Anchor point="RIGHT" x="-20"/>
+					<Anchor point="BOTTOM" y="50"/>
 				</Anchors>
 
 				<Frames>
 					<Frame name="$parentConstraintList" parentKey="list" inherits="TRP3_Tools_ScriptConstraintEditorTemplate">
 						<Anchors>
 							<Anchor point="TOP" y="-10"/>
-							<Anchor point="LEFT" x="10"/>
+							<Anchor point="LEFT" x="30"/>
 							<Anchor point="BOTTOM" y="10"/>
 							<Anchor point="RIGHT" x="-10"/>
 						</Anchors>
 					</Frame>
 				</Frames>
+				
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="title" inherits="GameFontNormal" text="${WO_CONDITION}" justifyH="CENTER" justifyV="MIDDLE">
+							<Size x="100" y="20"/>
+							<Anchors>
+								<Anchor point="CENTER" relativePoint="LEFT" x="10"/>
+							</Anchors>
+							<Color r="0.95" g="0.95" b="0.95" />
+						</FontString>
+					</Layer>
+				</Layers>
 			</Frame>
 
 

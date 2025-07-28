@@ -390,6 +390,16 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:OnClick(button)
 						end);
 						TRP3_MenuUtil.SetElementTooltip(copySelectionOption, "Copy all selected conditions");
 					end
+					local copyAllOption = contextMenu:CreateButton("Copy all conditions", function()
+						addon.clipboard.clear();
+						self:GetList():Update();
+						for index, element in self:GetList().model:EnumerateEntireRange() do
+							if element.index then
+								addon.clipboard.append(element.equation, addon.clipboard.types.CONDITION_TEST);
+							end
+						end
+					end);
+					TRP3_MenuUtil.SetElementTooltip(copyAllOption, "Copy all conditions");
 				end
 
 				if addon.clipboard.isPasteCompatible(addon.clipboard.types.CONDITION_TEST) then

@@ -82,16 +82,20 @@ function TRP3_Tools_EditorScriptMixin:RenameSelectedScript()
 	end
 end
 
+function TRP3_Tools_EditorScriptMixin:CountScriptReferences(scriptId)
+	local count = addon.editor.getCurrentPropertiesEditor():CountScriptReferences(scriptId);
+	for _, trigger in ipairs(self.triggers) do
+		if trigger.script == scriptId then
+			count = count + 1;
+		end
+	end
+	return count;
+end
+
 function TRP3_Tools_EditorScriptMixin:DeleteSelectedScript()
 	local scriptId = self.scriptList:GetSelectedValue();
 	if scriptId and self.scripts[scriptId] then
-		local refCount = addon.editor.getCurrentPropertiesEditor():CountScriptReferences(scriptId);
-		for _, trigger in ipairs(self.triggers) do
-			if trigger.script == scriptId then
-				refCount = refCount + 1;
-			end
-		end
-		if refCount <= 0 then
+		if self:CountScriptReferences(scriptId) <= 0 then
 			self:DeleteScripts(scriptId);
 		else
 			TRP3_API.popup.showConfirmPopup("This workflow might still be used.|n|nAre you sure you want to delete it?", function()
@@ -544,12 +548,21 @@ function TRP3_Tools_ScriptTriggerListElementMixin:OnClick(button)
 				end);
 				TRP3_MenuUtil.SetElementTooltip(deleteTriggerOption, "Delete trigger");
 				
-				local deleteTriggerAndScriptOption = contextMenu:CreateButton("Delete trigger and workflow", function()
-					-- TODO implement
-				end);
-				deleteTriggerAndScriptOption:SetEnabled(false); -- TODO make this only available if refCount == 1
-				TRP3_MenuUtil.SetElementTooltip(deleteTriggerAndScriptOption, "Delete trigger and workflow");
-				
+				if trigger.script then
+					local deleteTriggerAndScriptOption = contextMenu:CreateButton("Delete trigger and workflow", function()
+						if addon.editor.script:CountScriptReferences(trigger.script) <= 1 then
+							addon.editor.script:DeleteScripts(trigger.script);
+							addon.editor.script:DeleteTrigger(trigger);
+						else
+							TRP3_API.popup.showConfirmPopup("This workflow might still be used.|n|nAre you sure you want to delete it?", function()
+								addon.editor.script:DeleteScripts(trigger.script);
+								addon.editor.script:DeleteTrigger(trigger);
+							end);
+						end
+					end);
+					TRP3_MenuUtil.SetElementTooltip(deleteTriggerAndScriptOption, "Delete trigger and workflow");
+				end
+
 			end);
 		end
 	end
@@ -721,6 +734,17 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 					end);
 					TRP3_MenuUtil.SetElementTooltip(copySelectionOption, "Copy all selected effects");
 				end
+
+				local copyAllOption = contextMenu:CreateButton("Copy all effects", function()
+					addon.clipboard.clear();
+					for index, element in addon.editor.script.effectList.model:EnumerateEntireRange() do
+						if not element.isAddButton then
+							addon.clipboard.append(addon.editor.script.scripts[scriptId][index], addon.clipboard.types.EFFECT);
+						end
+					end
+				end);
+				TRP3_MenuUtil.SetElementTooltip(copyAllOption, "Copy all effects");
+				
 
 				if addon.clipboard.isPasteCompatible(addon.clipboard.types.EFFECT) then
 					local count = addon.clipboard.count();

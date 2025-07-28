@@ -55,9 +55,6 @@ function addon.clipboard.append(class, type, absoluteId, relativeId, subId)
 		copy.MD = {
 			MO = TRP3_DB.modes.EXPERT
 		};
-	elseif type == addon.clipboard.types.DIALOG_STEP then
-		copy.active = nil;
-		copy.selected = nil;
 	end
 	table.insert(clipboardData, {
 		class      = copy,

@@ -65,8 +65,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<Anchors>
 								<Anchor point="TOP"/>
 								<Anchor point="BOTTOM"/>
-								<Anchor point="LEFT" x="346"/>
-								<Anchor point="RIGHT" relativePoint="LEFT" x="354"/>
+								<Anchor point="LEFT" relativePoint="CENTER" x="-4"/>
+								<Anchor point="RIGHT" relativePoint="CENTER" x="4"/>
 							</Anchors>
 						</Texture>
 					</Layer>
@@ -81,7 +81,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="0" y="0"/>
 							<Anchor point="BOTTOM"/>
-							<Anchor point="RIGHT" relativePoint="LEFT" x="346"/>
+							<Anchor point="RIGHT" relativePoint="CENTER" x="-4"/>
 						</Anchors>
 						<Frames>
 							<Button parentKey="background" text="${UI_BKG_BUTTON}" inherits="TRP3_CommonButton" name="$parentBackground">
@@ -193,7 +193,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 							<Button parentKey="preview" inherits="TRP3_Tools_QuestButtonTemplate">
 								<Anchors>
-									<Anchor point="LEFT" relativePoint="RIGHT" x="25" y="-16" relativeKey="$parent.h3_font"/>
+									<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="16" y="-20" relativeKey="$parent.importBook"/>
 								</Anchors>
 								<KeyValues>
 									<KeyValue key="name" value="${EDITOR_PREVIEW}" type="string"/>
@@ -201,6 +201,19 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<KeyValue key="icon" value="inv_darkmoon_eye" type="string"/>
 								</KeyValues>
 							</Button>
+
+							<Frame name="$parentPageList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
+								<KeyValues>
+									<KeyValue key="listElementTemplate" value="TRP3_Tools_DocumentPageListElementTemplate" type="string"/>
+									<KeyValue key="listElementMixin" value="TRP3_Tools_DocumentPageListElementMixin" type="global"/>
+								</KeyValues>
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.resizable" relativePoint="BOTTOM" y="-14"/>
+									<Anchor point="BOTTOM" y="25"/>
+									<Anchor point="RIGHT" x="-20" y="0"/>
+									<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
+								</Anchors>
+							</Frame>
 
 						</Frames>
 
@@ -211,38 +224,18 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="titleText" value="${DO_PAGE_MANAGER}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOPLEFT" x="354" y="0"/>
-							<Anchor point="TOPRIGHT" x="0" y="0"/>
+							<Anchor point="TOP"/>
 							<Anchor point="BOTTOM"/>
+							<Anchor point="LEFT" relativePoint="CENTER" x="4"/>
+							<Anchor point="RIGHT"/>
 						</Anchors>
 						<Frames>
 							<Frame parentKey="toolbar" inherits="TRP3_TextToolbar">
-								<Size x="360" y="50"/>
+								<Size x="330" y="50"/>
 								<Anchors>
 									<Anchor point="TOP" y="-50"/>
 									<Anchor point="LEFT" x="20" y="0"/>
 									<Anchor point="RIGHT" x="-20" y="0"/>
-								</Anchors>
-							</Frame>
-							
-							<Button parentKey="addPage" text="${DO_PAGE_ADD}" inherits="TRP3_CommonButton">
-								<Anchors>
-									<Anchor point="TOP" relativeKey="$parent.toolbar" relativePoint="BOTTOM" y="-3"/>
-									<Anchor point="LEFT" x="20"/>
-									<Anchor point="RIGHT" x="130" relativePoint="LEFT"/>
-								</Anchors>
-							</Button>
-
-							<Frame name="$parentPageList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
-								<KeyValues>
-									<KeyValue key="listElementTemplate" value="TRP3_Tools_DocumentPageListElementTemplate" type="string"/>
-									<KeyValue key="listElementMixin" value="TRP3_Tools_DocumentPageListElementMixin" type="global"/>
-								</KeyValues>
-								<Anchors>
-									<Anchor point="TOP" relativeKey="$parent.addPage" relativePoint="BOTTOM" y="-3"/>
-									<Anchor point="BOTTOM" y="25"/>
-									<Anchor point="LEFT" x="20"/>
-									<Anchor point="RIGHT" x="130" relativePoint="LEFT"/>
 								</Anchors>
 							</Frame>
 
@@ -250,7 +243,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								<Anchors>
 									<Anchor point="TOP" relativeKey="$parent.toolbar" relativePoint="BOTTOM"/>
 									<Anchor point="BOTTOM" y="25"/>
-									<Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.list"/>
+									<Anchor point="LEFT" x="20"/>
 									<Anchor point="RIGHT" x="-20"/>
 								</Anchors>
 							</Frame>

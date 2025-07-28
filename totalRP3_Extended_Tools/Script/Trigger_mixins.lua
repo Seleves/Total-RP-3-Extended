@@ -47,6 +47,7 @@ function TRP3_Tools_EditorTriggerMixin:Initialize()
 			return nil, nil;
 		end
 	end);
+	self.constraint.title:SetRotation(math.pi/2); -- not possible to do in XML
 end
 
 function TRP3_Tools_EditorTriggerMixin:OnScriptSelected(scriptId)

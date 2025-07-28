@@ -104,6 +104,7 @@ function TRP3_Tools_EditorEffectMixin:Initialize()
 		addon.editor.script:OnEffectApplied(self.effectData);
 		self:Hide();
 	end);
+	self.constraint.title:SetRotation(math.pi/2); -- not possible to do in XML
 end
 
 function TRP3_Tools_EditorEffectMixin:SetEffect(effectId)
@@ -129,17 +130,17 @@ function TRP3_Tools_EditorEffectMixin:SetEffect(effectId)
 	if self.effectEditor then
 		self.effectEditor:SetParent(self);
 		self.effectEditor:ClearAllPoints();
-		if effectClass.canHaveConstraint then
-			self.effectEditor:SetPoint("TOP", self.constraint, "BOTTOM", 0, -10);
-		else
-			self.effectEditor:SetPoint("TOP", self.effect, "BOTTOM", 0, -10);
-		end
+		
+		self.effectEditor:SetPoint("TOP", self.effect, "BOTTOM", 0, -10);
 		self.effectEditor:SetPoint("LEFT", 20, 0);
 		self.effectEditor:SetPoint("RIGHT", -20, 0);
-		self.effectEditor:SetPoint("BOTTOM", 0, 50);
 		self.effectEditor:Show();
 
 		setEffectEditorParameters(self.effectEditor, self.effectData.parameters);
+	end
+
+	if effectClass.canHaveConstraint then
+		self.constraint:SetPoint("TOP", self.effectEditor or self.effect, "BOTTOM", 0, -10);
 	end
 
 	self.effect.titleText:SetText(addon.script.getEffectTitle(self.effectData));
