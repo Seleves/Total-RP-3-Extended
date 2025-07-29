@@ -57,7 +57,6 @@ function addon.script.parameter.acquireWidgets(parameters, widgetList, scriptCon
 	local groups = getGroupsFromParameterList(parameters);
 	for index, parameter in ipairs(parameters) do
 		local widget;
-		local setPoints = true;
 		if parameter.groupId then
 			local firstIndex = math.min(unpack(groups[parameter.groupId]));
 			if index == firstIndex then
@@ -74,7 +73,6 @@ function addon.script.parameter.acquireWidgets(parameters, widgetList, scriptCon
 				end
 			else
 				widget = widgetList[firstIndex];
-				setPoints = false;
 			end
 		elseif parameter.values then
 			widget = getWidget("TRP3_Tools_ScriptParameterDropdownTemplate");

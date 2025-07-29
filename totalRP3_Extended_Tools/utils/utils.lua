@@ -1,7 +1,9 @@
 local _, addon = ...
 local loc = TRP3_API.loc;
 
-local GAME_EVENTS;
+-- load on demand
+local CACHED_GAME_EVENTS;
+local CACHED_EMOTES;
 
 addon.utils = {};
 
@@ -248,41 +250,41 @@ function addon.utils.getObjectIconAndLink(class, relativeId)
 	return icon, color .. name .. "|r";
 end
 
-local emoteList;
 function addon.utils.getEmoteList()
-	if not emoteList then
-		emoteList = {};
-		local animatedEmotesIndex = {};
-		for index, token in ipairs(EmoteList) do
-			animatedEmotesIndex[token] = true;
-		end
-		local spokenEmotesIndex = {};
-		for index, token in ipairs(TextEmoteSpeechList) do
-			spokenEmotesIndex[token] = true;
-		end
-		spokenEmotesIndex["FORTHEALLIANCE"] = true;
-		spokenEmotesIndex["FORTHEHORDE"] = true;
-		for index = 1, MAXEMOTEINDEX do
-			local token = _G["EMOTE" .. index .. "_TOKEN"];
-			if token then
-				local emote = {
-					token      = token,
-					isAnimated = animatedEmotesIndex[token] or false,
-					isSpoken   = spokenEmotesIndex[token] or false,
-					slashCommands = {};
-				};
-				local cIndex = 1;
-				local slashCmd = "EMOTE" .. index .. "_CMD" .. cIndex;
-				while _G[slashCmd] do
-					table.insert(emote.slashCommands, _G[slashCmd]);
-					cIndex = cIndex + 1;
-					slashCmd = "EMOTE" .. index .. "_CMD" .. cIndex;
-				end
-				table.insert(emoteList, emote);
+	if CACHED_EMOTES then
+		return CACHED_EMOTES;
+	end
+	CACHED_EMOTES = {};
+	local animatedEmotesIndex = {};
+	for _, token in pairs(EmoteList) do
+		animatedEmotesIndex[token] = true;
+	end
+	local spokenEmotesIndex = {};
+	for _, token in pairs(TextEmoteSpeechList) do
+		spokenEmotesIndex[token] = true;
+	end
+	spokenEmotesIndex["FORTHEALLIANCE"] = true;
+	spokenEmotesIndex["FORTHEHORDE"] = true;
+	for index = 1, MAXEMOTEINDEX do
+		local token = _G["EMOTE" .. index .. "_TOKEN"];
+		if token then
+			local emote = {
+				token      = token,
+				isAnimated = animatedEmotesIndex[token] or false,
+				isSpoken   = spokenEmotesIndex[token] or false,
+				slashCommands = {};
+			};
+			local cIndex = 1;
+			local slashCmd = "EMOTE" .. index .. "_CMD" .. cIndex;
+			while _G[slashCmd] do
+				table.insert(emote.slashCommands, _G[slashCmd]);
+				cIndex = cIndex + 1;
+				slashCmd = "EMOTE" .. index .. "_CMD" .. cIndex;
 			end
+			table.insert(CACHED_EMOTES, emote);
 		end
 	end
-	return emoteList;
+	return CACHED_EMOTES;
 end
 
 -- weighted edit distance for similarity search
@@ -349,11 +351,11 @@ end
 
 function addon.utils.getGameEvents()
 
-	if GAME_EVENTS then
-		return GAME_EVENTS;
+	if CACHED_GAME_EVENTS then
+		return CACHED_GAME_EVENTS;
 	end
 
-	GAME_EVENTS = {
+	CACHED_GAME_EVENTS = {
 		{
 			NA = "Total RP 3 Extended events",
 			PR = true, -- priority in list
@@ -409,7 +411,6 @@ function addon.utils.getGameEvents()
 						{ NA = "itemID", TY = "string" }, -- [1]
 						{ NA = "errorMessage", TY = "string" } -- [2]
 					}
-	
 				}
 			}
 		}
@@ -430,15 +431,15 @@ function addon.utils.getGameEvents()
 				table.insert(system.EV, event);
 			end
 			table.sort(system.EV, function(a, b) return a.NA < b.NA; end);
-			table.insert(GAME_EVENTS, system);
+			table.insert(CACHED_GAME_EVENTS, system);
 		end
 	end
-	table.sort(GAME_EVENTS, function(a, b) 
+	table.sort(CACHED_GAME_EVENTS, function(a, b) 
 		if a.PR ~= b.PR then 
 			return a.PR or false;
 		end
 		return a.NA < b.NA;
 	end);
 
-	return GAME_EVENTS;
+	return CACHED_GAME_EVENTS;
 end
