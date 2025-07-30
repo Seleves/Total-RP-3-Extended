@@ -39,7 +39,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		<Size x="0" y="65" />
 		<Frames>
 			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
-				<Size x="40" y="40" />
+				<Size x="24" y="24" />
 				<Anchors>
 					<Anchor point="TOPLEFT" x="12" y="-12"/>
 				</Anchors>
@@ -48,7 +48,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString parentKey="whenText" inherits="GameFontNormalLarge" justifyH="LEFT">
+				<FontString parentKey="whenText" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="5" y="0" />
 						<Anchor point="RIGHT" x="-5" />
@@ -57,9 +57,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Color r="0.95" g="0.95" b="0.95" />
 				</FontString>
 
-				<FontString parentKey="thenText" inherits="GameFontNormalLarge" justifyH="LEFT">
+				<FontString parentKey="thenText" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOP" relativePoint="BOTTOM" y="30" />
+						<Anchor point="TOP" relativePoint="BOTTOM" y="26" />
 						<Anchor point="LEFT" x="12" />
 						<Anchor point="RIGHT" x="-12" />
 						<Anchor point="BOTTOM" y="12" />
@@ -79,6 +79,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 		<Scripts>
 			<OnClick method="OnClick"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
 		</Scripts>
 	</Button>
 
@@ -90,7 +92,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		<Size x="0" y="65" />
 		<Frames>
 			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
-				<Size x="40" y="40" />
+				<Size x="24" y="24" />
 				<Anchors>
 					<Anchor point="TOPLEFT" x="12" y="-12"/>
 				</Anchors>
@@ -99,7 +101,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString parentKey="title" inherits="GameFontNormalLarge" justifyH="LEFT">
+				<FontString parentKey="title" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="5" y="0" />
 						<Anchor point="RIGHT" x="-5" />
@@ -110,16 +112,16 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 				<FontString parentKey="preview" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOP" relativePoint="BOTTOM" y="40" />
+						<Anchor point="TOP" relativePoint="BOTTOM" y="32" />
 						<Anchor point="LEFT" x="12" />
 						<Anchor point="RIGHT" x="-12" />
-						<Anchor point="BOTTOM" y="12" />
+						<Anchor point="BOTTOM" y="8" />
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />
 				</FontString>
 
 			</Layer>
-			<Layer level="BORDER">
+			<Layer level="BORDER" textureSubLevel="-1">
 				<Texture parentKey="securityIndicator">
 					<Color r="1" g="0.8" b="0.8"/>
 					<Anchors>
@@ -160,6 +162,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</HighlightTexture>
 		<Scripts>
 			<OnClick method="OnClick"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
 		</Scripts>
 	</Button>
 

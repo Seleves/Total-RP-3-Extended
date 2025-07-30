@@ -111,13 +111,15 @@ function rebuildTreeAndShow(absoluteId)
 	currentEditor.cursor.objects = currentEditor.cursor.objects or {};
 	for id, object in pairs(currentDraft.index or TRP3_API.globals.empty) do
 		currentEditor.cursor.objects[id] = currentEditor.cursor.objects[id] or {};
-		currentEditor.cursor.objects[id].collapsed = object.node:IsCollapsed();
+		currentEditor.cursor.objects[id].collapsed = (not addon.utils.isInnerIdOrEqual(id, absoluteId)) and object.node:IsCollapsed();
 	end
 
 	local model, index = buildObjectTree(currentEditor.creationId, currentDraft.class);
 	currentObject = nil;
 	currentDraft.model = model;
 	currentDraft.index = index;
+
+	local treeScroll = objectTree.widget:GetScrollPercentage();
 
 	objectTree.widget:SetDataProvider(DUMMY_TREE_MODEL);
 	for absoluteId, objectCursor in pairs(currentEditor.cursor.objects) do
@@ -130,6 +132,8 @@ function rebuildTreeAndShow(absoluteId)
 
 	objectTree.model = currentDraft.model;
 	objectTree.widget:SetDataProvider(currentDraft.model);
+	objectTree.widget:SetScrollPercentage(treeScroll);
+
 	addon.displayObject(absoluteId);
 	addon.editor.refreshObjectTree();
 end
@@ -335,6 +339,7 @@ function addon.saveEditor()
 		return
 	end
 	currentEditor.cursor.treeRatio = TRP3_ToolFrameEditor.split:GetRatio();
+	currentEditor.cursor.treeScroll = objectTree.widget:GetScrollPercentage();
 
 	currentEditor.cursor.objects = currentEditor.cursor.objects or {};
 	for absoluteId, object in pairs(currentDraft.index or TRP3_API.globals.empty) do
@@ -656,6 +661,7 @@ function addon.showEditor(editor)
 
 	objectTree.model = currentDraft.model;
 	objectTree.widget:SetDataProvider(currentDraft.model);
+	objectTree.widget:SetScrollPercentage(currentEditor.cursor.treeScroll or 0);
 	
 	addon.displayObject(currentEditor.cursor.objectId);
 end

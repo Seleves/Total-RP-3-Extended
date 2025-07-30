@@ -243,7 +243,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Button parentKey="triggerCancelButton" text="CANCEL" inherits="TRP3_CommonButton">
 				<Size x="100" y="22"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" x="20" y="-10"/>
+					<Anchor point="BOTTOM" y="20"/>
+					<Anchor point="RIGHT" x="-5" relativePoint="CENTER"/>
 				</Anchors>
 			</Button>
 

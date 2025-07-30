@@ -217,15 +217,18 @@ function TRP3_Tools_EditorScriptMixin:OnScriptSelected(scriptId)
 		end, nil, "");
 	else
 		local effects = {};
+		self.currentScriptSecurity = TRP3_API.security.SECURITY_LEVEL.HIGH;
 		if scriptId and self.scripts[scriptId] then
 			for index, effect in ipairs(self.scripts[scriptId]) do
+				local effectSecurity = addon.script.getEffectSecurity(effect);
 				table.insert(effects, {
 					title   = addon.script.getEffectTitle(effect),
 					preview = addon.script.getEffectPreview(effect),
 					icon    = "Interface\\Icons\\" .. addon.script.getEffectIcon(effect),
 					constraint = self:ConstraintToPreview(effect.constraint, "IF"),
-					security = addon.script.getEffectSecurity(effect)
+					security = effectSecurity
 				});
+				self.currentScriptSecurity = math.min(self.currentScriptSecurity, effectSecurity);
 			end
 			table.insert(effects, {isAddButton = true}); -- add button
 			self.scriptControls:Show();
@@ -479,10 +482,15 @@ function TRP3_Tools_ScriptTriggerListElementMixin:Refresh()
 		self:SetBackdrop(TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555);
 	end
 
+	local tooltipTitle;
+	local tooltipText;
+
 	if self.data.isAddButton then
 		self.icon.Icon:SetTexture("Interface\\PaperDollInfoFrame\\Character-Plus");
 		self.whenText:SetText("Add trigger");
 		self.thenText:SetText("");
+		tooltipTitle = "Add trigger";
+		tooltipText = TRP3_API.FormatShortcutWithInstruction("LCLICK", "Add trigger");
 	else
 		self.icon.Icon:SetTexture(self.data.icon);
 		self.whenText:SetText(self.data.whenText);
@@ -492,7 +500,7 @@ function TRP3_Tools_ScriptTriggerListElementMixin:Refresh()
 			local widget = conditionPreviewTermFramePool:Acquire();
 			widget:SetParent(self);
 			widget:ClearAllPoints();
-			widget:SetPoint("TOP", 0, -(38 + index*20));
+			widget:SetPoint("TOP", 0, -(16 + index*20));
 			widget:SetPoint("LEFT");
 			widget:SetPoint("RIGHT");
 			widget.open:SetText(constraint.open);
@@ -501,11 +509,18 @@ function TRP3_Tools_ScriptTriggerListElementMixin:Refresh()
 			widget:Show();
 			table.insert(self.constraintWidgets, widget);
 		end
+
+		tooltipTitle = self.data.whenText;
+		tooltipText = 
+			TRP3_API.FormatShortcutWithInstruction("LCLICK", "edit trigger") .. "|n" ..
+			TRP3_API.FormatShortcutWithInstruction("RCLICK", "more options")
+		;
 	end
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, tooltipTitle, tooltipText);
 end
 
 function TRP3_Tools_ScriptTriggerListElementMixin:GetElementExtent(data)
-	return data.isAddButton and 64 or (90 + 20*#data.constraint);
+	return data.isAddButton and 48 or (64 + 20*#data.constraint);
 end
 
 function TRP3_Tools_ScriptTriggerListElementMixin:Reset()
@@ -514,6 +529,14 @@ function TRP3_Tools_ScriptTriggerListElementMixin:Reset()
 		conditionPreviewTermFramePool:Release(widget);
 	end
 	wipe(self.constraintWidgets);
+end
+
+function TRP3_Tools_ScriptTriggerListElementMixin:OnEnter()
+	TRP3_RefreshTooltipForFrame(self);
+end
+
+function TRP3_Tools_ScriptTriggerListElementMixin:OnLeave()
+	TRP3_MainTooltip:Hide();
 end
 
 function TRP3_Tools_ScriptTriggerListElementMixin:OnClick(button)
@@ -577,16 +600,18 @@ end
 
 function TRP3_Tools_ScriptEffectListElementMixin:Refresh()
 	self:Reset();
+	local tooltipTitle;
+	local tooltipText;
 	if not self.data.isAddButton then
 		self.icon.Icon:SetTexture(self.data.icon);
-		self.title:SetText(self.data.title);
+		self.title:SetText(self:GetElementDataIndex() .. ". " .. self.data.title);
 		self.preview:SetText(self.data.preview);
 		applySecurityColorToTexture(self.data.security, self.securityIndicator);
 		for index, constraint in ipairs(self.data.constraint) do
 			local widget = conditionPreviewTermFramePool:Acquire();
 			widget:SetParent(self);
 			widget:ClearAllPoints();
-			widget:SetPoint("TOP", 0, -(38 + index*20));
+			widget:SetPoint("TOP", 0, -(16 + index*20));
 			widget:SetPoint("LEFT");
 			widget:SetPoint("RIGHT");
 			widget.open:SetText(constraint.open);
@@ -595,18 +620,32 @@ function TRP3_Tools_ScriptEffectListElementMixin:Refresh()
 			widget:Show();
 			table.insert(self.constraintWidgets, widget);
 		end
+		tooltipTitle = self:GetElementDataIndex() .. ". " .. self.data.title;
+
+		tooltipText = 
+			"Effect security: " .. TRP3_API.security.getSecurityText(self.data.security or TRP3_API.security.SECURITY_LEVEL.LOW)  .. "|n" ..
+			"Workflow security: " .. TRP3_API.security.getSecurityText(addon.editor.script.currentScriptSecurity or TRP3_API.security.SECURITY_LEVEL.LOW)  .. "|n|n" ..
+			TRP3_API.FormatShortcutWithInstruction("LCLICK", "edit effect") .. "|n" ..
+			TRP3_API.FormatShortcutWithInstruction("RCLICK", "more options") .. "|n" ..
+			TRP3_API.FormatShortcutWithInstruction("SHIFT-CLICK", "select range") .. "|n" ..
+			TRP3_API.FormatShortcutWithInstruction("CTRL-CLICK", "select this page")
+		;
 	else
 		self.icon.Icon:SetTexture("Interface\\PaperDollInfoFrame\\Character-Plus");
 		self.title:SetText("Add effect");
 		self.preview:SetText("");
 		applySecurityColorToTexture(0, self.securityIndicator);
+		tooltipTitle = "Add effect";
+		tooltipText = TRP3_API.FormatShortcutWithInstruction("LCLICK", "Add effect");
 	end
 	self.backgroundNormal:SetShown(not self.data.selected);
 	self.backgroundSelected:SetShown(self.data.selected);
+
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, tooltipTitle, tooltipText);
 end
 
 function TRP3_Tools_ScriptEffectListElementMixin:GetElementExtent(data)
-	return not data.isAddButton and (100 + 20*#data.constraint) or 64;
+	return not data.isAddButton and (72 + 20*#data.constraint) or 48;
 end
 
 function TRP3_Tools_ScriptEffectListElementMixin:Reset()
@@ -615,6 +654,14 @@ function TRP3_Tools_ScriptEffectListElementMixin:Reset()
 		conditionPreviewTermFramePool:Release(widget);
 	end
 	wipe(self.constraintWidgets);
+end
+
+function TRP3_Tools_ScriptEffectListElementMixin:OnEnter()
+	TRP3_RefreshTooltipForFrame(self);
+end
+
+function TRP3_Tools_ScriptEffectListElementMixin:OnLeave()
+	TRP3_MainTooltip:Hide();
 end
 
 function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)

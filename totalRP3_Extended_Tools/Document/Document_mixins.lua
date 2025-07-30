@@ -318,7 +318,7 @@ function TRP3_Tools_DocumentPageListElementMixin:Refresh()
 			TRP3_API.FormatShortcutWithInstruction("CTRL-CLICK", "select this page")
 		;
 	end
-	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, "Document page", tooltipText);
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, tooltipTitle, tooltipText);
 end
 
 function TRP3_Tools_DocumentPageListElementMixin:OnEnter()
