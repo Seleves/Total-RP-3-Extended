@@ -541,18 +541,18 @@ end
 
 function TRP3_Tools_ScriptTriggerListElementMixin:OnClick(button)
 	if self.data.isAddButton then
-		addon.editor.trigger:OpenForTrigger();
+		addon.modal:ShowModal(TRP3_API.popup.TRIGGER, {});
 	else
 		local trigger = addon.editor.script.triggers[self.data.index];
 		if button == "LeftButton" then
 			if self.data.active or not trigger.script then
-				addon.editor.trigger:OpenForTrigger(trigger);
+				addon.modal:ShowModal(TRP3_API.popup.TRIGGER, {trigger});
 			end
 			addon.editor.script.scriptList:SetSelectedValue(trigger.script);
 		elseif button == "RightButton" then
 			TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
 				local editOption = contextMenu:CreateButton("Edit trigger...", function()
-					addon.editor.trigger:OpenForTrigger(trigger);
+					addon.modal:ShowModal(TRP3_API.popup.TRIGGER, {trigger});
 					addon.editor.script.scriptList:SetSelectedValue(trigger.script);
 				end);
 				TRP3_MenuUtil.SetElementTooltip(editOption, "Edit trigger...");
@@ -678,7 +678,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 				effectIndex = effectIndex,
 				replace     = false
 			};
-			addon.editor.effect:OpenForEffect(nil, scriptId);
+			addon.modal:ShowModal(TRP3_API.popup.EFFECT, {nil, scriptId});
 		elseif button == "RightButton" then
 			TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
 				local addOption = contextMenu:CreateButton("Add effect...", function()
@@ -687,7 +687,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 						effectIndex = effectIndex,
 						replace     = false
 					};
-					addon.editor.effect:OpenForEffect(nil, scriptId);
+					addon.modal:ShowModal(TRP3_API.popup.EFFECT, {nil, scriptId});
 				end);
 				TRP3_MenuUtil.SetElementTooltip(addOption, "Add effect...");
 
@@ -725,7 +725,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 					effectIndex = effectIndex,
 					replace     = true
 				};
-				addon.editor.effect:OpenForEffect(effect, scriptId);
+				addon.modal:ShowModal(TRP3_API.popup.EFFECT, {effect, scriptId});
 			end
 		elseif button == "RightButton" then
 			TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
@@ -735,7 +735,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 						effectIndex = effectIndex,
 						replace     = true
 					};
-					addon.editor.effect:OpenForEffect(effect, scriptId);
+					addon.modal:ShowModal(TRP3_API.popup.EFFECT, {effect, scriptId});
 				end);
 				TRP3_MenuUtil.SetElementTooltip(editOption, "Edit effect...");
 
@@ -747,7 +747,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 						effectIndex = effectIndex,
 						replace     = false
 					};
-					addon.editor.effect:OpenForEffect(nil, scriptId);
+					addon.modal:ShowModal(TRP3_API.popup.EFFECT, {nil, scriptId});
 				end);
 				TRP3_MenuUtil.SetElementTooltip(addBeforeOption, "Insert a new effect before this effect");
 
@@ -757,7 +757,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 						effectIndex = effectIndex + 1,
 						replace     = false
 					};
-					addon.editor.effect:OpenForEffect(nil, scriptId);
+					addon.modal:ShowModal(TRP3_API.popup.EFFECT, {nil, scriptId});
 				end);
 				TRP3_MenuUtil.SetElementTooltip(addAfterOption, "Insert a new effect after this effect");
 

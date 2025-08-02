@@ -8,14 +8,14 @@ TRP3_Tools_EditorTriggerMixin = {};
 
 function TRP3_Tools_EditorTriggerMixin:Initialize()
 	self.gameEventButton:SetScript("OnClick", function() 
-		local eventId = strtrim(addon.editor.trigger.gameEventName:GetText());
+		local eventId = strtrim(self.gameEventName:GetText());
 		if strlen(eventId) > 0 then
-			addon.editor.trigger:SetTrigger(eventId, addon.script.triggerType.EVENT);
-			addon.editor.trigger:ShowTriggerMain();
+			self:SetTrigger(eventId, addon.script.triggerType.EVENT);
+			self:ShowTriggerMain();
 		end
 	end);
 	self.triggerCancelButton:SetScript("OnClick", function() 
-		addon.editor.trigger:ShowTriggerMain();
+		self:ShowTriggerMain();
 	end);
 	self.cancelButton:SetScript("OnClick", function() 
 		self:Hide();
@@ -48,6 +48,13 @@ function TRP3_Tools_EditorTriggerMixin:Initialize()
 		end
 	end);
 	self.constraint.title:SetRotation(math.pi/2); -- not possible to do in XML
+	TRP3_API.popup.TRIGGER = "trigger";
+	TRP3_API.popup.POPUPS[TRP3_API.popup.TRIGGER] = {
+		frame = self,
+		showMethod = function(triggerData)
+			self:OpenForTrigger(triggerData);
+		end,
+	};
 end
 
 function TRP3_Tools_EditorTriggerMixin:OnScriptSelected(scriptId)
@@ -256,8 +263,8 @@ function TRP3_Tools_ScriptObjectEventListElementMixin:Refresh()
 end
 
 function TRP3_Tools_ScriptObjectEventListElementMixin:OnClick()
-	addon.editor.trigger:SetTrigger(self.data.id, self.data.type);
-	addon.editor.trigger:ShowTriggerMain();
+	TRP3_Tools_EditorTrigger:SetTrigger(self.data.id, self.data.type);
+	TRP3_Tools_EditorTrigger:ShowTriggerMain();
 end
 
 TRP3_Tools_ScriptGameEventTreeNodeMixin = {};
@@ -299,14 +306,14 @@ function TRP3_Tools_ScriptGameEventTreeNodeMixin:OnClick()
 	if self.node.data.title then
 		self:OnToggleChildren();
 	else
-		addon.editor.trigger:SetTrigger(self.node.data.id, addon.script.triggerType.EVENT);
-		addon.editor.trigger:ShowTriggerMain();
+		TRP3_Tools_EditorTrigger:SetTrigger(self.node.data.id, addon.script.triggerType.EVENT);
+		TRP3_Tools_EditorTrigger:ShowTriggerMain();
 	end
 end
 
 function TRP3_Tools_ScriptGameEventTreeNodeMixin:OnToggleChildren()
 	self.node:ToggleCollapsed();
-	addon.editor.trigger.gameEventTree:Refresh();
+	TRP3_Tools_EditorTrigger.gameEventTree:Refresh();
 end
 
 function TRP3_Tools_ScriptGameEventTreeNodeMixin:OnEnter()

@@ -70,11 +70,7 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 		TRP3_ItemTooltip:Hide();
 	end);
 	display.preview:SetScript("OnClick", function(self)
-		TRP3_API.popup.showPopup(
-			TRP3_API.popup.ICONS, 
-			{parent = TRP3_ToolFrame, point = "CENTER", parentPoint = "CENTER"}, 
-			{function(icon) s:UpdatePreviews(icon); end, nil, nil, display.preview.selectedIcon}
-		);
+		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon) s:UpdatePreviews(icon); end, nil, nil, display.preview.selectedIcon});
 	end);
 	
 	for _, bagPreview in pairs({"bag5x4", "bag2x4", "bag1x4"}) do

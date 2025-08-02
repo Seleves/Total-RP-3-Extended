@@ -208,8 +208,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<!-- Popups -->
 			
 			<Frame parentKey="noteFrame" name="$parentNote" inherits="TRP3_Tools_EditorNoteTemplate"/>
-			<Frame parentKey="triggerFrame" name="$parentTrigger" inherits="TRP3_Tools_EditorTriggerTemplate"/>
-			<Frame parentKey="effectFrame" name="$parentEffect" inherits="TRP3_Tools_EditorEffectTemplate"/>
 			
 		</Frames>
 	</Frame>

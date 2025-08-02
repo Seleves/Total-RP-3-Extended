@@ -7,6 +7,22 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 	<Script file="Global_popups_mixins.lua"/>
 
+	<Frame name="TRP3_Tools_ModalLayer" frameStrata="DIALOG" virtual="true" enableMouse="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture setAllPoints="true">
+					<Color r="0" g="0" b="0" a="0.75"/>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="TRP3_Tools_ModalOverlay" frameStrata="DIALOG" virtual="true" mixin="TRP3_Tools_ModalOverlayMixin">
+		<Scripts>
+			<OnLoad method="Initialize"/>
+		</Scripts>
+	</Frame>
+
 	<!-- Object browser -->
 
 	<Button name="TRP3_Tools_ObjectsBrowserListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_ObjectsBrowserListElementMixin">

@@ -548,22 +548,22 @@ function addon.editor.populateObjectTagMenu(menu, onAccept, scriptContext, event
 	-- TODO all object types are taggable but I think it makes only sense for those that can have a distinct name
 	local objectsMenu = menu:CreateButton("Object tags");
 	objectsMenu:CreateButton(loc.TYPE_ITEM, function() 
-		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
+		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
 			onAccept("${" .. id .. "}");
 		end, TRP3_DB.types.ITEM});
 	end);
 	objectsMenu:CreateButton(loc.TYPE_AURA, function() 
-		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
+		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
 			onAccept("${" .. id .. "}");
 		end, TRP3_DB.types.AURA});
 	end);
 	objectsMenu:CreateButton(loc.TYPE_CAMPAIGN, function() 
-		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
+		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
 			onAccept("${" .. id .. "}");
 		end, TRP3_DB.types.CAMPAIGN});
 	end);
 	objectsMenu:CreateButton(loc.TYPE_QUEST, function() 
-		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
+		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
 			onAccept("${" .. id .. "}");
 		end, TRP3_DB.types.QUEST});
 	end);
@@ -710,8 +710,6 @@ function TRP3_API.extended.tools.initEditor(toolFrame)
 	objectTree = TRP3_ToolFrameEditor.split.tree; -- = TRP3_ToolFrameEditorTree
 	noteFrame  = TRP3_ToolFrameEditor.noteFrame;
 
-	addon.editor.trigger = TRP3_ToolFrameEditor.triggerFrame;
-	addon.editor.effect  = TRP3_ToolFrameEditor.effectFrame;
 	addon.editor.script  = TRP3_ToolFrameEditor.split.split.script;
 
 	-- statusBar.id:SetText(loc.EDITOR_ID_COPY);
@@ -734,8 +732,6 @@ function TRP3_API.extended.tools.initEditor(toolFrame)
 	end
 	
 	addon.editor.script:Initialize();
-	addon.editor.trigger:Initialize();
-	addon.editor.effect:Initialize();
 	
 	local template = "|T%s:11:16|t";
 	local types = {

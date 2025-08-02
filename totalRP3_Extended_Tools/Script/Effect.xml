@@ -65,7 +65,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	</Button>
 
 
-	<Frame name="TRP3_Tools_EditorEffectTemplate" virtual="true" inherits="TRP3_Tools_TitledPopupTemplate" hidden="true" mixin="TRP3_Tools_EditorEffectMixin">
+	<Frame name="TRP3_Tools_EditorEffect" inherits="TRP3_Tools_TitledPopupTemplate" hidden="true" mixin="TRP3_Tools_EditorEffectMixin">
 		<Size x="800" y="500"/>
 
 		<Frames>
@@ -202,7 +202,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			</Button>
 
 		</Frames>
-		
+		<Scripts>
+			<OnLoad method="Initialize" inherit="append"/>
+		</Scripts>
 	</Frame>
 	
 </Ui>

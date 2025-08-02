@@ -1030,7 +1030,7 @@ function addon.script.registerBuiltinEffects()
 		GetPreview  = function(self, effect, auraId, op, var, value)
 			return loc.EFFECT_VAR_AURA_CHANGE_PREVIEW:format(
 				fmt(self.parameters[1], auraId),
-				fmt(self.parameters[2], op),
+				op, --fmt(self.parameters[2], op),
 				fmt(self.parameters[3], var),
 				fmt(self.parameters[4], value)
 			);

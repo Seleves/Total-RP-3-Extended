@@ -105,12 +105,10 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</Scripts>
 	</Button>
 
-	<Frame name="TRP3_Tools_EditorTriggerTemplate" virtual="true" inherits="TRP3_Tools_TitledPopupTemplate" hidden="true" mixin="TRP3_Tools_EditorTriggerMixin">
+	<Frame name="TRP3_Tools_EditorTrigger" inherits="TRP3_Tools_TitledPopupTemplate" hidden="true" mixin="TRP3_Tools_EditorTriggerMixin">
 		<Size x="800" y="500"/>
 
 		<Frames>
-
-
 			<Button parentKey="trigger" inherits="BackdropTemplate">
 				<KeyValues>
 					<KeyValue key="backdropInfo" value="TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555" type="global"/>
@@ -312,7 +310,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			</Button>
 
 		</Frames>
-		
+		<Scripts>
+			<OnLoad method="Initialize" inherit="append"/>
+		</Scripts>
 	</Frame>
 	
 </Ui>

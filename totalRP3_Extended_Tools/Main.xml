@@ -482,7 +482,13 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</Anchors>
 			</Button>
 
-			<Frame name="$parentPopupHolderTODO" frameLevel="1000" frameStrata="DIALOG" setAllPoints="true">
+			<Frame name="$parentModalOverlay" parentKey="modalOverlay" inherits="TRP3_Tools_ModalOverlay">
+				<Anchors>
+					<Anchor point="TOP" y="-22"/>
+					<Anchor point="LEFT" x="22"/>
+					<Anchor point="RIGHT" x="-22"/>
+					<Anchor point="BOTTOM" y="22"/>
+				</Anchors>
 			</Frame>
 
 		</Frames>

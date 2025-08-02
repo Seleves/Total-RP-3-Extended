@@ -1,6 +1,56 @@
 local _, addon = ...
 local loc = TRP3_API.loc;
 
+TRP3_Tools_ModalOverlayMixin = {};
+local modalLayerPool = CreateFramePool("Frame", nil, "TRP3_Tools_ModalLayer");
+
+function TRP3_Tools_ModalOverlayMixin:Initialize()
+	self.layers = {};
+end
+
+function TRP3_Tools_ModalOverlayMixin:ShowModal(popupId, popupArgs)
+	local layer = self:AcquireLayer();
+	local popupFrame = TRP3_API.popup.POPUPS[popupId].frame;
+	popupFrame:SetScript("OnHide", function()
+		self:HideLayer(layer);
+	end);
+	TRP3_API.popup.showPopup(popupId, {parent = layer}, popupArgs);
+end
+
+function TRP3_Tools_ModalOverlayMixin:HideLayer(layer)
+	local doHide = false;
+	for _, l in ipairs(self.layers) do
+		if doHide or l == layer then
+			l:Hide();
+			for _, child in pairs({l:GetChildren()}) do
+				child:SetScript("OnHide", nil);
+				child:Hide();
+			end
+			doHide = true;
+		end
+	end
+end
+
+function TRP3_Tools_ModalOverlayMixin:AcquireLayer()
+	for _, layer in ipairs(self.layers) do
+		if not layer:IsShown() then
+			layer:Show();
+			return layer;
+		end
+	end
+	local newLayer = modalLayerPool:Acquire();
+	newLayer:SetParent(self);
+	newLayer:SetAllPoints();
+	if TableHasAnyEntries(self.layers) then
+		newLayer:SetFrameLevel(self.layers[#self.layers]:GetFrameLevel() + 1000);
+	else
+		newLayer:SetFrameLevel(self:GetFrameLevel() + 1000);
+	end
+	newLayer:Show();
+	table.insert(self.layers, newLayer);
+	return newLayer;
+end
+
 TRP3_Tools_ObjectsBrowserListElementMixin = {};
 
 function TRP3_Tools_ObjectsBrowserListElementMixin:Initialize(data)

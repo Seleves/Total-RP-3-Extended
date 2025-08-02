@@ -718,6 +718,9 @@ addon.localize = localize;
 local function onStart()
 
 	localize(toolFrame);
+	localize(TRP3_Tools_EditorTrigger);
+	localize(TRP3_Tools_EditorEffect);
+
 
 	toolFrame.root:SetTitleText(loc.ROOT_TITLE);
 	toolFrame.root:SetTitleWidth(150);
@@ -826,6 +829,7 @@ local function onStart()
 	TRP3_API.extended.tools.initScript(toolFrame, effectMenu);
 
 	addon.global_popups.initialize();
+	addon.modal = toolFrame.modalOverlay;
 
 	TRP3_InnerObjectEditor.init(toolFrame);
 	TRP3_LinksEditor.init(toolFrame);

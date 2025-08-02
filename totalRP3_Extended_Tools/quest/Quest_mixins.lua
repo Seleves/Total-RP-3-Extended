@@ -22,17 +22,13 @@ function TRP3_Tools_EditorQuestMixin:Initialize()
 
 	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.content.main.icon, "RIGHT", 0, 5, "Quest icon", loc.EDITOR_ICON_SELECT);
 	self.content.main.icon:SetScript("OnClick", function()
-		TRP3_API.popup.showPopup(
-			TRP3_API.popup.ICONS, 
-			{parent = TRP3_ToolFramePopupHolderTODO}, 
-			{function(icon) 
+		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon) 
 				self.content.main.icon.Icon:SetTexture("Interface\\ICONS\\" .. icon);
 				self.content.main.icon.selectedIcon = icon;
 			end, 
 			nil, 
 			nil, 
-			self.content.main.icon.selectedIcon}
-		);
+			self.content.main.icon.selectedIcon});
 	end);
 	
 end

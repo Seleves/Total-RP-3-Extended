@@ -42,11 +42,7 @@ function TRP3_Tools_EditorDocumentMixin:Initialize()
 	
 	-- Background
 	display.background:SetScript("OnClick", function()
-		TRP3_API.popup.showPopup(
-			TRP3_API.popup.BACKGROUNDS, 
-			{parent = TRP3_ToolFrame, point = "CENTER", parentPoint = "CENTER"}, 
-			{function(imageInfo) self.BCK = imageInfo and imageInfo.id or 8; end, nil, nil, self.BCK or 8}
-		);
+		addon.modal:ShowModal(TRP3_API.popup.BACKGROUNDS, {function(imageInfo) self.BCK = imageInfo and imageInfo.id or 8; end, nil, nil, self.BCK or 8});
 	end);
 
 	-- Border

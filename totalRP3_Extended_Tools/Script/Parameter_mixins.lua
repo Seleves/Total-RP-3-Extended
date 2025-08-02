@@ -233,7 +233,7 @@ function TRP3_Tools_ScriptParameterObjectMixin:Setup(widgetContext, parameter)
 	addon.localize(self.id);
 	local s = self;
 	self.browse:SetScript("OnClick", function()
-		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
+		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
 			s.id:SetText(id);
 		end, addon.script.parameter.objectMap[parameter.type]});
 	end);
@@ -347,9 +347,7 @@ function TRP3_Tools_ScriptParameterMusicMixin:Setup(widgetContext, parameter)
 	self.id.helpText = parameter.description;
 	addon.localize(self.id);
 	self.browse:SetScript("OnClick", function()
-		TRP3_API.popup.showPopup(TRP3_API.popup.MUSICS, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
-			self.id:SetText(id);
-		end});
+		addon.modal:ShowModal(TRP3_API.popup.MUSICS, {function(id) self.id:SetText(id); end});
 	end);
 	self.play:SetText(loc.EFFECT_SOUND_PLAY);
 	self.play:SetScript("OnClick", function()
@@ -372,9 +370,7 @@ function TRP3_Tools_ScriptParameterEmoteMixin:Setup(widgetContext, parameter)
 	self.id.helpText = parameter.description;
 	addon.localize(self.id);
 	self.browse:SetScript("OnClick", function()
-		TRP3_API.popup.showPopup(TRP3_API.popup.EMOTES, {parent = TRP3_ToolFramePopupHolderTODO}, {function(id)
-			self.id:SetText(id);
-		end});
+		addon.modal:ShowModal(TRP3_API.popup.EMOTES, {function(id) self.id:SetText(id); end});
 	end);
 end
 
@@ -399,11 +395,7 @@ function TRP3_Tools_ScriptParameterIconMixin:Setup(widgetContext, parameter)
 		self.onChangeCallback = function() end;	
 	end
 	self.icon:SetScript("OnClick", function()
-		TRP3_API.popup.showPopup(
-			TRP3_API.popup.ICONS, 
-			{parent = TRP3_ToolFramePopupHolderTODO}, 
-			{function(icon) self:SetValue(icon); end, nil, nil, self.icon.selectedIcon}
-		);
+		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon) self:SetValue(icon); end, nil, nil, self.icon.selectedIcon});
 	end);
 end
 
@@ -457,7 +449,10 @@ function TRP3_Tools_ScriptParameterLootMixin:Setup(widgetContext, parameter)
 	self.bag.editor.browse:SetScript("OnClick", function()
 		TRP3_API.popup.showPopup(TRP3_API.popup.OBJECTS, {parent = self.bag.editor, point = "RIGHT", parentPoint = "LEFT"}, {function(id)
 			self.bag.editor.id:SetText(id);
-		end, TRP3_DB.types.ITEM});
+		end, TRP3_DB.types.ITEM}); -- TODO revisit this, probably beneficial to streamline this part
+		-- addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
+		-- 	self.bag.editor.id:SetText(id);
+		-- end, TRP3_DB.types.ITEM});
 	end);
 	self.bag.editor.save:SetScript("OnClick", function()
 		local classID = strtrim(self.bag.editor.id:GetText());

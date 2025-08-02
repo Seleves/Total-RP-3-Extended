@@ -40,13 +40,13 @@ function TRP3_Tools_EditorCutsceneMixin:Initialize()
 	self.content.step.text:SetupSuggestions(addon.editor.populateObjectTagMenu);
 
 	self.content.step.backgroundBrowse:SetScript("OnClick", function()
-		TRP3_API.popup.showPopup(TRP3_API.popup.IMAGES, {parent = TRP3_ToolFramePopupHolderTODO}, {function(image)
+		addon.modal:ShowModal(TRP3_API.popup.IMAGES, {function(image)
 			self.content.step.backgroundValue:SetText(image.url);
 		end});
 	end);
 
 	self.content.step.imageBrowse:SetScript("OnClick", function()
-		TRP3_API.popup.showPopup(TRP3_API.popup.IMAGES, {parent = TRP3_ToolFramePopupHolderTODO}, {function(image)
+		addon.modal:ShowModal(TRP3_API.popup.IMAGES, {function(image)
 			self.content.step.imageValue:SetText(image.url);
 		end});
 	end);

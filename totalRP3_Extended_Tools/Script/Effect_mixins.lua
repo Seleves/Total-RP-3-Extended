@@ -88,7 +88,7 @@ TRP3_Tools_EditorEffectMixin = {};
 
 function TRP3_Tools_EditorEffectMixin:Initialize()
 	self.effectCancelButton:SetScript("OnClick", function() 
-		addon.editor.effect:ShowEffectMain();
+		self:ShowEffectMain();
 	end);
 
 	self.cancelButton:SetScript("OnClick", function() 
@@ -105,6 +105,13 @@ function TRP3_Tools_EditorEffectMixin:Initialize()
 		self:Hide();
 	end);
 	self.constraint.title:SetRotation(math.pi/2); -- not possible to do in XML
+	TRP3_API.popup.EFFECT = "effect";
+	TRP3_API.popup.POPUPS[TRP3_API.popup.EFFECT] = {
+		frame = self,
+		showMethod = function(effectData, scriptId)
+			self:OpenForEffect(effectData, scriptId);
+		end,
+	};
 end
 
 function TRP3_Tools_EditorEffectMixin:SetEffect(effectId)
@@ -268,14 +275,14 @@ function TRP3_Tools_ScriptEffectTreeNodeMixin:OnClick()
 	if self.node.data.isCategory then
 		self:OnToggleChildren();
 	else
-		addon.editor.effect:SetEffect(self.node.data.id);
-		addon.editor.effect:ShowEffectMain();
+		TRP3_Tools_EditorEffect:SetEffect(self.node.data.id);
+		TRP3_Tools_EditorEffect:ShowEffectMain();
 	end
 end
 
 function TRP3_Tools_ScriptEffectTreeNodeMixin:OnToggleChildren()
 	self.node:ToggleCollapsed();
-	addon.editor.effect.effectTree:Refresh();
+	TRP3_Tools_EditorEffect.effectTree:Refresh();
 end
 
 function TRP3_Tools_ScriptEffectTreeNodeMixin:OnEnter()

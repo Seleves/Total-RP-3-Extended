@@ -83,7 +83,7 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 			if IsShiftKeyDown() or (TRP3_API.configuration.getValue("default_color_picker")) then
 				TRP3_API.popup.showDefaultColorPicker({self.setColor, self.red, self.green, self.blue});
 			else
-				TRP3_API.popup.showPopup(TRP3_API.popup.COLORS, {parent = TRP3_ToolFrame}, {self.setColor, self.red, self.green, self.blue});
+				addon.modal:ShowModal(TRP3_API.popup.COLORS, {self.setColor, self.red, self.green, self.blue});
 			end
 		elseif button == "RightButton" then
 			self.setColor(nil, nil, nil);
@@ -113,11 +113,7 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 		TRP3_AuraTooltip:Attach(display.preview);
 	end);
 	display.preview:SetScript("OnMouseUp", function(self)
-		TRP3_API.popup.showPopup(
-			TRP3_API.popup.ICONS, 
-			{parent = TRP3_ToolFrame, point = "CENTER", parentPoint = "CENTER"}, 
-			{function(icon) s:OnIconSelected(icon); end, nil, nil, display.preview.aura.class.BA.IC}
-		);
+		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon) s:OnIconSelected(icon); end, nil, nil, display.preview.aura.class.BA.IC});
 	end);
 
 	gameplay.hasDuration:SetScript("OnClick", function()
