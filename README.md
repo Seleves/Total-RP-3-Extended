@@ -15,8 +15,9 @@ If you want to test this out I highly recommend making a database backup before.
 - reconsider the Notes frame accessibility, it should be more promiment
 - ~~streamline the object browser, add a "this creation only" filter~~
 - cut&paste maybe?
-- fix UI position and sizes in the effect editor
+- ~~fix UI position and sizes in the effect editor~~
 - fix layering issues for some popups
+- convert to Lua utility
 - ~~integrate variable tags into the UI~~
 - integrate a lint like function
 - localization

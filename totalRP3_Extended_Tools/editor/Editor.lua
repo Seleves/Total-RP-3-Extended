@@ -328,6 +328,9 @@ function addon.updateCurrentObjectDraft()
 		addon.editor.refreshObjectTree();
 		updateTabBar();
 	end
+
+	currentObject.class.MD = currentObject.class.MD or {MO = TRP3_DB.modes.EXPERT}; -- TODO backwards compatibility
+	-- MD serves no purpose in non-root objects, but it will crash older versions if not present
 	
 	noteFrame:InterfaceToClass(currentObject.class);
 	addon.editor.script:InterfaceToClass(currentObject.class, objectCursor);

@@ -171,7 +171,7 @@ function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, curso
 	local hasDuration = (BA.DU or math.huge) < math.huge;
 	self.content.gameplay.hasDuration:SetChecked(hasDuration);
 	self.content.gameplay.duration:SetShown(hasDuration);
-	self.content.gameplay.duration:SetText(BA.DU or "300");
+	self.content.gameplay.duration:SetText(("%0.1f"):format(BA.DU or 300):gsub("%.0+", "")); --  getting rid of ugly floating point artifacts
 
 	self.content.gameplay.alwaysActive:SetChecked(BA.AA or false);
 	self.content.gameplay.ensureExpiry:SetChecked(BA.EE or false);
@@ -185,7 +185,7 @@ function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, curso
 	local hasInterval = (BA.IV or math.huge) < math.huge;
 	self.content.gameplay.hasInterval:SetChecked(hasInterval);
 	self.content.gameplay.interval:SetShown(hasInterval);
-	self.content.gameplay.interval:SetText(BA.IV or "10");
+	self.content.gameplay.interval:SetText(("%0.1f"):format(BA.IV or 10):gsub("%.0+", ""));
 	self.content.gameplay.inspectable:SetChecked(BA.WE or false);
 end
 
