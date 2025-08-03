@@ -21,6 +21,6 @@ If you want to test this out I highly recommend making a database backup before.
 - ~~integrate variable tags into the UI~~
 - integrate a lint like function
 - localization
-- remove unused code
+- ~~remove unused code~~
 - add a variable inspector
 - older versions of Extended allowed for spaces in inner ids, decide on how to handle that

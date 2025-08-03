@@ -16,21 +16,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 	<Script file="Script_mixins.lua"/>
 
-	<Include file="Effects\Effects.xml"/>
-	<Include file="Effects\Effects.lua"/>
-
-	<Include file="Element\Element.xml"/>
-	<Include file="Element\Element.lua"/>
-
-	<Include file="Conditions\Conditions.xml"/>
-	<Include file="Conditions\Conditions.lua"/>
-	<Include file="Conditions\Operands.xml"/>
-	<Include file="Conditions\Operands.lua"/>
-
-	<Include file="Normal\Normal.xml"/>
-	<Include file="Normal\Normal.lua"/>
-
-
 	<Button name="TRP3_Tools_ScriptTriggerListElementTemplate" virtual="true" inherits="BackdropTemplate" registerForClicks="AnyUp" mixin="TRP3_Tools_ScriptTriggerListElementMixin">
 		<KeyValues>
 			<KeyValue key="backdropInfo" value="BACKDROP_CALLOUT_GLOW_0_16" type="global"/>
