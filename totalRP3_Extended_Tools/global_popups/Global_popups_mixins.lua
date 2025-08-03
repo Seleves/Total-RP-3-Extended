@@ -223,7 +223,6 @@ function TRP3_Tools_ObjectsBrowserMixin:Filter()
 end
 
 function TRP3_Tools_ObjectsBrowserMixin:Close()
-	TRP3_API.popup.hidePopups();
 	self:Hide();
 end
 
@@ -309,6 +308,5 @@ function TRP3_Tools_EmotesBrowserMixin:Filter()
 end
 
 function TRP3_Tools_EmotesBrowserMixin:Close()
-	TRP3_API.popup.hidePopups();
 	self:Hide();
 end
