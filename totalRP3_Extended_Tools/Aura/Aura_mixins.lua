@@ -126,11 +126,11 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 		else
 			gameplay.duration:Hide();
 		end
-	end)
+	end);
 
 	gameplay.alwaysActive:SetScript("OnClick", function()
 		gameplay.ensureExpiry:SetShown(gameplay.alwaysActive:GetChecked());
-	end)
+	end);
 
 	gameplay.hasInterval:SetScript("OnClick", function()
 		if gameplay.hasInterval:GetChecked() then
@@ -142,7 +142,16 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 		else
 			gameplay.interval:Hide();
 		end
-	end)
+	end);
+
+	display.applyAura:SetScript("OnClick", function() 
+		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
+		if TRP3_API.extended.classExists(absoluteId) then
+			TRP3_API.extended.auras.apply(absoluteId);
+		else
+			TRP3_API.utils.message.displayMessage("The aura cannot be activated because it hasn't been saved.", 4);
+		end
+	end);
 
 end
 
@@ -183,6 +192,8 @@ function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, curso
 	self.content.gameplay.interval:SetShown(hasInterval);
 	self.content.gameplay.interval:SetText(("%0.1f"):format(BA.IV or 10):gsub("%.0+", ""));
 	self.content.gameplay.inspectable:SetChecked(BA.WE or false);
+
+	self.content.display.applyAura:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 end
 
 function TRP3_Tools_EditorAuraMixin:InterfaceToClass(targetClass, targetCursor)

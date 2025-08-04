@@ -17,6 +17,22 @@ function TRP3_Tools_EditorQuestStepMixin:Initialize()
 	self.ScrollBar:SetHideIfUnscrollable(true);
 	self.content.main.pre:SetupSuggestions(addon.editor.populateObjectTagMenu);
 	self.content.main.post:SetupSuggestions(addon.editor.populateObjectTagMenu);
+
+	self.content.main.goToStep:SetScript("OnClick", function() 
+		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
+		if TRP3_API.extended.classExists(absoluteId) then
+			local campaignId, questId, stepId = strsplit(TRP3_API.extended.ID_SEPARATOR, absoluteId);
+			local questLog = TRP3_API.quest.getQuestLog()[campaignId];
+			if not questLog or not questLog.QUEST or not questLog.QUEST[questId] then
+				TRP3_API.quest.startQuest(campaignId, questId);
+			end
+			if questLog and questLog.QUEST and questLog.QUEST[questId] then
+				TRP3_API.quest.goToStep(campaignId, questId, stepId);
+			end
+		else
+			TRP3_API.utils.message.displayMessage("The quest step cannot be activated because it hasn't been saved.", 4);
+		end
+	end);
 end
 
 function TRP3_Tools_EditorQuestStepMixin:ClassToInterface(class, creationClass, cursor)
@@ -25,6 +41,7 @@ function TRP3_Tools_EditorQuestStepMixin:ClassToInterface(class, creationClass, 
 	self.content.main.post:SetText(BA.DX or "");
 	self.content.main.auto:SetChecked(BA.IN or false);
 	self.content.main.final:SetChecked(BA.FI or false);
+	self.content.main.goToStep:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 end
 
 function TRP3_Tools_EditorQuestStepMixin:InterfaceToClass(targetClass, targetCursor)

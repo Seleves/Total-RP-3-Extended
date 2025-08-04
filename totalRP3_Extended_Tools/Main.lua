@@ -106,10 +106,6 @@ TRP3_API.extended.tools.getClassDataSafeByType = getClassDataSafeByType;
 -- Root object action
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-local draftData = {};
-local draftRegister = {};
-
-
 
 local function getObjectLocale(class)
 	return (class.MD or TRP3_API.globals.empty).LO or "en";

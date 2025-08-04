@@ -405,6 +405,12 @@ function addon.editor.getCurrentObjectRelativeId()
 	end
 end
 
+function addon.editor.getCurrentObjectAbsoluteId()
+	if currentObject then
+		return currentObject.node.data.absoluteId;
+	end
+end
+
 function addon.editor.gatherVariables(scriptContext, restrictScope)
 	if not currentDraft then
 		return {};
@@ -548,24 +554,16 @@ function addon.editor.populateObjectTagMenu(menu, onAccept, scriptContext, event
 	-- TODO all object types are taggable but I think it makes only sense for those that can have a distinct name
 	local objectsMenu = menu:CreateButton("Object tags");
 	objectsMenu:CreateButton(loc.TYPE_ITEM, function() 
-		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
-			onAccept("${" .. id .. "}");
-		end, TRP3_DB.types.ITEM});
+		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id) onAccept("${" .. id .. "}"); end, TRP3_DB.types.ITEM});
 	end);
 	objectsMenu:CreateButton(loc.TYPE_AURA, function() 
-		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
-			onAccept("${" .. id .. "}");
-		end, TRP3_DB.types.AURA});
+		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id) onAccept("${" .. id .. "}"); end, TRP3_DB.types.AURA});
 	end);
 	objectsMenu:CreateButton(loc.TYPE_CAMPAIGN, function() 
-		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
-			onAccept("${" .. id .. "}");
-		end, TRP3_DB.types.CAMPAIGN});
+		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id) onAccept("${" .. id .. "}"); end, TRP3_DB.types.CAMPAIGN});
 	end);
 	objectsMenu:CreateButton(loc.TYPE_QUEST, function() 
-		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
-			onAccept("${" .. id .. "}");
-		end, TRP3_DB.types.QUEST});
+		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id) onAccept("${" .. id .. "}"); end, TRP3_DB.types.QUEST});
 	end);
 
 	if eventContext then

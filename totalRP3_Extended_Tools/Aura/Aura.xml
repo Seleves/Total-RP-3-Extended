@@ -143,6 +143,14 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<Anchor point="TOP" relativePoint="BOTTOM" relativeKey="$parent.flavor" x="0" y="-25"/>
 								</Anchors>
 							</Frame>
+
+							<Button parentKey="applyAura" inherits="TRP3_CommonButton" text="Apply aura">
+								<Size x="125" y="22"/>
+								<Anchors>
+									<Anchor point="BOTTOM" y="20"/>
+								</Anchors>
+							</Button>
+
 						</Frames>
 
 						<Layers>

@@ -55,7 +55,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<KeyValue key="titleText" value="${QE_ST_PRE}" type="string"/>
 									<KeyValue key="helpText" value="${QE_ST_PRE}" type="string"/>
 								</KeyValues>
-								<Size x="0" y="128"/>
+								<Size x="0" y="110"/>
 								<Anchors>
 									<Anchor point="TOP" y="-45" />
 									<Anchor point="RIGHT" x="-20" y="0"/>
@@ -68,7 +68,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<KeyValue key="titleText" value="${QE_ST_POST}" type="string"/>
 									<KeyValue key="helpText" value="${QE_ST_POST}" type="string"/>
 								</KeyValues>
-								<Size x="0" y="128"/>
+								<Size x="0" y="110"/>
 								<Anchors>
 									<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.pre"/>
 									<Anchor point="RIGHT" x="-20" y="0"/>
@@ -97,6 +97,13 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<Anchor point="LEFT" x="20" y="0"/>
 								</Anchors>
 							</CheckButton>
+
+							<Button parentKey="goToStep" inherits="TRP3_CommonButton" text="Activate step">
+								<Size x="125" y="22"/>
+								<Anchors>
+									<Anchor point="BOTTOM" y="20"/>
+								</Anchors>
+							</Button>
 
 						</Frames>
 
