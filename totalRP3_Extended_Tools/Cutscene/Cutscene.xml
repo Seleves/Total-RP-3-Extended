@@ -94,9 +94,11 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</Scripts>
 	</Button>
 
-	<Frame name="TRP3_Tools_EditorCutsceneChoiceTemplate" virtual="true" inherits="TRP3_Tools_TitledPopupTemplate" hidden="true" mixin="TRP3_Tools_EditorCutsceneChoiceMixin">
+	<Frame name="TRP3_Tools_EditorCutsceneChoicePopup" inherits="TRP3_Tools_TitledPopupTemplate" hidden="true" mixin="TRP3_Tools_EditorCutsceneChoiceMixin">
 		<Size x="800" y="500"/>
-
+		<KeyValues>
+			<KeyValue key="titleText" value="${DI_CHOICES}" type="string"/>
+		</KeyValues>
 		<Frames>
 
 			<Frame parentKey="optionEditor" inherits="BackdropTemplate" hidden="true">

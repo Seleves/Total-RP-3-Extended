@@ -107,16 +107,14 @@ function TRP3_Tools_EditorCutsceneMixin:Initialize()
 	
 	TRP3_API.ui.listbox.setupListBox(self.content.step.workflow, {{"(no workflow)", ""}});
 
-	self.choiceEditor = CreateFrame("Frame", "TRP3_Tools_EditorCutsceneChoice", TRP3_ToolFrameEditor, "TRP3_Tools_EditorCutsceneChoiceTemplate");
-	self.choiceEditor:Initialize();
-	self.choiceEditor.title:SetText(loc.DI_CHOICES);
+	TRP3_Tools_EditorCutsceneChoicePopup:Initialize();
 	self.content.step.choices:SetScript("OnClick", function()
 		local index, element = self.content.main.list.model:FindByPredicate(function(e) return e.active; end);
 		if element then
-			self.choiceEditor:OpenForChoice(element.step.CH, function(CH)
+			addon.modal:ShowModal(TRP3_API.popup.CUTSCENE_CHOICE, {element.step.CH, function(CH)
 				element.step.CH = CH;
 				self:ShowStep(index);
-			end);
+			end});
 		end
 	end);
 
@@ -612,7 +610,14 @@ function TRP3_Tools_EditorCutsceneChoiceMixin:Initialize()
 		self:Hide();
 		self.callback(choices);
 	end);
-	addon.localize(self.optionEditor);
+	addon.localize(self);
+	TRP3_API.popup.CUTSCENE_CHOICE = "cutscene_choice";
+	TRP3_API.popup.POPUPS[TRP3_API.popup.CUTSCENE_CHOICE] = {
+		frame = self,
+		showMethod = function(choiceData, callback)
+			self:OpenForChoice(choiceData, callback);
+		end,
+	};
 end
 
 function TRP3_Tools_EditorCutsceneChoiceMixin:OpenForChoice(choiceData, callback)

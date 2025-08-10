@@ -137,10 +137,6 @@ function TRP3_Tools_CreationsListElementMixin:OnClick(button)
 	end
 end
 
---function TRP3_Tools_CreationsListElementMixin.GetElementExtent(index, data)
---	return 20;
---end
-
 TRP3_Tools_CreationsActionsMixin = {};
 
 function TRP3_Tools_CreationsActionsMixin:Initialize()
