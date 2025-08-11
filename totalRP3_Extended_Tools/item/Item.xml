@@ -208,6 +208,13 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<Anchor point="TOPLEFT" x="25" y="0" relativePoint="BOTTOMRIGHT" relativeKey="$parent.description"/>
 								</Anchors>
 							</Frame>
+
+							<Button parentKey="inspectVariables" inherits="TRP3_CommonButton" text="Inspect variables">
+								<Size x="125" y="22"/>
+								<Anchors>
+									<Anchor point="BOTTOM" y="20"/>
+								</Anchors>
+							</Button> <!-- TODO button placement!-->
 						</Frames>
 					</Frame>
 					

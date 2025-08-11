@@ -272,6 +272,114 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</Frames>
 	</Frame>
 
+	<!-- Variable inspector -->
+
+	<Button name="TRP3_Tools_VariableInspectorListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_VariableInspectorListElementMixin">
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="key" inherits="GameFontNormal" maxLines="1" justifyH="LEFT" justifyV="CENTER">
+					<Size x="200"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4"/>
+					</Anchors>
+					<Color b="0.95" r="0.95" g="0.95"/>
+				</FontString>
+				<FontString parentKey="value" inherits="GameFontNormal" maxLines="1" justifyH="LEFT" justifyV="CENTER">
+					<Anchors>
+						<Anchor point="LEFT" x="4" relativePoint="RIGHT" relativeKey="$parent.key"/>
+						<Anchor point="RIGHT" x="-4"/>
+					</Anchors>
+					<Color b="0.95" r="0.95" g="0.95"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
+			<OnClick method="OnClick"/>
+		</Scripts>
+	</Button>
+
+	<Frame name="TRP3_Tools_VariableInspector" hidden="true" enableMouse="true" inherits="TRP3_BrowserDialogBackdropTemplate" mixin="TRP3_Tools_VariableInspectorMixin">
+		<KeyValues>
+			<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_GREY" type="global"/>
+		</KeyValues>
+
+		<Size x="550" y="400"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="title" text="Variable Inspector" inherits="GameFontNormalLarge">
+					<Size x="0" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-17"/>
+						<Anchor point="TOPRIGHT" x="0" y="-17"/>
+					</Anchors>
+					<Color b="0.95" r="0.95" g="0.95"/>
+				</FontString>
+				<FontString parentKey="errorText" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+					<Size x="400" y="50"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<Color b="0" r="0.95" g="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+
+			<Button parentKey="close" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-5" y="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Close();
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<DropdownButton parentKey="instanceSelection" inherits="TRP3_Tools_TitledDropdownButtonTemplate" name="$parentInstanceSelection">
+				<Anchors>
+					<Anchor point="TOP" y="-35"/>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="RIGHT" x="-10"/>
+				</Anchors>
+			</DropdownButton>
+
+			<Frame parentKey="content" inherits="TRP3_TooltipBackdropTemplate">
+				
+				<KeyValues>
+					<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_CREAMY_BROWN" type="global"/>
+				</KeyValues>
+
+				<Anchors>
+					<Anchor point="TOP" y="-5" relativeKey="$parent.instanceSelection" relativePoint="BOTTOM"/>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="RIGHT" x="-10"/>
+					<Anchor point="BOTTOM" y="10"/>
+				</Anchors>
+
+				<Frames>
+					<Frame name="$parentList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
+						<KeyValues>
+							<KeyValue key="listElementTemplate" value="TRP3_Tools_VariableInspectorListElementTemplate" type="string"/>
+							<KeyValue key="listElementMixin" value="TRP3_Tools_VariableInspectorListElementMixin" type="global"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="5" y="-5"/>
+							<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+	</Frame>
+
 	<Script file="Global_popups.lua"/>
 
 </Ui>

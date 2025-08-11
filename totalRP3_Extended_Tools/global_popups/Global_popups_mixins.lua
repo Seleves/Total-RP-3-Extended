@@ -13,7 +13,7 @@ function TRP3_Tools_ModalOverlayMixin:ShowModal(popupId, popupArgs)
 	local popupFrame = TRP3_API.popup.POPUPS[popupId].frame;
 	popupFrame:SetScript("OnHide", function()
 		self:HideLayer(layer);
-	end);
+	end); -- TODO adding OnHide is suboptimal, it could overwrite any existing handler
 	TRP3_API.popup.showPopup(popupId, {parent = layer}, popupArgs);
 end
 
@@ -308,5 +308,237 @@ function TRP3_Tools_EmotesBrowserMixin:Filter()
 end
 
 function TRP3_Tools_EmotesBrowserMixin:Close()
+	self:Hide();
+end
+
+
+TRP3_Tools_VariableInspectorListElementMixin = {};
+
+function TRP3_Tools_VariableInspectorListElementMixin:Initialize(data)
+	self.data = data;
+	local tooltipTitle;
+	local tooltipText;
+	if data.keyType == "pop" then
+		self.key:SetWidth(self:GetWidth()-10);
+		self.key:SetText(TRP3_API.Colors.Grey("Up from: ") .. data.keyText);
+		self.value:SetText("");
+
+		tooltipTitle = "Current position";
+		tooltipText = 
+			data.keyText .. "|n|n" ..
+			TRP3_API.FormatShortcutWithInstruction("LCLICK", "go one level up")
+		;
+	else
+		self.key:SetWidth(200);
+		self.key:SetText(data.keyText);
+		self.value:SetText(data.valueText);
+
+		tooltipTitle = "Variable";
+		tooltipText = 
+			"Identifier: " .. data.keyText .. " (" .. data.keyType .. ")|n" ..
+			"Value: " .. data.valueText .. " (" .. data.valueType .. ")|n|n" ..
+			TRP3_API.FormatShortcutWithInstruction("LCLICK", "edit value")
+		;
+	end
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, tooltipTitle, tooltipText);
+end
+
+function TRP3_Tools_VariableInspectorListElementMixin:OnEnter()
+	TRP3_RefreshTooltipForFrame(self);
+end
+
+function TRP3_Tools_VariableInspectorListElementMixin:OnLeave()
+	TRP3_MainTooltip:Hide();
+end
+
+function TRP3_Tools_VariableInspectorListElementMixin:OnClick()
+	if self.data.keyType == "pop" then
+		self.data.inspector:StackPop();
+	elseif self.data.valueType == "table" then
+		self.data.inspector:StackPush(self.data.key);
+	else
+		print("TODO - editor");
+	end
+end
+
+TRP3_Tools_VariableInspectorMixin = {};
+
+-- will sort numbers before numeric strings before non-numeric strings before rest
+-- if you use functions or tables as keys, it's your own fault :-)
+local function mixedTypeSort(tableToSort, sortKey)
+	table.sort(tableToSort, function(a, b) 
+		local va = sortKey and a[sortKey] or a;
+		local vb = sortKey and b[sortKey] or b;
+		local ta = type(va);
+		local tb = type(vb);
+		if ta ~= tb then
+			return ta < tb;
+		elseif ta == "number" then
+			return va < vb;
+		elseif ta == "string" and tonumber(va) and tonumber(vb) then
+			return tonumber(va) < tonumber(vb);
+		else
+			return tostring(va) < tostring(vb);
+		end
+	end);
+end
+
+function TRP3_Tools_VariableInspectorMixin:Initialize()
+	self.instances = {};
+	self.stack     = {};
+	TRP3_API.popup.VARIABLE_INSPECTOR = "variable_inspector";
+	TRP3_API.popup.POPUPS[TRP3_API.popup.VARIABLE_INSPECTOR] = {
+		frame = self,
+		showMethod = function(absoluteId, objectType)
+			self:ShowObject(absoluteId, objectType);
+		end,
+	};
+	addon.localize(self);
+end
+
+function TRP3_Tools_VariableInspectorMixin:ShowObject(absoluteId, objectType)
+	wipe(self.instances);
+	local locators = {};
+	if objectType == TRP3_DB.types.CAMPAIGN then
+		if TRP3_API.quest.getQuestLog() and TRP3_API.quest.getQuestLog()[absoluteId] then
+			local class = TRP3_API.extended.getClass(absoluteId);
+			local link = TRP3_API.inventory.getItemLink(class, absoluteId);
+			table.insert(self.instances, TRP3_API.quest.getQuestLog()[absoluteId]);
+			table.insert(locators, {link, #locators+1});
+		end
+	elseif objectType == TRP3_DB.types.ITEM then
+		local inventory = TRP3_API.inventory.getInventory();
+
+		local stack = {{item = inventory, locator = ""}};
+		while TableHasAnyEntries(stack) do
+			local top = table.remove(stack);
+
+			local class = TRP3_API.extended.getClass(top.item.id);
+			local link = TRP3_API.inventory.getItemLink(class, top.item.id);
+
+			if top.item.id == absoluteId then
+				table.insert(self.instances, top.item);
+				table.insert(locators, {top.locator .. " " .. link, #locators+1});
+			end
+			if type(top.item.content) == "table" then
+				local slotsSorted = {};
+				for slotKey, _ in pairs(top.item.content) do
+					table.insert(slotsSorted, slotKey);
+				end
+				mixedTypeSort(slotsSorted);
+				for _, slotKey in ipairs_reverse(slotsSorted) do
+					local locator;
+					if top.item == inventory and slotKey == TRP3_API.inventory.QUICK_SLOT_ID then
+						locator = "Main inventory";
+					elseif top.item == inventory then
+						locator = "Inventory slot " .. slotKey;
+					else
+						locator = top.locator .. " " .. link .. " > slot " .. slotKey;
+					end
+					table.insert(stack, {item = top.item.content[slotKey], locator = locator});
+				end
+			end
+		end
+
+	elseif objectType == TRP3_DB.types.AURA then
+		if TRP3_API.profile.getPlayerCurrentProfile() and TRP3_API.profile.getPlayerCurrentProfile().auras then
+			local class = TRP3_API.extended.getClass(absoluteId);
+			local link = TRP3_API.inventory.getItemLink(class, absoluteId);		
+			for _, aura in pairs(TRP3_API.profile.getPlayerCurrentProfile().auras) do
+				if aura.id == absoluteId then
+					table.insert(self.instances, aura);
+					table.insert(locators, {link, #locators+1});
+				end
+			end
+		end
+	end
+
+	TRP3_API.ui.listbox.setupListBox(self.instanceSelection, locators, function(instanceIndex) 
+		self:SelectInstance(instanceIndex);
+	end);
+
+	if TableHasAnyEntries(self.instances) then
+		self.instanceSelection:SetSelectedValue(1);
+		self.errorText:Hide();
+		self.instanceSelection:Show();
+		self.content:Show();
+	else
+		self.instanceSelection:SetSelectedValue(nil);
+		self.errorText:Show();
+		if objectType == TRP3_DB.types.CAMPAIGN then
+			self.errorText:SetText("This campaign isn't activated.");
+		elseif objectType == TRP3_DB.types.ITEM then
+			self.errorText:SetText("You don't have this item in your inventory.");
+		elseif objectType == TRP3_DB.types.AURA then
+			self.errorText:SetText("This aura isn't active.");
+		else
+			self.errorText:SetText("Object not found.");
+		end
+		self.instanceSelection:Hide();
+		self.content:Hide();
+	end	
+
+end
+
+function TRP3_Tools_VariableInspectorMixin:SelectInstance(instanceIndex)
+	
+	wipe(self.stack);
+
+	if instanceIndex and self.instances[instanceIndex] then
+		table.insert(self.stack, {
+			data = self.instances[instanceIndex].vars,
+			locator = "Variables",
+			isRoot = true,
+		});
+	end
+
+	self:StackPeek();
+
+end
+
+function TRP3_Tools_VariableInspectorMixin:StackPeek()
+	self.content.list.model:Flush();
+	local top = self.stack[#self.stack];
+	local model = {};
+	if top and top.data then
+		for key, value in pairs(top.data) do
+			table.insert(model, {
+				key       = key,
+				keyText   = addon.script.formatters.formatType(key),
+				valueText = addon.script.formatters.formatType(value),
+				keyType   = type(key),
+				valueType = type(value),
+				inspector = self
+			});
+		end
+		mixedTypeSort(model, "key");
+		if not top.isRoot then
+			table.insert(model, 1, {
+				keyText   = top.locator,
+				keyType   = "pop",
+				inspector = self
+			});
+		end
+	end
+	self.content.list.model:InsertTable(model);
+end
+
+function TRP3_Tools_VariableInspectorMixin:StackPush(key)
+	local top = self.stack[#self.stack];
+	if top and top.data and top.data[key] then
+		table.insert(self.stack, {
+			data = top.data[key],
+			locator = top.locator .. " > " .. addon.script.formatters.formatType(key)
+		});
+		self:StackPeek();
+	end
+end
+
+function TRP3_Tools_VariableInspectorMixin:StackPop()
+	table.remove(self.stack);
+	self:StackPeek();
+end
+
+function TRP3_Tools_VariableInspectorMixin:Close()
 	self:Hide();
 end

@@ -475,9 +475,9 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:OnEnter()
 		end
 
 		local evaluatedPreview = 
-			addon.script.formatters.colorCodePreview(evaluateOperand(self.data.equation.leftTerm)) .. " " ..
+			addon.script.formatters.formatType(evaluateOperand(self.data.equation.leftTerm)) .. " " ..
 			addon.script.getComparatorText(self.data.equation.comparator) .. " " ..
-			addon.script.formatters.colorCodePreview(evaluateOperand(self.data.equation.rightTerm));
+			addon.script.formatters.formatType(evaluateOperand(self.data.equation.rightTerm));
 
 		local tooltipText = 
 			"Test:" .. "|n" ..

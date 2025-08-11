@@ -153,6 +153,11 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 		end
 	end);
 
+	display.inspectVariables:SetScript("OnClick", function() 
+		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
+		addon.modal:ShowModal(TRP3_API.popup.VARIABLE_INSPECTOR, {absoluteId, TRP3_DB.types.AURA});
+	end);
+
 end
 
 function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, cursor)
@@ -194,6 +199,7 @@ function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, curso
 	self.content.gameplay.inspectable:SetChecked(BA.WE or false);
 
 	self.content.display.applyAura:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
+	self.content.display.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 end
 
 function TRP3_Tools_EditorAuraMixin:InterfaceToClass(targetClass, targetCursor)

@@ -273,7 +273,6 @@ end
 
 function addon.deleteDraft(creationId)
 	wipe(drafts[creationId].class);
-	wipe(drafts[creationId].register);
 	wipe(drafts[creationId]);
 	drafts[creationId] = nil;
 end

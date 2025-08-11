@@ -312,10 +312,17 @@ function addon.script.registerBuiltinOperands()
 		title       = loc.OP_OP_INV_COUNT,
 		description = loc.OP_OP_INV_COUNT_TT,
 		GetPreview  = function(self, operand, itemId, container) 
-			return loc.OP_OP_INV_COUNT_PREVIEW:format(
-				fmt(self.parameters[1], itemId),
-				fmt(self.parameters[2], container)
-			); 
+			if itemId == "" or itemId == nil then
+				return loc.OP_OP_INV_COUNT_PREVIEW:format(
+					"",
+					fmt(self.parameters[2], container)
+				); -- TODO
+			else
+				return loc.OP_OP_INV_COUNT_PREVIEW:format(
+					fmt(self.parameters[1], itemId),
+					fmt(self.parameters[2], container)
+				);
+			end
 		end,
 		returnType  = "number",
 		category    = loc.INV_PAGE_CHARACTER_INV,

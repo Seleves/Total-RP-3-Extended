@@ -628,7 +628,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:Refresh()
 			TRP3_API.FormatShortcutWithInstruction("LCLICK", "edit effect") .. "|n" ..
 			TRP3_API.FormatShortcutWithInstruction("RCLICK", "more options") .. "|n" ..
 			TRP3_API.FormatShortcutWithInstruction("SHIFT-CLICK", "select range") .. "|n" ..
-			TRP3_API.FormatShortcutWithInstruction("CTRL-CLICK", "select this page")
+			TRP3_API.FormatShortcutWithInstruction("CTRL-CLICK", "select this effect")
 		;
 	else
 		self.icon.Icon:SetTexture("Interface\\PaperDollInfoFrame\\Character-Plus");

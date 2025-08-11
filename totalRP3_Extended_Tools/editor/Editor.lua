@@ -337,7 +337,6 @@ function addon.updateCurrentObjectDraft()
 end
 
 function addon.saveEditor()
-	-- TODO save window positions, inner items scroll positions etc.
 	if not currentEditor or not currentDraft then
 		return
 	end
@@ -591,13 +590,10 @@ end
 
 function addon.createDraft(creationId)
 	local draftClass = {};
-	local draftRegister = {};
 	TRP3_API.utils.table.copy(draftClass, TRP3_API.extended.getClass(creationId));
-	TRP3_API.extended.registerDB({[creationId] = draftClass}, 0, draftRegister); -- TODO legacy
 	local model, index = buildObjectTree(creationId, draftClass);
 	local draft = {
 		class       = draftClass,
-		register    = draftRegister,
 		model       = model,
 		index       = index
 	};

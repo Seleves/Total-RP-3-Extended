@@ -131,6 +131,11 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 	display.container:SetScript("OnClick", onCheckClicked);
 	gameplay.quest:SetScript("OnClick", onCheckClicked);
 
+	display.inspectVariables:SetScript("OnClick", function() 
+		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
+		addon.modal:ShowModal(TRP3_API.popup.VARIABLE_INSPECTOR, {absoluteId, TRP3_DB.types.ITEM});
+	end);
+
 end
 
 function TRP3_Tools_EditorItemMixin:ClassToInterface(class, _, cursor)
@@ -169,9 +174,11 @@ function TRP3_Tools_EditorItemMixin:ClassToInterface(class, _, cursor)
 	self.content.display.containerMaxweight:SetText(containerData.MW or "0");
 	self.content.display.containerOnlyinner:SetChecked(containerData.OI or false);
 	
-	self:UpdatePreviews(BA.IC);
+	self:UpdatePreviews(BA.IC or "TEMP");
 
 	self:UpdateElementVisibility();
+
+	self.content.display.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 	
 end
 

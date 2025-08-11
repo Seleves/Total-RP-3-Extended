@@ -115,15 +115,18 @@ function addon.script.formatParameter(parameter, value, ...)
 	end
 end
 
-function addon.script.formatters.colorCodePreview(value)
+function addon.script.formatters.formatType(value)
 	if type(value) == "nil" then
-		return "|cff6666ffnil|r";
+		return TRP3_API.Colors.Blue("nil");
 	elseif type(value) == "boolean" then
-		return ("|cff6666ff%s|r"):format(value and loc.OP_BOOL_TRUE or loc.OP_BOOL_FALSE);
+		return TRP3_API.Colors.Blue(value and loc.OP_BOOL_TRUE or loc.OP_BOOL_FALSE);
 	elseif type(value) == "number" then
-		return ("|cff00ff00%s|r"):format(tostring(value));
+		return TRP3_API.Colors.Green(tostring(value));
 	elseif type(value) == "string" then
-		return ("|cffffffff\"%s\"|r"):format(value);
+		return TRP3_API.Colors.White("\"" .. value .. "\"");
+	elseif type(value) == "table" then
+		return TRP3_API.Colors.Orange("table[" .. CountTable(value) .. "]");
+	else
+		return TRP3_API.Colors.Yellow(tostring(value));
 	end
-	return "";
 end
