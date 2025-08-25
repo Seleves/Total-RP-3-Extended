@@ -322,16 +322,28 @@ function TRP3_Tools_VariableInspectorListElementMixin:Initialize(data)
 		self.key:SetWidth(self:GetWidth()-10);
 		self.key:SetText(TRP3_API.Colors.Grey("Up from: ") .. data.keyText);
 		self.value:SetText("");
+		self.delete:Hide();
 
 		tooltipTitle = "Current position";
 		tooltipText = 
 			data.keyText .. "|n|n" ..
 			TRP3_API.FormatShortcutWithInstruction("LCLICK", "go one level up")
 		;
+	elseif data.keyType == "add" then
+		self.key:SetWidth(self:GetWidth()-10);
+		self.key:SetText(data.keyText);
+		self.value:SetText("");
+		self.delete:Hide();
+
+		tooltipTitle = "Add variable";
+		tooltipText = 
+			TRP3_API.FormatShortcutWithInstruction("LCLICK", "add a new variable")
+		;
 	else
 		self.key:SetWidth(200);
 		self.key:SetText(data.keyText);
 		self.value:SetText(data.valueText);
+		self.delete:Show();
 
 		tooltipTitle = "Variable";
 		tooltipText = 
@@ -354,11 +366,17 @@ end
 function TRP3_Tools_VariableInspectorListElementMixin:OnClick()
 	if self.data.keyType == "pop" then
 		self.data.inspector:StackPop();
+	elseif self.data.keyType == "add" then
+		self.data.inspector:EditKey(nil);
 	elseif self.data.valueType == "table" then
 		self.data.inspector:StackPush(self.data.key);
 	else
-		print("TODO - editor");
+		self.data.inspector:EditKey(self.data.key);
 	end
+end
+
+function TRP3_Tools_VariableInspectorListElementMixin:OnDelete()
+	self.data.inspector:DeleteKey(self.data.key);
 end
 
 TRP3_Tools_VariableInspectorMixin = {};
@@ -393,6 +411,81 @@ function TRP3_Tools_VariableInspectorMixin:Initialize()
 			self:ShowObject(absoluteId, objectType);
 		end,
 	};
+
+	local valueTypes = {
+		{"String" , "string"},
+		{"Number" , "number"},
+		{"Boolean", "boolean"},
+		{"Table"  , "table"}
+	};
+	TRP3_API.ui.listbox.setupListBox(self.editor.valueType, valueTypes, function(valueType) 
+		self.editor.numberValue:SetShown(valueType == "number");
+		self.editor.stringValue:SetShown(valueType == "string");
+		self.editor.booleanValue:SetShown(valueType == "boolean");
+	end);
+	TRP3_API.ui.listbox.setupListBox(self.editor.booleanValue, {
+		{loc.OP_BOOL_TRUE,  true},
+		{loc.OP_BOOL_FALSE, false}
+	});
+	self.editor.accept:SetScript("OnClick", function() 
+
+		local top = self.stack[#self.stack];
+		local key;
+
+		if not self.keyToUpdate then
+			local keyType = self.editor.keyType:GetSelectedValue();
+			key = self.editor.key:GetText();
+			if keyType == "number" then
+				key = tonumber(key);
+				if not key then
+					TRP3_API.utils.message.displayMessage("The key you entered is not a number.", 4);
+					return;
+				end
+			end
+			if top.data and top.data[key] then
+				TRP3_API.utils.message.displayMessage("This variable alredy exists.", 4);
+				return;
+			end
+		else
+			key = self.keyToUpdate;
+		end
+
+		local valueType = self.editor.valueType:GetSelectedValue();
+		local value;
+		if valueType == "string" then
+			value = self.editor.stringValue:GetText();
+		elseif valueType == "number" then
+			value = tonumber(self.editor.numberValue:GetText());
+			if not value then
+				TRP3_API.utils.message.displayMessage("The value you entered is not a number.", 4);
+				return;
+			end
+		elseif valueType == "boolean" then
+			value = self.editor.booleanValue:GetSelectedValue();
+		elseif valueType == "table" then
+			value = {};
+		else
+			TRP3_API.utils.message.displayMessage("You cannot set this type.", 4);
+			return;
+		end
+
+		if not top.data then -- in case the object has no variables yet, we need to initialize the "vars" field
+			local instanceIndex = self.instanceSelection:GetSelectedValue();
+			self.instances[instanceIndex].vars = self.instances[instanceIndex].vars or {};
+			top.data = self.instances[instanceIndex].vars;
+		end
+
+		top.data[key] = value;
+
+		self.editor:Hide();
+		self.content:Show();
+		self:StackPeek();
+	end);
+	self.editor.cancel:SetScript("OnClick", function() 
+		self.editor:Hide();
+		self.content:Show();
+	end);
+
 	addon.localize(self);
 end
 
@@ -457,6 +550,7 @@ function TRP3_Tools_VariableInspectorMixin:ShowObject(absoluteId, objectType)
 		self:SelectInstance(instanceIndex);
 	end);
 
+	self.editor:Hide();
 	if TableHasAnyEntries(self.instances) then
 		self.instanceSelection:SetSelectedValue(1);
 		self.errorText:Hide();
@@ -520,6 +614,13 @@ function TRP3_Tools_VariableInspectorMixin:StackPeek()
 			});
 		end
 	end
+	if top then
+		table.insert(model, {
+			keyText   = "|TInterface\\PaperDollInfoFrame\\Character-Plus:16:16|t Add variable",
+			keyType   = "add",
+			inspector = self
+		});
+	end
 	self.content.list.model:InsertTable(model);
 end
 
@@ -536,6 +637,64 @@ end
 
 function TRP3_Tools_VariableInspectorMixin:StackPop()
 	table.remove(self.stack);
+	self:StackPeek();
+end
+
+function TRP3_Tools_VariableInspectorMixin:EditKey(key)
+	local keyTypes;
+	local currKeyType = type(key);
+	self.keyToUpdate = key;
+	self.editor.keyType:SetEnabled(currKeyType == "nil");
+	self.editor.key:SetEnabled(currKeyType == "nil");
+	if currKeyType == "nil" then
+		keyTypes = {
+			{"String", "string"},
+			{"Number", "number"},
+		};
+		currKeyType = "string";
+	else
+		keyTypes = {
+			{"String", "string"},
+			{"Number", "number"},
+			{"Boolean", "boolean"},
+			{"Table", "table"},
+			{"Function", "function"}
+		};
+	end
+	TRP3_API.ui.listbox.setupListBox(self.editor.keyType, keyTypes);
+	self.editor.keyType:SetSelectedValue(currKeyType);
+	self.editor.key:SetText(tostring(key or ""));
+
+	if key then
+		local value = self.stack[#self.stack].data[key];
+		self.editor.valueType:SetSelectedValue(type(value));
+		if type(value) == "string" then
+			self.editor.stringValue:SetText(value);
+			self.editor.numberValue:SetText(tostring(tonumber(value) or 0));
+			self.editor.booleanValue:SetSelectedValue(value:lower() == "true");
+		elseif type(value) == "number" then
+			self.editor.stringValue:SetText(tostring(value));
+			self.editor.numberValue:SetText(tostring(value));
+			self.editor.booleanValue:SetSelectedValue(value ~= 0);
+		elseif type(value) == "boolean" then
+			self.editor.stringValue:SetText(value and "true" or "false");
+			self.editor.numberValue:SetText(value and "1" or "0");
+			self.editor.booleanValue:SetSelectedValue(value);
+		end
+	else
+		self.editor.valueType:SetSelectedValue("string");
+		self.editor.stringValue:SetText("");
+		self.editor.numberValue:SetText("0");
+		self.editor.booleanValue:SetSelectedValue(false);
+	end
+
+	self.editor:Show();
+	self.content:Hide();
+end
+
+function TRP3_Tools_VariableInspectorMixin:DeleteKey(key)
+	local top = self.stack[#self.stack];
+	top.data[key] = nil;
 	self:StackPeek();
 end
 

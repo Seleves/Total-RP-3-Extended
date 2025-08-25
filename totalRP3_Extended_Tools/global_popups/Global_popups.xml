@@ -287,12 +287,28 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<FontString parentKey="value" inherits="GameFontNormal" maxLines="1" justifyH="LEFT" justifyV="CENTER">
 					<Anchors>
 						<Anchor point="LEFT" x="4" relativePoint="RIGHT" relativeKey="$parent.key"/>
-						<Anchor point="RIGHT" x="-4"/>
+						<Anchor point="RIGHT" x="-25"/>
 					</Anchors>
 					<Color b="0.95" r="0.95" g="0.95"/>
 				</FontString>
 			</Layer>
 		</Layers>
+		<Frames>
+			<Button parentKey="delete">
+				<Size x="22" y="22"/>
+				<Anchors>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+				<NormalTexture parentKey="normalTexture" atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
+				<PushedTexture parentKey="pushedTexture" atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>
+				<HighlightTexture atlas="128-RedButton-Delete-Highlight" setAllPoints="true" useAtlasSize="false" alphaMode="ADD"/>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnDelete();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
 		<Scripts>
 			<OnEnter method="OnEnter"/>
 			<OnLeave method="OnLeave"/>
@@ -375,6 +391,110 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
 						</Anchors>
 					</Frame>
+				</Frames>
+			</Frame>
+
+			<Frame parentKey="editor" inherits="TRP3_TooltipBackdropTemplate">
+				
+				<KeyValues>
+					<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_CREAMY_BROWN" type="global"/>
+				</KeyValues>
+
+				<Anchors>
+					<Anchor point="TOP" y="-5" relativeKey="$parent.instanceSelection" relativePoint="BOTTOM"/>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="RIGHT" x="-10"/>
+					<Anchor point="BOTTOM" y="10"/>
+				</Anchors>
+
+				<Frames>
+					<DropdownButton parentKey="keyType" inherits="TRP3_Tools_TitledDropdownButtonTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="Name type" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOP" y="-15"/>
+							<Anchor point="LEFT" x="10"/>
+							<Anchor point="RIGHT" x="-10"/>
+						</Anchors>
+					</DropdownButton>
+
+					<EditBox parentKey="key" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="Variable name" type="string"/>
+							<KeyValue key="helpText" value="Variable name" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOP" y="-15" relativeKey="$parent.keyType" relativePoint="BOTTOM"/>
+							<Anchor point="LEFT" x="10"/>
+							<Anchor point="RIGHT" x="-10"/>
+						</Anchors>
+					</EditBox>
+
+					<DropdownButton parentKey="valueType" inherits="TRP3_Tools_TitledDropdownButtonTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="Value type" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOP" y="-15" relativeKey="$parent.key" relativePoint="BOTTOM"/>
+							<Anchor point="LEFT" x="10"/>
+							<Anchor point="RIGHT" x="-10"/>
+						</Anchors>
+					</DropdownButton>
+
+					<EditBox parentKey="numberValue" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="Value" type="string"/>
+							<KeyValue key="helpText" value="Value" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOP" y="-15" relativeKey="$parent.valueType" relativePoint="BOTTOM"/>
+							<Anchor point="LEFT" x="10"/>
+							<Anchor point="RIGHT" x="-10"/>
+						</Anchors>
+					</EditBox>
+
+					<Frame parentKey="stringValue" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="Value" type="string"/>
+							<KeyValue key="helpText" value="Value" type="string"/>
+						</KeyValues>
+						<Size x="0" y="74"/>
+						<Anchors>
+							<Anchor point="TOP" y="-15" relativePoint="BOTTOM" relativeKey="$parent.valueType"/>
+							<Anchor point="LEFT" x="10"/>
+							<Anchor point="RIGHT" x="-10"/>
+							<Anchor point="BOTTOM" y="40"/>
+						</Anchors>
+					</Frame>
+
+					<DropdownButton parentKey="booleanValue" inherits="TRP3_Tools_TitledDropdownButtonTemplate">
+						<KeyValues>
+							<KeyValue key="titleText" value="Value" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOP" y="-15" relativeKey="$parent.valueType" relativePoint="BOTTOM"/>
+							<Anchor point="LEFT" x="10"/>
+							<Anchor point="RIGHT" x="-10"/>
+						</Anchors>
+					</DropdownButton>
+
+					<Button parentKey="accept" text="OK" inherits="TRP3_CommonButton">
+						<Size x="120" y="22"/>
+						<Anchors>
+							<Anchor point="RIGHT" x="-5" relativePoint="CENTER"/>
+							<Anchor point="BOTTOM" y="10"/>
+						</Anchors>
+					</Button>
+
+					<Button parentKey="cancel" text="CANCEL" inherits="TRP3_CommonButton">
+						<Size x="120" y="22"/>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="CENTER" x="5"/>
+							<Anchor point="BOTTOM" y="10"/>
+						</Anchors>
+					</Button>
+
 				</Frames>
 			</Frame>
 		</Frames>
