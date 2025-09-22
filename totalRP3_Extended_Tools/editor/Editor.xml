@@ -139,6 +139,17 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<Anchor point="RIGHT" x="-32" relativePoint="LEFT" relativeKey="$parent.save"/>
 						</Anchors>
 					</DropdownButton>
+					<Button parentKey="static_analysis" inherits="TRP3_IconButton">
+						<Anchors>
+							<Anchor point="LEFT" x="32" relativePoint="RIGHT" relativeKey="$parent.save"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetScale(0.875);
+								self.Icon:SetTexture("Interface\\ICONS\\ability_racial_combatanalysis");
+							</OnLoad>
+						</Scripts>
+					</Button>
 				</Frames>
 				
 			</Frame>

@@ -536,9 +536,9 @@ function addon.script.registerBuiltinEffects()
 		parameters  = {
 			{
 				title       = "Emote token",
-				description = "Emote token tooltip TODO", -- TODO the code is more complicated here!!
-				type        = "emote", -- there's 522 emotes, better make a searchable list or something
-				default     = nil -- also MAXEMOTEINDEX is a thing, use that instead of the hard coded "local LAST_EMOTE_ID = 522;"
+				description = "Emote token tooltip TODO", -- TODO
+				type        = "emote",
+				default     = nil
 			}
 		},
 		category = loc.EFFECT_CAT_SPEECH

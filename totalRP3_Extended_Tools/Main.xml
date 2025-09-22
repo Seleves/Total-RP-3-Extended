@@ -29,6 +29,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Include file="note\Note.xml"/>
 	<Include file="editor\Editor.xml"/>
 	<Include file="global_popups\Global_popups.xml"/>
+	<Include file="static_analysis\Static_analysis.xml"/>
 
 	<Frame name="TRP3_ToolFrameArtTemplate" virtual="true">
 		<Size x="840" y="600"/>

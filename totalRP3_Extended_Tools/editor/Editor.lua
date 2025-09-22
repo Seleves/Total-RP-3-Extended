@@ -160,7 +160,7 @@ function addon.editor.forEachObjectInCurrentDraft(callback)
 		return;
 	end
 	for absoluteId, object in pairs(currentDraft.index or TRP3_API.globals.empty) do
-		callback(absoluteId, object.node.relativeId, object.class);
+		callback(absoluteId, object.node.data.relativeId, object.class);
 	end
 end
 
@@ -740,6 +740,18 @@ function TRP3_API.extended.tools.initEditor(toolFrame)
 		end
 	end);
 	
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(statusBar.static_analysis, "TOP", 0, 0, "Check creation", "Analyzes the creation for potential problems or unexpected behavior.");
+	statusBar.static_analysis:SetScript("OnEnter", function(self)
+		TRP3_RefreshTooltipForFrame(self);
+	end);
+	statusBar.static_analysis:SetScript("OnLeave", function(self)
+		TRP3_MainTooltip:Hide();
+	end);
+	statusBar.static_analysis:SetScript("OnClick", function(self)
+		addon.updateCurrentObjectDraft();
+		addon.static_analysis.run();
+	end);
+
 	statusBar.save:SetScript("OnClick", onSave);
 	
 	noteFrame:AssociateWith(TRP3_ToolFrameEditor.split.split.properties.noteButton);

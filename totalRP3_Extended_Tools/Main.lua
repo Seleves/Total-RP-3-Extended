@@ -106,7 +106,6 @@ TRP3_API.extended.tools.getClassDataSafeByType = getClassDataSafeByType;
 -- Root object action
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-
 local function getObjectLocale(class)
 	return (class.MD or TRP3_API.globals.empty).LO or "en";
 end
@@ -372,9 +371,7 @@ TRP3_API.extended.tools.goToListPage = addon.openDatabase;
 
 -- this API must stay, it is used by the Extended main addon
 TRP3_API.extended.tools.goToPage = function(absoluteId)
-	local ids = {strsplit(TRP3_API.extended.ID_SEPARATOR, absoluteId)};
-	local creationId = ids[1] or "";
-	addon.openDraft(creationId, false, {objectId = absoluteId});
+	addon.openDraft(addon.utils.getCreationId(absoluteId), false, {objectId = absoluteId});
 end
 
 -- this call was previously exposed to the API
@@ -443,13 +440,13 @@ local function onStart()
 	localize(TRP3_Tools_EditorTrigger);
 	localize(TRP3_Tools_EditorEffect);
 
-	PAGE_BY_TYPE[TRP3_DB.types.CAMPAIGN].loc = loc.TYPE_CAMPAIGN;
-	PAGE_BY_TYPE[TRP3_DB.types.QUEST].loc = loc.TYPE_QUEST;
+	PAGE_BY_TYPE[TRP3_DB.types.CAMPAIGN].loc   = loc.TYPE_CAMPAIGN;
+	PAGE_BY_TYPE[TRP3_DB.types.QUEST].loc      = loc.TYPE_QUEST;
 	PAGE_BY_TYPE[TRP3_DB.types.QUEST_STEP].loc = loc.TYPE_QUEST_STEP;
-	PAGE_BY_TYPE[TRP3_DB.types.ITEM].loc = loc.TYPE_ITEM;
-	PAGE_BY_TYPE[TRP3_DB.types.DOCUMENT].loc = loc.TYPE_DOCUMENT;
-	PAGE_BY_TYPE[TRP3_DB.types.DIALOG].loc = loc.TYPE_DIALOG;
-	PAGE_BY_TYPE[TRP3_DB.types.AURA].loc = loc.TYPE_AURA;
+	PAGE_BY_TYPE[TRP3_DB.types.ITEM].loc       = loc.TYPE_ITEM;
+	PAGE_BY_TYPE[TRP3_DB.types.DOCUMENT].loc   = loc.TYPE_DOCUMENT;
+	PAGE_BY_TYPE[TRP3_DB.types.DIALOG].loc     = loc.TYPE_DIALOG;
+	PAGE_BY_TYPE[TRP3_DB.types.AURA].loc       = loc.TYPE_AURA;
 
 	local DummyDropdownFrame = CreateFrame("Frame");
 	UIDropDownMenu_Initialize(DummyDropdownFrame, nop); -- Some voodoo magic to prevent taint due to Edit Mode
@@ -460,6 +457,7 @@ local function onStart()
 	TRP3_API.extended.tools.initItemQuickEditor(toolFrame);
 
 	addon.global_popups.initialize();
+	addon.static_analysis.initialize();
 	addon.modal = toolFrame.modalOverlay;
 
 	TRP3_Extended:TriggerEvent(TRP3_Extended.Events.NAVIGATION_EXTENDED_RESIZED, toolFrame:GetWidth(), toolFrame:GetHeight());

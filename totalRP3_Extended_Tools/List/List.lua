@@ -6,24 +6,11 @@ local _, addon = ...
 ---@type Ellyb;
 local LibDeflate = LibStub:GetLibrary("LibDeflate");
 
-local Globals, Utils, EMPTY = TRP3_API.globals, TRP3_API.utils, TRP3_API.globals.empty;
-local stEtN = Utils.str.emptyToNil;
-local tsize = Utils.table.size;
-local getClass = TRP3_API.extended.getClass;
-local getTypeLocale = TRP3_API.extended.tools.getTypeLocale;
 local loc = TRP3_API.loc;
-local setTooltipForSameFrame = TRP3_API.ui.tooltip.setTooltipForSameFrame;
-local refreshTooltipForFrame = TRP3_RefreshTooltipForFrame;
-local showItemTooltip = TRP3_API.inventory.showItemTooltip;
-local IsAltKeyDown = IsAltKeyDown;
 local ToolFrame;
 local creationsList;
 local creationsFilter;
 
-local ID_SEPARATOR = TRP3_API.extended.ID_SEPARATOR;
-local TRP3_MainTooltip, TRP3_ItemTooltip = TRP3_MainTooltip, TRP3_ItemTooltip;
-
-local SECURITY_LEVEL = TRP3_API.security.SECURITY_LEVEL;
 local hasImportExportModule = false;
 
 local SUPPOSED_SERIAL_SIZE_LIMIT = 500000; -- We suppose the text field can only handle 500k pastes
@@ -37,7 +24,7 @@ local fieldFormat = "%s: " .. color .. "%s|r";
 
 
 local function getMetadataTooltipText(rootID, rootClass, isRoot, innerID, type)
-	local metadata = rootClass.MD or EMPTY;
+	local metadata = rootClass.MD or TRP3_API.globals.empty;
 	local text = "";
 
 	if isRoot then
@@ -45,7 +32,7 @@ local function getMetadataTooltipText(rootID, rootClass, isRoot, innerID, type)
 		text = text .. "\n" .. fieldFormat:format(loc.ROOT_VERSION, metadata.V or 1);
 		text = text .. "\n" .. fieldFormat:format(loc.ROOT_CREATED_BY, metadata.CB or "?");
 		text = text .. "\n" .. fieldFormat:format(loc.ROOT_CREATED_ON, metadata.CD or "?");
-		text = text .. "\n" .. fieldFormat:format(loc.SEC_LEVEL, TRP3_API.security.getSecurityText(rootClass.securityLevel or SECURITY_LEVEL.LOW));
+		text = text .. "\n" .. fieldFormat:format(loc.SEC_LEVEL, TRP3_API.security.getSecurityText(rootClass.securityLevel or TRP3_API.security.SECURITY_LEVEL.LOW));
 	else
 		text = text .. fieldFormat:format(loc.SPECIFIC_INNER_ID, "|cff00ffff" .. innerID .. "|r");
 	end
@@ -61,7 +48,7 @@ end
 
 function TRP3_API.extended.tools.formatVersion(version)
 	if not version then
-		return Utils.str.sanitizeVersion(Globals.extended_display_version);
+		return TRP3_API.utils.str.sanitizeVersion(TRP3_API.globals.extended_display_version);
 	end
 
 	-- Fixing the mess
@@ -106,7 +93,6 @@ function TRP3_API.extended.tools.initList(toolFrame)
 	
 	creationsFilter:SetTitleText(loc.DB_FILTERS);
 	creationsFilter:SetTitleWidth(150);
-
 
 	-- Button on toolbar
 	TRP3_API.RegisterCallback(TRP3_Addon, TRP3_Addon.Events.WORKFLOW_ON_LOADED, function()
@@ -209,12 +195,12 @@ function TRP3_API.extended.tools.initList(toolFrame)
 			code = AddOn_TotalRP3.Compression.decompress(code, false);
 		end
 		code = code:gsub("||", "|");
-		local object = Utils.serial.safeDeserialize(code);
+		local object = TRP3_API.utils.serial.safeDeserialize(code);
 		if object and type(object) == "table" and (#object == 3 or #object == 4) then
 			local version = object[1];
 			local ID = object[2];
 			local data = object[3];
-			local displayVersion = Utils.str.sanitizeVersion(object[4]);
+			local displayVersion = TRP3_API.utils.str.sanitizeVersion(object[4]);
 			local link = TRP3_API.inventory.getItemLink(data);
 			local by = data.MD.CB;
 			local objectVersion = data.MD.V or 0;
@@ -227,7 +213,7 @@ function TRP3_API.extended.tools.initList(toolFrame)
 				end);
 			end);
 		else
-			Utils.message.displayMessage(loc.DB_IMPORT_ERROR1, 2);
+			TRP3_API.utils.message.displayMessage(loc.DB_IMPORT_ERROR1, 2);
 		end
 	end);
 
@@ -239,7 +225,7 @@ function TRP3_API.extended.tools.initList(toolFrame)
 		end
 		if TRP3_Tools_Flags.exportAlert then
 			TRP3_Tools_Flags.exportAlert = nil;
-			Utils.message.displayMessage(loc.DB_EXPORT_DONE, 2);
+			TRP3_API.utils.message.displayMessage(loc.DB_EXPORT_DONE, 2);
 		end
 	end
 	
@@ -249,9 +235,9 @@ function addon.refreshCreationsList()
 
 	local typeFilter    = creationsFilter.type:GetSelectedValue();
 	local localeFilter  = creationsFilter.locale:GetSelectedValue();
-	local createdFilter = stEtN(strtrim(creationsFilter.owner:GetText()));
-	local nameFilter    = stEtN(strtrim(creationsFilter.name:GetText()));
-	local idFilter      = stEtN(strtrim(creationsFilter.id:GetText()));
+	local createdFilter = TRP3_API.utils.str.emptyToNil(strtrim(creationsFilter.owner:GetText()));
+	local nameFilter    = TRP3_API.utils.str.emptyToNil(strtrim(creationsFilter.name:GetText()));
+	local idFilter      = TRP3_API.utils.str.emptyToNil(strtrim(creationsFilter.id:GetText()));
 	local hasFilter     = createdFilter or nameFilter or idFilter or typeFilter ~= "" or localeFilter ~= "";
 	
 	local filter = function(class)
@@ -274,8 +260,8 @@ function addon.refreshCreationsList()
 	local creationsTotal = 0;
 	local creationsFiltered = 0;
 	for _, source in pairs({"my", "exchange", "inner"}) do
-		for creationId, class in pairs(TRP3_DB[source]) do
-			if not creationId:find(ID_SEPARATOR) and not class.hideFromList then
+		for creationId, class in pairs(TRP3_DB[source] or TRP3_API.globals.empty) do
+			if not creationId:find(TRP3_API.extended.ID_SEPARATOR) and not class.hideFromList then
 				local icon = TRP3_API.extended.tools.getClassDataSafeByType(class);
 				local link = TRP3_API.inventory.getItemLink(class, creationId);
 				creationsTotal = creationsTotal + 1;
@@ -339,20 +325,20 @@ function addon.exportCreation(creationId)
 		TRP3_Extended_ImpExport.object = {};
 		TRP3_Extended_ImpExport.date = date("%d/%m/%y %H:%M:%S");
 		TRP3_Extended_ImpExport.version = TRP3_API.globals.extended_version;
-		TRP3_Extended_ImpExport.display_version = Utils.str.sanitizeVersion(TRP3_API.globals.extended_display_version);
-		Utils.table.copy(TRP3_Extended_ImpExport.object, TRP3_API.extended.getClass(creationId));
+		TRP3_Extended_ImpExport.display_version = TRP3_API.utils.str.sanitizeVersion(TRP3_API.globals.extended_display_version);
+		TRP3_API.utils.table.copy(TRP3_Extended_ImpExport.object, TRP3_API.extended.getClass(creationId));
 		TRP3_Tools_Flags.exportAlert = true;
 		ReloadUI();
 	else
-		Utils.message.displayMessage(loc.DB_EXPORT_MODULE_NOT_ACTIVE, 2);
+		TRP3_API.utils.message.displayMessage(loc.DB_EXPORT_MODULE_NOT_ACTIVE, 2);
 	end
 end
 
 function addon.copyCreation(creationId)
 	local fromClass = TRP3_API.extended.getClass(creationId);
 	local copiedData = {};
-	local generatedId = Utils.str.id();
-	Utils.table.copy(copiedData, fromClass);
+	local generatedId = TRP3_API.utils.str.id();
+	TRP3_API.utils.table.copy(copiedData, fromClass);
 	copiedData.MD = {
 		MO = copiedData.MD.MO,
 		V = 1,
@@ -372,7 +358,7 @@ function addon.importCreation(version, ID, data, displayVersion)
 	local objectVersion = data.MD.V or 0;
 	local author = data.MD.CB;
 
-	displayVersion = Utils.str.sanitizeVersion(displayVersion)
+	displayVersion = TRP3_API.utils.str.sanitizeVersion(displayVersion)
 
 	assert(type and author, "Corrupted import structure.");
 
@@ -381,18 +367,18 @@ function addon.importCreation(version, ID, data, displayVersion)
 			TRP3_API.extended.removeObject(ID);
 		end
 		local DB;
-		if author == Globals.player_id then
+		if author == TRP3_API.globals.player_id then
 			DB = TRP3_DB.my;
 		else
 			DB = TRP3_DB.exchange;
 		end
 		DB[ID] = {};
-		Utils.table.copy(DB[ID], data);
+		TRP3_API.utils.table.copy(DB[ID], data);
 		TRP3_API.extended.registerObject(ID, DB[ID], 0);
 		TRP3_API.security.registerSender(ID, author);
 		ToolFrame.database.import:Hide();
 		addon.refreshCreationsList();
-		Utils.message.displayMessage(loc.DB_IMPORT_DONE, 3);
+		TRP3_API.utils.message.displayMessage(loc.DB_IMPORT_DONE, 3);
 		TRP3_Extended:TriggerEvent(TRP3_Extended.Events.REFRESH_BAG);
 		TRP3_Extended:TriggerEvent(TRP3_Extended.Events.REFRESH_CAMPAIGN);
 
@@ -402,8 +388,8 @@ function addon.importCreation(version, ID, data, displayVersion)
 	end
 
 	local checkVersion = function()
-		if TRP3_API.extended.classExists(ID) and getClass(ID).MD.V > objectVersion then
-			TRP3_API.popup.showConfirmPopup(loc.DB_IMPORT_VERSION:format(objectVersion, getClass(ID).MD.V), function()
+		if TRP3_API.extended.classExists(ID) and TRP3_API.extended.getClass(ID).MD.V > objectVersion then
+			TRP3_API.popup.showConfirmPopup(loc.DB_IMPORT_VERSION:format(objectVersion, TRP3_API.extended.getClass(ID).MD.V), function()
 				C_Timer.After(0.25, import);
 			end);
 		else
@@ -411,7 +397,7 @@ function addon.importCreation(version, ID, data, displayVersion)
 		end
 	end
 
-	if version ~= Globals.extended_version then
+	if version ~= TRP3_API.globals.extended_version then
 		TRP3_API.popup.showConfirmPopup(loc.DB_IMPORT_CONFIRM:format(displayVersion or TRP3_API.extended.tools.formatVersion(version), TRP3_API.extended.tools.formatVersion()), function()
 			C_Timer.After(0.25, checkVersion);
 		end);

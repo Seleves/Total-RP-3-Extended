@@ -4,6 +4,7 @@ local loc = TRP3_API.loc;
 -- load on demand
 local CACHED_GAME_EVENTS;
 local CACHED_EMOTES;
+local CREATION_ID_REGEX = "^[^%" .. TRP3_API.extended.ID_SEPARATOR .. "]*";
 
 addon.utils = {};
 
@@ -155,6 +156,10 @@ end
 
 function addon.utils.isInnerIdOrEqual(ancestorId, descendantId)
 	return ancestorId == descendantId or addon.utils.isInnerId(ancestorId, descendantId);
+end
+
+function addon.utils.getCreationId(absoluteId)
+	return absoluteId:match(CREATION_ID_REGEX);
 end
 
 -- simplified multi selection mode

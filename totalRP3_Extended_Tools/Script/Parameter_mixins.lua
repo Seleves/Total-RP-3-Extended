@@ -456,10 +456,8 @@ function TRP3_Tools_ScriptParameterLootMixin:Setup(widgetContext, parameter)
 	end);
 	self.bag.editor.save:SetScript("OnClick", function()
 		local classID = strtrim(self.bag.editor.id:GetText());
-		local ids = {strsplit(TRP3_API.extended.ID_SEPARATOR, classID)};
-		local creationId = ids[1] or "";
 		local class;
-		if addon.getCurrentDraftCreationId() == creationId then
+		if addon.getCurrentDraftCreationId() == addon.utils.getCreationId(classID) then
 			class = addon.getCurrentDraftClass(classID);
 		else
 			class = TRP3_API.extended.getClass(classID);
@@ -493,9 +491,7 @@ function TRP3_Tools_ScriptParameterLootMixin:SetValue(slotData)
 				classID = slotData[index].classID,
 				count = tonumber(slotData[index].count or 1) or 1,
 			};
-			local ids = {strsplit(TRP3_API.extended.ID_SEPARATOR, slot.info.classID)};
-			local creationId = ids[1] or "";
-			if addon.getCurrentDraftCreationId() == creationId then
+			if addon.getCurrentDraftCreationId() == addon.utils.getCreationId(slot.info.classID) then
 				slot.class = addon.getCurrentDraftClass(slot.info.classID);
 			else
 				slot.class = TRP3_API.extended.getClass(slot.info.classID);
