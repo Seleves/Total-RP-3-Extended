@@ -30,20 +30,23 @@ function TRP3_Tools_StaticAnalysisListElementMixin:Initialize(data)
 	self.title:SetText(data.title);
 	self.description:SetText(data.description);
 	self.location:SetText(("|T%s:16:16|t %s"):format(data.icon, data.link));
-	--local tooltiptext = strjoin("|n", unpack(data.slashCommands)) .. "|n|n" ..
-	--	TRP3_API.FormatShortcutWithInstruction("LCLICK", "Select emote");
-	--TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, data.token, tooltiptext);
+	local tooltiptext = 
+		data.description .. "|n|n" ..
+		"Object: " .. ("|T%s:16:16|t %s"):format(data.icon, data.link) .. "|n|n" ..
+		TRP3_API.FormatShortcutWithInstruction("LCLICK", "Go to object");
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, data.title, tooltiptext);
 end
 
 function TRP3_Tools_StaticAnalysisListElementMixin:OnEnter()
-	--TRP3_RefreshTooltipForFrame(self);
+	TRP3_RefreshTooltipForFrame(self);
 end
 
 function TRP3_Tools_StaticAnalysisListElementMixin:OnLeave()
-	--TRP3_MainTooltip:Hide();
+	TRP3_MainTooltip:Hide();
 end
 
 function TRP3_Tools_StaticAnalysisListElementMixin:OnClick()
-	--TRP3_Tools_EmotesBrowser:Select(self.data.token);
-	-- TODO go to location
+	addon.displayObject(self.data.location);
+	addon.editor.refreshObjectTree();
+	TRP3_Tools_StaticAnalysis:Close();
 end

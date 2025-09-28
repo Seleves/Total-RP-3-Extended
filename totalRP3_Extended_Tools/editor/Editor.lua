@@ -19,35 +19,29 @@ local DUMMY_TREE_MODEL = CreateTreeDataProvider();
 local function updateTabBar()
 	addon.forEachTab(function(editor) 
 		if editor.creationId == currentEditor.creationId then
-			local body = "";
-			local absoluteId;
-			local isRoot = true;
+			local body;
+			local absoluteId = "";
 			local root, last;
-			local level = 1;
+			local level = 0;
 			for relativeId in editor.cursor.objectId:gmatch("[^%" .. TRP3_API.extended.ID_SEPARATOR .. "]+") do
-				if isRoot then
-					absoluteId = relativeId;
-					local icon, link = addon.utils.getObjectIconAndLink(currentDraft.index[absoluteId].class);
-					root = ("|T%s:16:16|t %s"):format(icon, link);
-				else
-					absoluteId = absoluteId .. TRP3_API.extended.ID_SEPARATOR .. relativeId;
-					local icon, link = addon.utils.getObjectIconAndLink(currentDraft.index[absoluteId].class);
-					last = ("|T%s:16:16|t %s"):format(icon, link);
-					local indent = ("\n|TInterface\\COMMON\\spacer:16:%d|t|TInterface\\\MONEYFRAME\\Arrow-Right-Down:16:16|t"):format(level*16);
+				absoluteId = absoluteId .. relativeId;
+				if currentDraft.index[absoluteId] then
+					if level == 0 then
+						local icon, link = addon.utils.getObjectIconAndLink(currentDraft.index[absoluteId].class);
+						root = ("|T%s:16:16|t %s"):format(icon, link);
+					else
+						local icon, link = addon.utils.getObjectIconAndLink(currentDraft.index[absoluteId].class);
+						last = ("|T%s:16:16|t %s"):format(icon, link);
+						local indent = ("|n|TInterface\\COMMON\\spacer:16:%d|t|TInterface\\\MONEYFRAME\\Arrow-Right-Down:16:16|t"):format(level*16);
+						body = (body or "") .. indent .. last;
+					end
 					level = level + 1;
-					body = body .. indent .. last;
 				end
-				isRoot = false;
+				absoluteId = absoluteId .. TRP3_API.extended.ID_SEPARATOR;
 			end
-			if last == nil then
-				editor.label = root;
-				editor.tooltipHeader = root;
-				editor.tooltipBody = nil;
-			else
-				editor.label = root;
-				editor.tooltipHeader = root;
-				editor.tooltipBody = body;
-			end
+			editor.label = root;
+			editor.tooltipHeader = root;
+			editor.tooltipBody = body;
 		end
 	end);
 	addon.refreshTabs();
@@ -138,6 +132,10 @@ function rebuildTreeAndShow(absoluteId)
 	addon.editor.refreshObjectTree();
 end
 
+function addon.currentDraftClassExists(absoluteId)
+	return absoluteId and currentDraft and currentDraft.index and currentDraft.index[absoluteId] ~= nil;
+end
+
 function addon.getCurrentDraftClass(absoluteId)
 	if absoluteId then
 		return currentDraft and currentDraft.index and currentDraft.index[absoluteId] and currentDraft.index[absoluteId].class or nil;
@@ -152,6 +150,14 @@ end
 
 function addon.getCurrentDraftCursor()
 	return currentEditor.cursor;
+end
+
+function addon.editor.getRelativeId(absoluteId)
+	if currentDraft and currentDraft.index and currentDraft.index[absoluteId] then
+		return currentDraft.index[absoluteId].node.data.relativeId;
+	else
+		return nil;
+	end
 end
 
 -- callback(absoluteId, relativeId, class)
@@ -305,7 +311,8 @@ end
 function addon.changeRelativeId(absoluteId, newRelativeId)
 	local parentId = currentDraft.index[absoluteId].node:GetParent().data.absoluteId;
 	local parent = currentDraft.index[parentId];
-	if isRelativeIdAvailable(parent.class, newRelativeId) then
+	local newAbsoluteId = parentId .. TRP3_API.extended.ID_SEPARATOR .. newRelativeId;
+	if isRelativeIdAvailable(parent.class, newRelativeId) and not currentDraft.index[newAbsoluteId] then
 		addon.updateCurrentObjectDraft();
 		local object = currentDraft.index[absoluteId];
 		local oldRelativeId = object.node.data.relativeId;
@@ -319,7 +326,6 @@ function addon.changeRelativeId(absoluteId, newRelativeId)
 			parent.class.IN[newRelativeId] = parent.class.IN[oldRelativeId];
 			parent.class.IN[oldRelativeId] = nil;
 		end
-		local newAbsoluteId = parentId .. TRP3_API.extended.ID_SEPARATOR .. newRelativeId;
 		addon.utils.replaceId(currentDraft.class, absoluteId, newAbsoluteId);
 		local currentObjectId = currentEditor.cursor.objectId;
 		if absoluteId == currentObjectId then 

@@ -21,7 +21,8 @@ function TRP3_Tools_EditorQuestStepMixin:Initialize()
 	self.content.main.goToStep:SetScript("OnClick", function() 
 		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
 		if TRP3_API.extended.classExists(absoluteId) then
-			local campaignId, questId, stepId = strsplit(TRP3_API.extended.ID_SEPARATOR, absoluteId);
+			local questAbsoluteId, stepId = addon.utils.splitId(absoluteId);
+			local campaignId, questId = addon.utils.splitId(questAbsoluteId);
 			local questLog = TRP3_API.quest.getQuestLog()[campaignId];
 			if not questLog or not questLog.QUEST or not questLog.QUEST[questId] then
 				TRP3_API.quest.startQuest(campaignId, questId);

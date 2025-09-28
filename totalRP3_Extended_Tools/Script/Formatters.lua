@@ -47,16 +47,18 @@ function addon.script.formatters:Initialize()
 	for semanticObjectType, objectType in pairs(addon.script.parameter.objectMap) do
 		SPECIAL_FORMATTERS[semanticObjectType] = function(parameter, absoluteId)
 			absoluteId = tostring(absoluteId or "");
-			local ids = {strsplit(TRP3_API.extended.ID_SEPARATOR, absoluteId)};
-			local creationId = ids[1] or "";
-			local relativeId = ids[#ids] or "";
+			local creationId = addon.utils.getCreationId(absoluteId);
+			local relativeId;
 			local class;
 			if addon.getCurrentDraftCreationId() == creationId then
 				class = addon.getCurrentDraftClass(absoluteId);
+				relativeId = adon.editor.getRelativeId(absoluteId);
 			else
 				class = TRP3_API.extended.getClass(absoluteId);
 				if class.missing then
 					class = nil;
+				else
+					_, relativeId = addon.utils.splitId(absoluteId);
 				end
 			end
 			if class and class.TY == objectType then

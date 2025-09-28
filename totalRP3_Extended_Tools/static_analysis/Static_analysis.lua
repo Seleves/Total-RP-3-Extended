@@ -23,6 +23,11 @@ function addon.static_analysis.run()
 	end
 
 	addon.editor.forEachObjectInCurrentDraft(function(absoluteId, relativeId, class)
+
+		if relativeId:find(TRP3_API.extended.ID_SEPARATOR) then
+			push(absoluteId, relativeId, class, "Unsupported id", "It is strongly discouraged to use spaces in the object's id.|nConsider removing the space character from the id.");
+		end
+
 		if class.TY == TRP3_DB.types.ITEM and class.BA and class.BA.CR and (tonumber(class.BA.ST) or 0) > 1 then
 			push(absoluteId, relativeId, class, "Item is crafted and stackable", "An item shouldn't be crafted and stackable at the same time.");
 		end

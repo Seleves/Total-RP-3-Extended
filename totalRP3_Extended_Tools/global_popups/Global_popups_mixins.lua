@@ -108,7 +108,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Select(token)
 	end
 end
 
-local function generateObjectsBrowserLineData(absoluteId, classSource)
+local function generateObjectsBrowserLineData(absoluteId, classSource, classExists)
 	
 	local rootClass;
 	local class = classSource(absoluteId);
@@ -117,12 +117,14 @@ local function generateObjectsBrowserLineData(absoluteId, classSource)
 	local title = "";
 	for relativeId in absoluteId:gmatch("[^%" .. TRP3_API.extended.ID_SEPARATOR .. "]+") do
 		partialId = partialId .. relativeId;
-		local _, link = addon.utils.getObjectIconAndLink(classSource(partialId), relativeId);
-		if title == "" then
-			title = link;
-			rootClass = classSource(partialId);
-		else
-			title = title .. " |TInterface\\\MONEYFRAME\\Arrow-Right-Down:16:16|t" .. link;
+		if classExists(partialId) then
+			local _, link = addon.utils.getObjectIconAndLink(classSource(partialId), relativeId);
+			if title == "" then
+				title = link;
+				rootClass = classSource(partialId);
+			else
+				title = title .. " |TInterface\\\MONEYFRAME\\Arrow-Right-Down:16:16|t" .. link;
+			end
 		end
 		partialId = partialId .. TRP3_API.extended.ID_SEPARATOR;
 	end
@@ -190,7 +192,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Filter()
 				then
 					local _, name = TRP3_API.extended.tools.getClassDataSafeByType(class);
 					if filter(absoluteId) or filter(name) then
-						table.insert(model, generateObjectsBrowserLineData(absoluteId, TRP3_API.extended.getClass));
+						table.insert(model, generateObjectsBrowserLineData(absoluteId, TRP3_API.extended.getClass, TRP3_API.extended.classExists));
 						count = count + 1;
 					end
 					total = total + 1;
@@ -204,7 +206,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Filter()
 			if class.TY == self.objectType then
 				local _, name = TRP3_API.extended.tools.getClassDataSafeByType(class);
 				if filter(absoluteId) or filter(name) then
-					table.insert(model, generateObjectsBrowserLineData(absoluteId, addon.getCurrentDraftClass));
+					table.insert(model, generateObjectsBrowserLineData(absoluteId, addon.getCurrentDraftClass, addon.currentDraftClassExists));
 					count = count + 1;
 				end
 				total = total + 1;

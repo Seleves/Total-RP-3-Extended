@@ -5,6 +5,7 @@ local loc = TRP3_API.loc;
 local CACHED_GAME_EVENTS;
 local CACHED_EMOTES;
 local CREATION_ID_REGEX = "^[^%" .. TRP3_API.extended.ID_SEPARATOR .. "]*";
+local RELATIVE_ID_REGEX = "(.*)%" .. TRP3_API.extended.ID_SEPARATOR .. "+([^%" .. TRP3_API.extended.ID_SEPARATOR .. "]+)$";
 
 addon.utils = {};
 
@@ -160,6 +161,44 @@ end
 
 function addon.utils.getCreationId(absoluteId)
 	return absoluteId:match(CREATION_ID_REGEX);
+end
+
+-- splits an id into a parent and child part, such that the full id is the composition of parent and child part
+-- if the object denoted by the absolute id is a root object, then the parent part is nil
+function addon.utils.splitId(absoluteId)
+	if not absoluteId:find(TRP3_API.extended.ID_SEPARATOR) then
+		return nil, absoluteId;
+	end
+	local parentId, relativeId = absoluteId:match(RELATIVE_ID_REGEX);
+	if parentId and relativeId and (TRP3_API.extended.classExists(parentId) or not TRP3_API.extended.classExists(absoluteId)) then
+		return parentId, relativeId;
+	end
+	-- legacy case with ID_SEPARATOR in the id components
+	parentId = nil;
+	relativeId = nil;
+	local allTokens;
+	local relativeTokens;
+	for token in absoluteId:gmatch("[^%" .. TRP3_API.extended.ID_SEPARATOR .. "]+") do
+		allTokens = (allTokens and (allTokens .. TRP3_API.extended.ID_SEPARATOR) or "") .. token;
+		relativeTokens = (relativeTokens and (relativeTokens .. TRP3_API.extended.ID_SEPARATOR) or "") .. token;
+		if TRP3_API.extended.classExists(allTokens) then
+			if parentId and relativeId then
+				parentId = parentId .. TRP3_API.extended.ID_SEPARATOR .. relativeId;
+				relativeId = relativeTokens;
+				relativeTokens = nil;
+			elseif parentId then
+				relativeId = relativeTokens;
+				relativeTokens = nil;
+			else
+				parentId = allTokens;
+				relativeId = nil;
+			end
+		end		
+	end
+	if parentId and relativeId then
+		return parentId, relativeId;
+	end
+	return nil, absoluteId; -- this shouldn't happen even in legacy case
 end
 
 -- simplified multi selection mode
