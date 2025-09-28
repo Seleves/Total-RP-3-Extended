@@ -643,42 +643,20 @@ function TRP3_Tools_ScriptParameterScriptMixin:Setup(widgetContext, parameter)
 end
 
 function TRP3_Tools_ScriptParameterScriptMixin:InsertEffectById(effectId)
-	local effect = addon.script.getEffectById(effectId);
-	local effectLua = "effect(\"" .. effectId .. "\", args";
-	local s = "";
-	if effect.boxed then
-		effectLua = effectLua .. ", {";
-	else
-		s = ", ";
-	end
-	for _, parameter in ipairs(effect.parameters) do
-		effectLua = effectLua .. s .. addon.utils.gnirtsdaol(parameter.default);
-		s = ", ";
-	end
-	if effect.boxed then
-		effectLua = effectLua .. "}";
-	end
-	effectLua = effectLua .. ");";
 	local index = self.script:GetCursorPosition();
 	local text = self.script:GetText();
 	local pre = text:sub(1, index);
 	local post = text:sub(index + 1);
-	text = strconcat(pre, effectLua, post);
+	text = strconcat(pre, addon.script.getEffectLua(effectId) .. ";", post);
 	self.script:SetText(text);
 end
 
 function TRP3_Tools_ScriptParameterScriptMixin:InsertOperandById(operandId)
-	local operand = addon.script.getOperandById(operandId);
-	local operandLua = "op(\"" .. operandId .. "\", args";
-	for _, parameter in ipairs(operand.parameters) do
-		operandLua = operandLua .. ", " .. addon.utils.gnirtsdaol(parameter.default);
-	end
-	operandLua = operandLua .. ");";
 	local index = self.script:GetCursorPosition();
 	local text = self.script:GetText();
 	local pre = text:sub(1, index);
 	local post = text:sub(index + 1);
-	text = strconcat(pre, operandLua, post);
+	text = strconcat(pre, addon.script.getOperandLua(operandId), post);
 	self.script:SetText(text);
 end
 

@@ -52,7 +52,7 @@ function addon.script.formatters:Initialize()
 			local class;
 			if addon.getCurrentDraftCreationId() == creationId then
 				class = addon.getCurrentDraftClass(absoluteId);
-				relativeId = adon.editor.getRelativeId(absoluteId);
+				relativeId = addon.editor.getRelativeId(absoluteId);
 			else
 				class = TRP3_API.extended.getClass(absoluteId);
 				if class.missing then

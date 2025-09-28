@@ -82,6 +82,80 @@ function TRP3_Tools_EditorScriptMixin:RenameSelectedScript()
 	end
 end
 
+function TRP3_Tools_EditorScriptMixin:ConvertSelectedScriptEffects(filterFunc)
+	local scriptId = self.scriptList:GetSelectedValue();
+	local script = self.scripts[scriptId];
+
+	local prevIndex;
+	local targetIndex;
+	local hasCondition = false;
+	for index, effect in ipairs(script) do
+		if filterFunc(index) then
+			targetIndex = targetIndex or index;
+			if prevIndex and prevIndex ~= index-1 then
+				return false, "Please select effects consecutively.";
+			else
+				prevIndex = index;
+			end
+			if effect.id == TRP3_DB.elementTypes.DELAY then
+				return false, "Cannot convert delays into Lua.";
+			end
+			if effect.id == TRP3_DB.elementTypes.CONDITION then
+				hasCondition = true;
+			end
+		elseif hasCondition then
+			return false, "Cannot convert a condition unless all following effects are converted as well.";
+		end
+	end
+	local lua = "";
+	local else_end = "";
+	
+	for index, effect in ipairs(script) do
+		if filterFunc(index) then
+			local hasConstraint = TableHasAnyEntries(effect.constraint) and effect.id ~= TRP3_DB.elementTypes.CONDITION;
+			if hasConstraint then
+				lua = lua .. "if " .. addon.script.getConstraintLua(effect.constraint) .. " then\n";
+			end
+			if effect.id == "script" then
+				lua = lua .. effect.parameters[1] .. "\n";
+			elseif effect.id == TRP3_DB.elementTypes.CONDITION then
+				lua = lua .. "if " .. addon.script.getConstraintLua(effect.constraint) .. " then\n";
+				if effect.parameters[1] or effect.parameters[2] then
+					else_end = else_end .. "else\n";
+					if effect.parameters[1] then
+						else_end = else_end .. addon.script.getEffectLua("text", {effect.parameters[1], TRP3_API.utils.message.type.ALERT_MESSAGE}) .. ";\n";
+					end
+					if effect.parameters[2] then
+						else_end = else_end .. addon.script.getEffectLua("run_workflow", {"o", effect.parameters[2]}) .. ";\n";
+					end
+				end
+				else_end = else_end .. "\nend\n";
+			else
+				lua = lua .. addon.script.getEffectLua(effect.id, effect.parameters) .. ";\n";
+			end
+			if hasConstraint then
+				lua = lua .. "\nend\n";
+			end
+		end
+	end
+	lua = lua .. else_end;
+
+	for index, effect in ipairs_reverse(script) do
+		if filterFunc(index) then
+			if index == targetIndex then
+				effect.id = "script";
+				wipe(effect.constraint);
+				wipe(effect.parameters);
+				table.insert(effect.parameters, lua);
+			else
+				table.remove(script, index);
+			end
+		end
+	end
+	
+	return true;
+end
+
 function TRP3_Tools_EditorScriptMixin:CountScriptReferences(scriptId)
 	local count = addon.editor.getCurrentPropertiesEditor():CountScriptReferences(scriptId);
 	for _, trigger in ipairs(self.triggers) do
@@ -760,6 +834,52 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 					addon.modal:ShowModal(TRP3_API.popup.EFFECT, {nil, scriptId});
 				end);
 				TRP3_MenuUtil.SetElementTooltip(addAfterOption, "Insert a new effect after this effect");
+
+				contextMenu:CreateDivider();
+
+				local convertOption = contextMenu:CreateButton("Convert to Lua effect", function()
+					local success, message = addon.editor.script:ConvertSelectedScriptEffects(function(index) 
+						return index == effectIndex;
+					end);
+					if success then
+						addon.editor.script:OnScriptSelected(scriptId);
+					else
+						TRP3_API.utils.message.displayMessage(message, 4);
+					end
+				end);
+				TRP3_MenuUtil.SetElementTooltip(convertOption, "Converts the effect to its equivalent in a Lua effect");
+
+				if self.data.selected then
+					local convertOption = contextMenu:CreateButton("Convert selected to Lua effect", function()
+						local filter = {};
+						for index, element in addon.editor.script.effectList.model:EnumerateEntireRange() do
+							if element.selected then
+								filter[index] = true;
+							end
+						end
+						local success, message = addon.editor.script:ConvertSelectedScriptEffects(function(index) 
+							return filter[index];
+						end);
+						if success then
+							addon.editor.script:OnScriptSelected(scriptId);
+						else
+							TRP3_API.utils.message.displayMessage(message, 4);
+						end
+					end);
+					TRP3_MenuUtil.SetElementTooltip(convertOption, "Converts selected effects to their equivalent Lua script");
+				end
+
+				local convertAllOption = contextMenu:CreateButton("Convert workflow to Lua", function()
+					local success, message = addon.editor.script:ConvertSelectedScriptEffects(function(index) 
+						return true;
+					end);
+					if success then
+						addon.editor.script:OnScriptSelected(scriptId);
+					else
+						TRP3_API.utils.message.displayMessage(message, 4);
+					end
+				end);
+				TRP3_MenuUtil.SetElementTooltip(convertAllOption, "Converts the workflow to its equivalent Lua script");
 
 				contextMenu:CreateDivider();
 

@@ -371,7 +371,11 @@ function addon.utils.editDistance(str1, str2, insDelCost)
 	return matrix[len1][len2]/math.max(len1, len2);
 end
 
-function addon.utils.gnirtsdaol(object) -- kill me later ok?
+-- simplistic serialization
+-- cannot handle cycles
+-- cannot handle associative tables
+-- cannot handle functions
+function addon.utils.serializeLua(object)
 	if type(object) == "nil" then
 		return "nil";
 	elseif type(object) == "boolean" then
@@ -384,7 +388,7 @@ function addon.utils.gnirtsdaol(object) -- kill me later ok?
 		local out = "{";
 		local s = "";
 		for _, element in ipairs(object) do
-			out = out .. s .. addon.utils.gnirtsdaol(element);
+			out = out .. s .. addon.utils.serializeLua(element);
 			s = ", ";
 		end
 		out = out .. "}";

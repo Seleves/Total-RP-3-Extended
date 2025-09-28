@@ -819,3 +819,106 @@ function addon.script.suggestScriptName(objectType, trigger)
 		return ("on_" .. (trigger.id or "event")):lower():gsub("(%_)(%l)", function(_, b) return b:upper(); end);
 	end
 end
+
+function addon.script.getEffectLua(effectId, parameters)
+	local effect = addon.script.getEffectById(effectId);
+	local lua = "effect(\"" .. effectId .. "\", args";
+	local s = "";
+	if effect.boxed then
+		lua = lua .. ", {";
+	else
+		s = ", ";
+	end
+	if parameters then
+		for _, parameter in ipairs(parameters) do
+			lua = lua .. s .. addon.utils.serializeLua(parameter);
+			s = ", ";
+		end
+	else
+		for _, parameter in ipairs(effect.parameters) do
+			lua = lua .. s .. addon.utils.serializeLua(parameter.default);
+			s = ", ";
+		end
+	end
+	if effect.boxed then
+		lua = lua .. "}";
+	end
+	lua = lua .. ")";
+	return lua;
+end
+
+function addon.script.getOperandLua(operandId, parameters)
+	local operand = addon.script.getOperandById(operandId);
+	local lua = "op(\"" .. operandId .. "\", args";
+	if parameters then
+		for _, parameter in ipairs(parameters) do
+			lua = lua .. ", " .. addon.utils.serializeLua(parameter);
+		end
+	else
+		for _, parameter in ipairs(operand.parameters) do
+			lua = lua .. ", " .. addon.utils.serializeLua(parameter.default);
+		end
+	end
+	lua = lua .. ")";
+	return lua;
+end
+
+function addon.script.getConstraintLua(constraint)
+	if constraint and TableHasAnyEntries(constraint) then
+		local parenthesis = {};
+		local orStart;
+		local hasAnd = false;
+		for index, equation in ipairs(constraint) do
+			local parenthesisByLine = {
+				open = "",
+				close = ""
+			};
+			if index > 1 then
+				if equation.logicalOperation == addon.script.logicalOperation.OR then
+					orStart = orStart or index - 1;
+				elseif equation.logicalOperation == addon.script.logicalOperation.AND then
+					hasAnd = true;
+					if orStart then
+						parenthesis[orStart].open = "(";
+						parenthesis[index-1].close = ")";
+						orStart = nil;
+					end
+				end
+			end
+			table.insert(parenthesis, parenthesisByLine);
+		end
+		if hasAnd and orStart then
+			parenthesis[orStart].open = "(";
+			parenthesis[#parenthesis].close = ")";
+		end
+		local lua = "";
+		local s = "";
+		for index, expression in ipairs(constraint) do
+			lua = lua .. s;
+			if index > 1 then
+				if expression.logicalOperation == addon.script.logicalOperation.OR then
+					lua = lua .. " or ";
+				elseif expression.logicalOperation == addon.script.logicalOperation.AND then
+					lua = lua .. " and ";
+				end
+			end
+			lua = lua .. parenthesis[index].open;
+			if addon.script.getOperandById(expression.leftTerm.id).literal then
+				lua = lua .. addon.utils.serializeLua(expression.leftTerm.parameters[1]);
+			else
+				lua = lua .. addon.script.getOperandLua(expression.leftTerm.id, expression.leftTerm.parameters);
+			end
+			lua = lua .. " " .. expression.comparator .. " ";
+			if addon.script.getOperandById(expression.rightTerm.id).literal then
+				lua = lua .. addon.utils.serializeLua(expression.rightTerm.parameters[1]);
+			else
+				lua = lua .. addon.script.getOperandLua(expression.rightTerm.id, expression.rightTerm.parameters);
+			end
+			lua = lua .. parenthesis[index].close;
+			s = "\n";
+		end
+		return lua;
+	else
+		return "true";
+	end
+end

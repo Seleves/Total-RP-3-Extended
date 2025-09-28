@@ -17,10 +17,10 @@ If you want to test this out I highly recommend making a database backup before.
 - cut&paste maybe?
 - ~~fix UI position and sizes in the effect editor~~
 - ~~fix layering issues for some popups~~
-- convert to Lua utility
+- ~~convert to Lua utility~~
 - ~~integrate variable tags into the UI~~
 - ~~integrate a lint like function~~
 - localization
 - ~~remove unused code~~
 - ~~add a variable inspector~~
-- older versions of Extended allowed for spaces in inner ids, decide on how to handle that
+- ~~older versions of Extended allowed for spaces in inner ids, decide on how to handle that~~
