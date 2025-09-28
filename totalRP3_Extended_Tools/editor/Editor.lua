@@ -249,26 +249,57 @@ function addon.replaceCurrentDraftClass(absoluteId, newClassShallow, originalAbs
 	rebuildTreeAndShow(absoluteId);
 end
 
-function addon.deleteInnerObjectById(absoluteId)
-	local parentId   = currentDraft.index[absoluteId].node:GetParent().data.absoluteId;
-	local parent     = currentDraft.index[parentId];
-	local object     = currentDraft.index[absoluteId];
-	local relativeId = object.node.data.relativeId;
-	if object.class.TY == TRP3_DB.types.QUEST then
-		parent.class.QE[relativeId] = nil;
-	elseif object.class.TY == TRP3_DB.types.QUEST_STEP then
-		parent.class.ST[relativeId] = nil;
-	else
-		parent.class.IN[relativeId] = nil;
+function addon.deleteSelectedTreeObjects()
+	local toDelete = {};
+	for absoluteId, object in pairs(currentDraft.index) do
+		if object.node.data.selected then
+			table.insert(toDelete, absoluteId);
+		end
+	end
+	addon.deleteInnerObjectsById(unpack(toDelete));
+end
+
+function addon.deleteInnerObjectsById(...)
+	local toDelete = {};
+	for _, absoluteId in ipairs({...}) do
+		if currentDraft.index[absoluteId] and absoluteId ~= currentEditor.creationId then
+			toDelete[absoluteId] = absoluteId;
+		end
+	end
+	if not TableHasAnyEntries(toDelete) then
+		return;
+	end
+	local ancestors = {};
+	for absoluteId in pairs(toDelete) do
+		local ancestor   = currentDraft.index[absoluteId].node:GetParent();
+		local parent     = currentDraft.index[ancestor.data.absoluteId];
+		local object     = currentDraft.index[absoluteId];
+		local relativeId = object.node.data.relativeId;
+		if object.class.TY == TRP3_DB.types.QUEST then
+			parent.class.QE[relativeId] = nil;
+		elseif object.class.TY == TRP3_DB.types.QUEST_STEP then
+			parent.class.ST[relativeId] = nil;
+		else
+			parent.class.IN[relativeId] = nil;
+		end
+		while toDelete[ancestor.data.absoluteId] do
+			ancestor = ancestor:GetParent();
+		end
+		ancestors[absoluteId] = ancestor.data.absoluteId;
 	end
 
 	addon.forEachTab(function(editor) 
-		if editor.creationId == currentEditor.creationId and addon.utils.isInnerIdOrEqual(absoluteId, editor.cursor.objectId) then
-			editor.cursor.objectId = parentId;
+		if editor.creationId == currentEditor.creationId then
+			for absoluteId, ancestorId in pairs(ancestors) do
+				if addon.utils.isInnerIdOrEqual(absoluteId, editor.cursor.objectId) then
+					editor.cursor.objectId = ancestorId;
+					break;
+				end
+			end
 		end
 	end);
 
-	rebuildTreeAndShow(parentId);
+	rebuildTreeAndShow(select(2, next(ancestors)));
 end
 
 function addon.changeRelativeId(absoluteId, newRelativeId)

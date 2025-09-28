@@ -226,7 +226,6 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 					addon.clipboard.clear();
 					addon.copySelectedTreeObjects();
 				end);
-			
 			end
 			
 			if addon.clipboard.isReplaceCompatible(class.TY) then
@@ -251,9 +250,15 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 			if self.node:GetDepth() > 1 then
 				contextMenu:CreateDivider();
 				local deleteOption = contextMenu:CreateButton(DELETE, function()
-					addon.deleteInnerObjectById(self.node.data.absoluteId);
+					addon.deleteInnerObjectsById(self.node.data.absoluteId);
 				end);
 				TRP3_MenuUtil.SetElementTooltip(deleteOption, loc.DB_DELETE_TT);
+
+				if self.node.data.selected then
+					local deleteSelectionOption = contextMenu:CreateButton("Delete selected", function() 
+						addon.deleteSelectedTreeObjects();
+					end);
+				end
 			end
 		end);
 	end
