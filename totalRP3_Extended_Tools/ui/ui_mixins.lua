@@ -3,7 +3,6 @@ TRP3_Tools_ListMixin = {};
 function TRP3_Tools_ListMixin:Initialize()
 	local model = CreateDataProvider();
 	local view = CreateScrollBoxListLinearView();
-	view:SetDataProvider(model);
 	ScrollUtil.InitScrollBoxListWithScrollBar(self.widget, self.scrollBar, view);
 	local anchorsWithScrollBar = {
 		CreateAnchor("TOPLEFT", 0, 0);
@@ -18,6 +17,7 @@ function TRP3_Tools_ListMixin:Initialize()
 	view:SetElementInitializer(self.listElementTemplate, self.listElementMixin.Initialize);
 	view:SetElementResetter(self.listElementMixin.Reset);
 	view:SetElementExtentCalculator(self.listElementMixin.GetElementExtent);
+	view:SetDataProvider(model);
 	if self.PostInitialize then
 		self:PostInitialize();
 	end
@@ -35,7 +35,6 @@ TRP3_Tools_TreeMixin = {};
 function TRP3_Tools_TreeMixin:Initialize()
 	local model = CreateTreeDataProvider();
 	local view = CreateScrollBoxListTreeListView(self.indent);
-	view:SetDataProvider(model);
 	ScrollUtil.InitScrollBoxListWithScrollBar(self.widget, self.scrollBar, view);
 	local anchorsWithScrollBar = {
 		CreateAnchor("TOPLEFT", 0, 0);
@@ -50,6 +49,7 @@ function TRP3_Tools_TreeMixin:Initialize()
 	view:SetElementInitializer(self.treeNodeTemplate, self.treeNodeMixin.Initialize);
 	view:SetElementResetter(self.treeNodeMixin.Reset);
 	view:SetElementExtentCalculator(self.treeNodeMixin.GetElementExtent);
+	view:SetDataProvider(model);
 end
 
 function TRP3_Tools_TreeMixin:Refresh()

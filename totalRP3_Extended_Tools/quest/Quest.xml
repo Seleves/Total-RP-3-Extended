@@ -126,7 +126,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<KeyValue key="titleText" value="${QE_DESCRIPTION}" type="string"/>
 									<KeyValue key="helpText" value="${QE_DESCRIPTION_TT}" type="string"/>
 								</KeyValues>
-								<Size x="0" y="74"/>
+								<Size x="0" y="174"/>
 								<Anchors>
 									<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.name"/>
 									<Anchor point="RIGHT" x="-20" y="0"/>

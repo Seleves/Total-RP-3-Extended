@@ -144,6 +144,10 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 		end
 	end);
 
+	-- text might be longer in some translations, let's ensure it doesn't clip out of frame
+	gameplay.ensureExpiry.Text:SetPoint("RIGHT", gameplay, "RIGHT", -20, 0);
+	gameplay.ensureExpiry.Text:SetJustifyH("LEFT");
+
 	display.applyAura:SetScript("OnClick", function() 
 		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
 		if TRP3_API.extended.classExists(absoluteId) then
