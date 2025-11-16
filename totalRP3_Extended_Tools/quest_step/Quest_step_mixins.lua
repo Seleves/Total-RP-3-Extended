@@ -15,8 +15,8 @@ end
 
 function TRP3_Tools_EditorQuestStepMixin:Initialize()
 	self.ScrollBar:SetHideIfUnscrollable(true);
-	self.content.main.pre:SetupSuggestions(addon.editor.populateObjectTagMenu);
-	self.content.main.post:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	self.content.main.pre:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
+	self.content.main.post:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
 	self.content.main.goToStep:SetScript("OnClick", function() 
 		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();

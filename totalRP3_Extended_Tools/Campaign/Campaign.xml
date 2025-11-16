@@ -318,7 +318,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 										</Anchors>
 									</Button>
 
-									<Frame parentKey="description" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+									<Frame parentKey="description" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 										<KeyValues>
 											<KeyValue key="titleText" value="${CA_NPC_EDITOR_DESC}" type="string"/>
 											<KeyValue key="helpText" value="${CA_NPC_EDITOR_DESC}" type="string"/>

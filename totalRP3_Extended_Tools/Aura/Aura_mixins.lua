@@ -53,9 +53,9 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 	display.overlay:SetScript("OnTextChanged", function()
 		display.preview:SetAuraTexts(nil, TRP3_API.utils.str.emptyToNil(strtrim(display.overlay:GetText())));
 	end);
-	display.overlay:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	display.overlay:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
-	display.description:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	display.description:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
 	display.preset:SetScript("OnClick", function(self)
 		TRP3_MenuUtil.CreateContextMenu(self, function(_, description)

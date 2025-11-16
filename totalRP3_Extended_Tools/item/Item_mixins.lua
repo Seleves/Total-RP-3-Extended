@@ -32,9 +32,9 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 		s:UpdatePreviews();
 	end);
 
-	display.left:SetupSuggestions(addon.editor.populateObjectTagMenu);
-	display.right:SetupSuggestions(addon.editor.populateObjectTagMenu);
-	display.description:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	display.left:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
+	display.right:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
+	display.description:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
 	-- Quality
 	local qualityList = {
@@ -97,7 +97,7 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 	-- Weight edit box title != tooltip title
 	gameplay.weight.title:SetText(loc.IT_TT_WEIGHT_FORMAT);
 
-	gameplay.usetext:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	gameplay.usetext:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
 	-- Pick up sound
 	local pickUpList = {};

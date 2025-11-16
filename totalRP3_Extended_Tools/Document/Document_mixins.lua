@@ -81,8 +81,66 @@ function TRP3_Tools_EditorDocumentMixin:Initialize()
 		self:ImportItemTextFrame();
 	end);
 
-	pages.editor:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	pages.editor:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
+	-- TODO this is repetition of TRP3_API.ui.text.setupToolbar in totalRP3\Core\UITools.lua,
+	-- consider consolidating it
+	local function textElementCallback(parent, widget, textElement)
+		local function addElement(alignmentQualifier)
+			widget:Insert(("{%1$s%2$s}%3$s{/%1$s}"):format(textElement:lower(), alignmentQualifier, loc.REG_PLAYER_ABOUT_T1_YOURTEXT));
+		end
+		TRP3_MenuUtil.CreateContextMenu(parent, function(_, menu)
+			if textElement == "P" then
+				menu:CreateTitle(loc.REG_PLAYER_ABOUT_P);
+			else
+				menu:CreateTitle(loc.REG_PLAYER_ABOUT_HEADER);
+			end
+			menu:CreateButton(loc.CM_LEFT,   addElement, ""); -- TODO not sure why p isn't selectable in the original
+			menu:CreateButton(loc.CM_CENTER, addElement, ":c");
+			menu:CreateButton(loc.CM_RIGHT,  addElement, ":r");
+		end);
+		widget:SetFocus();
+	end
+	pages.editor:AddTextControl("H1", function(button, widget)
+		textElementCallback(button, widget, "H1");
+	end);
+	pages.editor:AddTextControl("H2", function(button, widget)
+		textElementCallback(button, widget, "H2");
+	end);
+	pages.editor:AddTextControl("H3", function(button, widget)
+		textElementCallback(button, widget, "H3");
+	end);
+	pages.editor:AddTextControl("P", function(button, widget)
+		textElementCallback(button, widget, "P");
+	end);
+	pages.editor:AddTextControl(loc.CM_IMAGE, function(button, widget)
+		addon.modal:ShowModal(TRP3_API.popup.IMAGES, {function(image)
+			local tag = ("{img:%s:%s:%s}"):format(image.url, math.min(image.width, 512), math.min(image.height, 512));
+			widget:Insert(tag);
+			widget:SetFocus();
+		end});
+	end);
+	pages.editor:AddTextControl(loc.CM_ICON, function(button, widget)
+		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon)
+			local tag = ("{icon:%s:25}"):format(icon);
+			widget:Insert(tag);
+			widget:SetFocus();
+		end});
+	end);
+	pages.editor:AddTextControl(loc.CM_COLOR, function(button, widget)
+		addon.modal:ShowModal(TRP3_API.popup.COLORS, {function(red, green, blue)
+			local tag = ("{col:%s}{/col}"):format(TRP3_API.CreateColorFromBytes(red, green, blue):GenerateHexColorOpaque());
+			widget:Insert(tag);
+			widget:SetFocus();
+		end});
+	end);
+	
+	pages.editor:AddTextControl(loc.CM_LINK, function(button, widget)
+		local tag = ("{link*%s*%s}"):format(loc.UI_LINK_URL, loc.UI_LINK_TEXT);
+		widget:Insert(tag);
+		widget:SetFocus();
+	end);
+	
 	addon.utils.prepareForMultiSelectionMode(self.content.display.list);
 
 end

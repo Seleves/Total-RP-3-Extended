@@ -1,8 +1,10 @@
 local _, addon = ...
 local loc = TRP3_API.loc;
 
-TRP3_Tools_ModalOverlayMixin = {};
 local modalLayerPool = CreateFramePool("Frame", nil, "TRP3_Tools_ModalLayer");
+local textControlsPool;
+
+TRP3_Tools_ModalOverlayMixin = {};
 
 function TRP3_Tools_ModalOverlayMixin:Initialize()
 	self.layers = {};
@@ -701,5 +703,45 @@ function TRP3_Tools_VariableInspectorMixin:DeleteKey(key)
 end
 
 function TRP3_Tools_VariableInspectorMixin:Close()
+	self:Hide();
+end
+
+TRP3_Tools_TextEditorMixin = {};
+
+function TRP3_Tools_TextEditorMixin:Initialize()
+	textControlsPool = CreateFramePool("Button", self.content, "TRP3_CommonButton");
+	TRP3_API.popup.TEXT_EDITOR = "text_editor";
+	TRP3_API.popup.POPUPS[TRP3_API.popup.TEXT_EDITOR] = {
+		frame = self,
+		showMethod = function(sourceWidget, textControls)
+			self:SetPoint("TOPLEFT", 25, -50);
+			self:SetPoint("BOTTOMRIGHT", -25, 25);
+			self.sourceWidget = sourceWidget;
+			self.title:SetText(self.sourceWidget.title:GetText());
+			self.content.text:SetText(self.sourceWidget:GetText());
+			textControlsPool:ReleaseAll();
+			if TableHasAnyEntries(textControls or TRP3_API.globals.empty) then
+				self.content.text:SetPoint("TOP", 0, -33);
+				for index, textControl in ipairs(textControls) do
+					local button = textControlsPool:Acquire();
+					button:SetText(textControl.title);
+					button:SetScript("OnClick", function() 
+						textControl.callback(button, self.content.text);
+					end);
+					button:SetSize(95, 25);
+					button:SetPoint("TOPLEFT", (index-1)*100 + 5, -5);
+					button:Show();
+				end
+			else
+				self.content.text:SetPoint("TOP", 0, -5);
+			end
+		end,
+	};
+end
+
+function TRP3_Tools_TextEditorMixin:Close()
+	if self.sourceWidget then
+		self.sourceWidget:SetText(self.content.text:GetText());
+	end
 	self:Hide();
 end

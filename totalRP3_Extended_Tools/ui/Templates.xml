@@ -685,11 +685,14 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	</Frame>
 
 	<Frame name="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate" inherits="TRP3_Tools_TitledTextAreaTemplate" virtual="true" mixin="TRP3_Tools_TitledSuggestiveHelpTextAreaMixin">
+		<KeyValues>
+			<KeyValue key="expandable" value="true" type="boolean"/>
+		</KeyValues>
 		<Frames>
-			<Button name="$parentSuggestion" parentKey="suggestion" text="...">
+			<Button name="$parentSuggestion" parentKey="suggestion" frameLevel="100" text="...">
 				<Size x="27" y="27"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" x="-3" y="3" relativePoint="TOPRIGHT"/>
+					<Anchor point="TOPRIGHT"/>
 				</Anchors>
 				<NormalFont style="GameFontNormal"/>
 				<HighlightFont style="GameFontNormal"/>
@@ -704,7 +707,29 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					</OnClick>
 				</Scripts>
 			</Button>
+			<Button name="$parentExpand" parentKey="expand" frameLevel="100" text="+">
+				<Size x="27" y="27"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<NormalFont style="GameFontNormal"/>
+				<HighlightFont style="GameFontNormal"/>
+				<DisabledFont style="GameFontNormal"/>
+				<NormalTexture atlas="common-dropdown-c-button"/>
+				<PushedTexture atlas="common-dropdown-c-button-pressed-2"/>
+				<DisabledTexture atlas="common-dropdown-c-button-disabled"/>
+				<HighlightTexture atlas="common-dropdown-c-button-hover-2" alphaMode="ADD"/>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Expand();
+					</OnClick>
+				</Scripts>
+			</Button>
 		</Frames>
+		<Scripts>
+			<OnLoad method="Update" inherits="append"/>
+			<OnSizeChanged method="Update" inherits="append"/>
+		</Scripts>
 	</Frame>
 	
 	<Frame name="TRP3_Tools_TitledPopupTemplate" inherits="TRP3_AltHoveredFrame" virtual="true" mixin="TRP3_Tools_TitledPopupMixin" frameStrata="DIALOG">

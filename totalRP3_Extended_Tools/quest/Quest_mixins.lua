@@ -17,8 +17,8 @@ function TRP3_Tools_EditorQuestMixin:Initialize()
 
 	self.ScrollBar:SetHideIfUnscrollable(true);
 
-	self.content.main.description:SetupSuggestions(addon.editor.populateObjectTagMenu);
-	self.content.objective.sharedObjectiveEditor.text:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	self.content.main.description:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
+	self.content.objective.sharedObjectiveEditor.text:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
 	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.content.main.icon, "RIGHT", 0, 5, "Quest icon", loc.EDITOR_ICON_SELECT);
 	self.content.main.icon:SetScript("OnClick", function()

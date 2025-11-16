@@ -86,7 +86,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</Frame>
 
-							<Frame parentKey="flavor" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+							<Frame parentKey="flavor" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${AU_FIELD_FLAVOR}" type="string"/>
 									<KeyValue key="helpText" value="${AU_FIELD_FLAVOR_TT}" type="string"/>

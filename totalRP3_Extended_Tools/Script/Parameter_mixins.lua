@@ -33,7 +33,7 @@ function TRP3_Tools_ScriptParameterEditBoxMixin:Setup(widgetContext, parameter)
 		self.editBox:SetScript("OnTextChanged", nil);
 	end
 	if parameter.taggable then
-		self.editBox:SetupSuggestions(function(menu, onAccept) 
+		self.editBox:SetupSuggestions("Tag", function(menu, onAccept) 
 			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
 		end);
 	else
@@ -71,7 +71,7 @@ function TRP3_Tools_ScriptParameterObjectiveMixin:SetQuestContext(questId)
 		self.questId = nil;
 	end
 	if self.questId then
-		self.objectiveId:SetupSuggestions(function(menu, onAccept) 
+		self.objectiveId:SetupSuggestions("Objective", function(menu, onAccept) 
 			local OB;
 			if addon.getCurrentDraftCreationId() == self.questId then
 				OB = addon.editor.getCurrentPropertiesEditor():ListObjectives();
@@ -144,7 +144,7 @@ function TRP3_Tools_ScriptParameterVariableMixin:Setup(widgetContext, nameParame
 	self.name.titleText = nameParameter.title;
 	self.name.helpText = nameParameter.description;
 	addon.localize(self.name);
-	self.name:SetupSuggestions(function(menu, onAccept) 
+	self.name:SetupSuggestions("Variable", function(menu, onAccept) 
 		local variables = addon.editor.gatherVariables(select(1, self:GetScriptContext()), nameParameter.scope or self.scope:GetSelectedValue());
 		if variables and TableHasAnyEntries(variables) then
 			menu:SetScrollMode(400);
@@ -245,7 +245,7 @@ function TRP3_Tools_ScriptParameterObjectMixin:Setup(widgetContext, parameter)
 		self.id:SetScript("OnTextChanged", nil);
 	end
 	if parameter.taggable then
-		self.id:SetupSuggestions(function(menu, onAccept) 
+		self.id:SetupSuggestions("Tag", function(menu, onAccept) 
 			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
 		end);
 	else
@@ -320,7 +320,7 @@ function TRP3_Tools_ScriptParameterMultilineMixin:Setup(widgetContext, parameter
 	self.text.helpText = parameter.description;
 	addon.localize(self.text);
 	if parameter.taggable then
-		self.text:SetupSuggestions(function(menu, onAccept) 
+		self.text:SetupSuggestions("Tag", function(menu, onAccept) 
 			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
 		end);
 	else
@@ -574,99 +574,108 @@ end
 
 TRP3_Tools_ScriptParameterScriptMixin = CreateFromMixins(TRP3_Tools_ScriptParameterMixin);
 
+local function populateEffectContextMenu(parent, callback)
+	TRP3_MenuUtil.CreateContextMenu(parent, function(_, menu)
+		for _, effectOrCategory in ipairs(addon.script.getEffectMenu(true)) do
+			if type(effectOrCategory[2]) == "table" then
+				local subMenu = menu:CreateButton(effectOrCategory[1]);
+				for _, effect in ipairs(effectOrCategory[2]) do
+					local button = subMenu:CreateButton(("|TInterface\\ICONS\\%s:16:16|t %s"):format(effect[4], effect[1]), callback, effect[2]);
+					TRP3_MenuUtil.SetElementTooltip(button, effect[3]);
+				end
+			else
+				local button = menu:CreateButton(("|TInterface\\ICONS\\%s:16:16|t %s"):format(effectOrCategory[4], effectOrCategory[1]), callback, effectOrCategory[2]);
+				TRP3_MenuUtil.SetElementTooltip(button, effectOrCategory[3]);
+			end
+		end
+	end);
+end
+
+local function populateOperandContextMenu(parent, callback)
+	TRP3_MenuUtil.CreateContextMenu(parent, function(_, menu)
+		for _, operandOrCategory in ipairs(addon.script.getOperandMenu(false)) do
+			if type(operandOrCategory[2]) == "table" then
+				local subMenu = menu:CreateButton(operandOrCategory[1]);
+				for _, operand in ipairs(operandOrCategory[2]) do
+					local button = subMenu:CreateButton(operand[1], callback, operand[2]);
+					TRP3_MenuUtil.SetElementTooltip(button, operand[3]);
+				end
+			else
+				local button = menu:CreateButton(operandOrCategory[1], callback, operandOrCategory[2]);
+				TRP3_MenuUtil.SetElementTooltip(button, operandOrCategory[3]);
+			end
+		end
+	end);
+end
+
+local function populateCodeContextMenu(parent, callback)
+	TRP3_MenuUtil.CreateContextMenu(parent, function(_, menu)
+		menu:CreateButton("getVar", callback, "getVar(args, \"w\", \"varName\")");
+		menu:CreateButton("setVar", callback, "setVar(args, \"w\", \"varName\", \"value\")");
+		for _, globalVarName in pairs{"string", "table", "math", "pairs", "ipairs", "next", "select", "unpack", "type", "tonumber", "tostring", "date"} do
+			local g = _G[globalVarName];
+			if type(g) == "table" then
+				local category = menu:CreateButton(globalVarName);
+				category:SetScrollMode(400);
+				for key, _ in pairs(g) do
+					category:CreateButton(globalVarName .. "." .. key, callback, globalVarName .. "." .. key);
+				end
+			elseif type(g) == "function" then
+				menu:CreateButton(globalVarName, callback, globalVarName);
+			end
+		end
+	end);
+end
+
 function TRP3_Tools_ScriptParameterScriptMixin:Setup(widgetContext, parameter)
 	self.script.titleText = parameter.title;
 	self.script.helpText = parameter.description;
 	addon.localize(self.script);
 	self.effect:SetText(loc.EFFECT_SCRIPT_I_EFFECT);
 	self.effect:SetScript("OnClick", function() 
-		local function selectEffect(effectId)
+		populateEffectContextMenu(self.effect, function(effectId) 
 			self:InsertEffectById(effectId);
-		end
-		TRP3_MenuUtil.CreateContextMenu(self.effect, function(_, menu)
-			for _, effectOrCategory in ipairs(addon.script.getEffectMenu(true)) do
-				if type(effectOrCategory[2]) == "table" then
-					local subMenu = menu:CreateButton(effectOrCategory[1]);
-					for _, effect in ipairs(effectOrCategory[2]) do
-						local button = subMenu:CreateButton(("|TInterface\\ICONS\\%s:16:16|t %s"):format(effect[4], effect[1]), selectEffect, effect[2]);
-						TRP3_MenuUtil.SetElementTooltip(button, effect[3]);
-					end
-				else
-					local button = menu:CreateButton(("|TInterface\\ICONS\\%s:16:16|t %s"):format(effectOrCategory[4], effectOrCategory[1]), selectEffect, effectOrCategory[2]);
-					TRP3_MenuUtil.SetElementTooltip(button, effectOrCategory[3]);
-				end
-			end
 		end);
 	end);
 	self.operand:SetText("Insert operand");
 	self.operand:SetScript("OnClick", function() 
-		local function selectOperand(operandId)
+		populateOperandContextMenu(self.operand, function(operandId)
 			self:InsertOperandById(operandId);
-		end
-		TRP3_MenuUtil.CreateContextMenu(self.operand, function(_, menu)
-			for _, operandOrCategory in ipairs(addon.script.getOperandMenu(false)) do
-				if type(operandOrCategory[2]) == "table" then
-					local subMenu = menu:CreateButton(operandOrCategory[1]);
-					for _, operand in ipairs(operandOrCategory[2]) do
-						local button = subMenu:CreateButton(operand[1], selectOperand, operand[2]);
-						TRP3_MenuUtil.SetElementTooltip(button, operand[3]);
-					end
-				else
-					local button = menu:CreateButton(operandOrCategory[1], selectOperand, operandOrCategory[2]);
-					TRP3_MenuUtil.SetElementTooltip(button, operandOrCategory[3]);
-				end
-			end
-		end);
+		end)
 	end);
 	self.other:SetText("Insert term");
 	self.other:SetScript("OnClick", function() 
-		local function selectCode(code)
+		populateCodeContextMenu(self.other, function(code)
 			self:InsertCode(code);
-		end
-		TRP3_MenuUtil.CreateContextMenu(self.operand, function(_, menu)
-			menu:CreateButton("getVar", selectCode, "getVar(args, \"w\", \"varName\")");
-			menu:CreateButton("setVar", selectCode, "setVar(args, \"w\", \"varName\", \"value\")");
-			for _, globalVarName in pairs{"string", "table", "math", "pairs", "ipairs", "next", "select", "unpack", "type", "tonumber", "tostring", "date"} do
-				local g = _G[globalVarName];
-				if type(g) == "table" then
-					local category = menu:CreateButton(globalVarName);
-					category:SetScrollMode(400);
-					for key, _ in pairs(g) do
-						category:CreateButton(globalVarName .. "." .. key, selectCode, globalVarName .. "." .. key);
-					end
-				elseif type(g) == "function" then
-					menu:CreateButton(globalVarName, selectCode, globalVarName);
-				end
-			end
+		end)
+	end);
+	self.script:AddTextControl(loc.EFFECT_SCRIPT_I_EFFECT, function(button, widget) 
+		populateEffectContextMenu(button, function(effectId) 
+			widget:Insert(addon.script.getEffectLua(effectId) .. ";");
+		end);
+	end);
+	self.script:AddTextControl("Insert operand", function(button, widget) 
+		populateOperandContextMenu(button, function(operandId) 
+			widget:Insert(addon.script.getOperandLua(operandId));
+		end);
+	end);
+	self.script:AddTextControl("Insert term", function(button, widget) 
+		populateCodeContextMenu(button, function(code) 
+			widget:Insert(code);
 		end);
 	end);
 end
 
 function TRP3_Tools_ScriptParameterScriptMixin:InsertEffectById(effectId)
-	local index = self.script:GetCursorPosition();
-	local text = self.script:GetText();
-	local pre = text:sub(1, index);
-	local post = text:sub(index + 1);
-	text = strconcat(pre, addon.script.getEffectLua(effectId) .. ";", post);
-	self.script:SetText(text);
+	self.script:Insert(addon.script.getEffectLua(effectId) .. ";");
 end
 
 function TRP3_Tools_ScriptParameterScriptMixin:InsertOperandById(operandId)
-	local index = self.script:GetCursorPosition();
-	local text = self.script:GetText();
-	local pre = text:sub(1, index);
-	local post = text:sub(index + 1);
-	text = strconcat(pre, addon.script.getOperandLua(operandId), post);
-	self.script:SetText(text);
+	self.script:Insert(addon.script.getOperandLua(operandId));
 end
 
 function TRP3_Tools_ScriptParameterScriptMixin:InsertCode(code)
-	local index = self.script:GetCursorPosition();
-	local text = self.script:GetText();
-	local pre = text:sub(1, index);
-	local post = text:sub(index + 1);
-	text = strconcat(pre, code, post);
-	self.script:SetText(text);
+	self.script:Insert(code);
 end
 
 function TRP3_Tools_ScriptParameterScriptMixin:SetValue(value)
@@ -688,7 +697,7 @@ function TRP3_Tools_ScriptParameterMacroMixin:Setup(widgetContext, parameter)
 	self.macro.helpText = parameter.description;
 	addon.localize(self.macro);
 	if parameter.taggable then
-		self.macro:SetupSuggestions(function(menu, onAccept) 
+		self.macro:SetupSuggestions("Tag", function(menu, onAccept) 
 			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
 		end);
 	else

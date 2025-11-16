@@ -572,7 +572,6 @@ function addon.editor.gatherVariables(scriptContext, restrictScope)
 end
 
 function addon.editor.populateObjectTagMenu(menu, onAccept, scriptContext, eventContext)
-	menu:CreateTitle("Insert tag");
 	addon.script.addStaticTagsToMenu(menu, onAccept);
 	local campaignVars = addon.editor.gatherVariables(scriptContext);
 	local campaignVarsSorted = {};

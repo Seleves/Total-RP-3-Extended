@@ -309,7 +309,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Anchor point="TOPLEFT" x="0" y="-70"/>
 				</Anchors>
 			</Button>
-			<Frame parentKey="script" inherits="TRP3_Tools_TitledHelpTextAreaTemplate">
+			<Frame parentKey="script" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="10" relativePoint="TOPRIGHT" relativeKey="$parent.effect"/>
 					<Anchor point="BOTTOMRIGHT"/>

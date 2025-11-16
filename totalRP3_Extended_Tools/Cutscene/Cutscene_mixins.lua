@@ -37,7 +37,7 @@ function TRP3_Tools_EditorCutsceneMixin:Initialize()
 		{loc.REG_RELATION_NONE, "NONE"}
 	});
 
-	self.content.step.text:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	self.content.step.text:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
 	self.content.step.backgroundBrowse:SetScript("OnClick", function()
 		addon.modal:ShowModal(TRP3_API.popup.IMAGES, {function(image)
@@ -70,7 +70,7 @@ function TRP3_Tools_EditorCutsceneMixin:Initialize()
 	self.content.step.name:SetScript("OnClick", function()
 		self.content.step.nameValue:SetShown(self.content.step.name:GetChecked());
 	end);
-	self.content.step.nameValue:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	self.content.step.nameValue:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 	
 	self.content.step.background:SetScript("OnClick", function()
 		self.content.step.backgroundBrowse:SetShown(self.content.step.background:GetChecked());
@@ -586,7 +586,7 @@ function TRP3_Tools_EditorCutsceneChoiceMixin:Initialize()
 	for index = 1, 5 do
 		table.insert(self.choiceData, {constraint = {}});
 	end
-	self.optionEditor.text:SetupSuggestions(addon.editor.populateObjectTagMenu);
+	self.optionEditor.text:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 	self.optionEditor.constraint:SetScriptContext(function() 
 		return nil, nil;
 	end);

@@ -217,7 +217,29 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							</Frame>
 
 						</Frames>
-
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture file="Interface\AddOns\totalRP3\Resources\UI\!ui-frame-wooden-border" vertTile="true">
+									<Color r="1" g="0.8" b="0.8"/>
+									<TexCoords left="0.0078125" right="0.171875"/>
+									<Anchors>
+										<Anchor point="TOP" y="-190"/>
+										<Anchor point="BOTTOM"/>
+										<Anchor point="LEFT" relativePoint="CENTER" x="-4"/>
+										<Anchor point="RIGHT" relativePoint="CENTER" x="4"/>
+									</Anchors>
+								</Texture>
+								<Texture file="Interface\AddOns\totalRP3\Resources\UI\_ui-frame-wooden-border" horizTile="true">
+									<Color r="1" g="0.8" b="0.8"/>
+									<Anchors>
+										<Anchor point="TOP" y="-190"/>
+										<Anchor point="BOTTOM" relativePoint="TOP" y="-198"/>
+										<Anchor point="LEFT" relativePoint="CENTER" x="-4"/>
+										<Anchor point="RIGHT"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
 					</Frame>
 					
 					<Frame parentKey="pages" inherits="TRP3_Tools_TitledPanelTemplate">
@@ -241,6 +263,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							</Frame>
 
 							<Frame parentKey="editor" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
+								<KeyValues>
+									<KeyValue key="titleText" value="Page text" type="string"/>
+								</KeyValues>
 								<Anchors>
 									<Anchor point="TOP" relativeKey="$parent.toolbar" relativePoint="BOTTOM"/>
 									<Anchor point="BOTTOM" y="25"/>

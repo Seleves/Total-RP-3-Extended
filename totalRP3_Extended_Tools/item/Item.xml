@@ -101,7 +101,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 								</Anchors>
 							</EditBox>
 
-							<Frame parentKey="description" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
+							<Frame name="$parentDescription" parentKey="description" inherits="TRP3_Tools_TitledSuggestiveHelpTextAreaTemplate">
 								<KeyValues>
 									<KeyValue key="titleText" value="${IT_TT_DESCRIPTION}" type="string"/>
 									<KeyValue key="helpText" value="${IT_TT_DESCRIPTION_TT}" type="string"/>

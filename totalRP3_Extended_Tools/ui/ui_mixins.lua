@@ -1,3 +1,5 @@
+local _, addon = ...
+
 TRP3_Tools_ListMixin = {};
 
 function TRP3_Tools_ListMixin:Initialize()
@@ -579,9 +581,10 @@ function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:Localize(transform)
 	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.help, "RIGHT", 0, 5, self.titleText, self.helpText);
 end
 
-function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:SetupSuggestions(dataProvider, replaceAllText)
-	self.dataProvider = dataProvider;
-	self.replaceAllText = replaceAllText;
+function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:SetupSuggestions(title, dataProvider, replaceAllText)
+	self.suggestionTitle = title or "";
+	self.suggestionDataProvider = dataProvider;
+	self.suggestionReplaceAllText = replaceAllText;
 	if dataProvider then
 		self.suggestion:Show();
 		self.help:SetPoint("RIGHT", self.suggestion, "LEFT", -2, 0);
@@ -594,25 +597,25 @@ function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:SetupSuggestions(dataProvid
 end
 
 function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:AcceptSuggestion(value)
-	if self.replaceAllText then
+	if self.suggestionReplaceAllText then
 		self:SetText(value);
 	else
-		local index = self:GetCursorPosition();
-		local text = self:GetText();
-		local pre = text:sub(1, index);
-		local post = text:sub(index + 1);
-		text = strconcat(pre, value, post);
-		self:SetText(text);
+		self:Insert(value);
 	end
 end
 
 function TRP3_Tools_TitledSuggestiveHelpEditBoxMixin:OpenSuggestions()
-	if self.dataProvider then
+	if self.suggestionDataProvider then
 		local onAccept = function(value) 
 			self:AcceptSuggestion(value);
 		end;
 		TRP3_MenuUtil.CreateContextMenu(self.suggestion, function(_, menu)
-			self.dataProvider(menu, onAccept);
+			if self.suggestionReplaceAllText then
+				menu:CreateTitle("Set: " .. self.suggestionTitle);
+			else
+				menu:CreateTitle("Insert: " .. self.suggestionTitle);
+			end
+			self.suggestionDataProvider(menu, onAccept);
 		end);
 	end
 end
@@ -656,8 +659,12 @@ function TRP3_Tools_TitledTextAreaMixin:GetText()
 	return self.scroll.text:GetText();
 end
 
-function TRP3_Tools_TitledTextAreaMixin:GetCursorPosition()
-	return self.scroll.text:GetCursorPosition();
+function TRP3_Tools_TitledTextAreaMixin:Insert(...)
+	self.scroll.text:Insert(...);
+end
+
+function TRP3_Tools_TitledTextAreaMixin:SetFocus(...)
+	self.scroll.text:SetFocus(...);
 end
 
 TRP3_Tools_TitledHelpTextAreaMixin = CreateFromMixins(TRP3_Tools_TitledTextAreaMixin);
@@ -671,38 +678,106 @@ end
 
 TRP3_Tools_TitledSuggestiveHelpTextAreaMixin = CreateFromMixins(TRP3_Tools_TitledHelpTextAreaMixin);
 
-function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:SetupSuggestions(dataProvider, replaceAllText)
-	self.dataProvider = dataProvider;
-	self.replaceAllText = replaceAllText;
-	if dataProvider then
-		self.suggestion:Show();
-	else
-		self.suggestion:Hide();
-	end
+function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:SetupSuggestions(title, dataProvider, replaceAllText)
+	self.suggestionTitle = title or "";
+	self.suggestionDataProvider = dataProvider;
+	self.suggestionReplaceAllText = replaceAllText;
+	self:Update();
 end
 
 function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:AcceptSuggestion(value)
-	if self.replaceAllText then
+	if self.suggestionReplaceAllText then
 		self:SetText(value);
 	else
-		local index = self:GetCursorPosition();
-		local text = self:GetText();
-		local pre = text:sub(1, index);
-		local post = text:sub(index + 1);
-		text = strconcat(pre, value, post);
-		self:SetText(text);
+		self:Insert(value);
 	end
 end
 
 function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:OpenSuggestions()
-	if self.dataProvider then
+	if self.suggestionDataProvider then
 		local onAccept = function(value) 
 			self:AcceptSuggestion(value);
 		end;
 		TRP3_MenuUtil.CreateContextMenu(self.suggestion, function(_, menu)
-			self.dataProvider(menu, onAccept);
+			if self.suggestionReplaceAllText then
+				menu:CreateTitle("Set: " .. self.suggestionTitle);
+			else
+				menu:CreateTitle("Insert: " .. self.suggestionTitle);
+			end
+			self.suggestionDataProvider(menu, onAccept);
 		end);
 	end
+end
+
+function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:Update()
+	local availableScrollBarHeight = self:GetHeight() + self.scroll.scrollBarTopY - self.scroll.scrollBarBottomY;
+	local top = self.scroll.scrollBarTopY;
+	local bottom = self.scroll.scrollBarBottomY;
+	if self.suggestionDataProvider then
+		self.suggestion:Show();
+		availableScrollBarHeight = availableScrollBarHeight - 27;
+		top = self.scroll.scrollBarTopY - 19;
+	else
+		self.suggestion:Hide();
+	end
+	if self.expandable then
+		self.expand:Show();
+		availableScrollBarHeight = availableScrollBarHeight - 27;
+		bottom = self.scroll.scrollBarBottomY + 19;
+	else
+		self.expand:Hide();
+	end
+	if availableScrollBarHeight >= 75 or not (self.suggestionDataProvider ~= nil or self.expandable) then
+		self.suggestion:SetPoint("TOPRIGHT", -2, 0);
+		self.expand:SetPoint("BOTTOMRIGHT", -2, 0);
+		self.scroll.text:SetWidth(self:GetWidth() - 30);
+	else
+		top = self.scroll.scrollBarTopY;
+		bottom = self.scroll.scrollBarBottomY;
+		self.suggestion:SetPoint("TOPRIGHT", self.scroll.scrollBarX - 10, 0);
+		self.expand:SetPoint("BOTTOMRIGHT", self.scroll.scrollBarX - 10, 0);
+		self.scroll.text:SetWidth(self:GetWidth() - 50);
+	end
+	self.scroll.ScrollBar:SetPoint("TOPLEFT", self.scroll, "TOPRIGHT", self.scroll.scrollBarX, top);
+	self.scroll.ScrollBar:SetPoint("BOTTOMLEFT", self.scroll, "BOTTOMRIGHT", self.scroll.scrollBarX, bottom);
+end
+
+function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:Expand()
+	local textControls = {};
+	if self.suggestionDataProvider then
+		table.insert(textControls, {
+			title = self.suggestionTitle,
+			callback = function(button, widget) 
+				local onAccept = function(value) 
+					if self.suggestionReplaceAllText then
+						widget:SetText(value);
+					else
+						widget:Insert(value);
+					end
+				end;
+				TRP3_MenuUtil.CreateContextMenu(self.suggestion, function(_, menu)
+					if self.suggestionReplaceAllText then
+						menu:CreateTitle("Set: " .. self.suggestionTitle);
+					else
+						menu:CreateTitle("Insert: " .. self.suggestionTitle);
+					end
+					self.suggestionDataProvider(menu, onAccept);
+				end);
+			end
+		});
+	end
+	for _, textControl in ipairs(self.customTextControls or TRP3_API.globals.empty) do
+		table.insert(textControls, textControl);
+	end
+	addon.modal:ShowModal(TRP3_API.popup.TEXT_EDITOR, {self, textControls});
+end
+
+function TRP3_Tools_TitledSuggestiveHelpTextAreaMixin:AddTextControl(title, callback)
+	self.customTextControls = self.customTextControls or {};
+	table.insert(self.customTextControls, {
+		title = title,
+		callback = callback
+	});
 end
 
 TRP3_Tools_TitledPopupMixin = {};
