@@ -55,66 +55,32 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<OnLoad method="Initialize"/>
 		</Scripts>
 	</Frame>
-	
-	
-	<Button name="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_ListElementMixin">
-		<Size y="24"/>
+
+	<Button name="TRP3_Tools_ListElementTemplate" virtual="true" registerForClicks="AnyUp" inherits="BackdropTemplate" mixin="TRP3_Tools_ListElementMixin">
+		<Size y="32"/>
 		
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+		</KeyValues>
+
 		<Layers>
 			<Layer level="BACKGROUND">
-				
-				<Texture parentKey="backgroundNormal" hidden="false" file="Interface\BUTTONS\ScrollBarProportionalHorizontal" horizTile="true">
+				<Texture parentKey="background" atlas="GO-bg-panel" useAtlasSize="true">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
 					</Anchors>
-					<TexCoords top="0.515625" bottom="0.6875" left="0" right="1"/>
-					<Color r="1" g="1" b="1" a="0.5"/>
+					<Color r="0.5" g="0.5" b="0.5"/>
 				</Texture>
-				
-				<Texture parentKey="backgroundSelected" hidden="true" file="Interface\BUTTONS\ScrollBarProportionalHorizontal" horizTile="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-					</Anchors>
-					<TexCoords top="0.515625" bottom="0.6875" left="0" right="1"/>
-					<Color r="0.8" g="0.4" b="0.1" a="0.8"/>
-				</Texture>
-				
-				<Texture parentKey="borderLeft" hidden="true" alphaMode="ADD" file="Interface\CHATFRAME\ChatFrameTab-HighlightLeft-min">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="-1" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="10" y="0" relativePoint="BOTTOMLEFT"/>
-					</Anchors>
-					<TexCoords top="0.1875" bottom="0.8125" left="0.3125" right="1"/>
-					<Color r="1" g="1" b="1" a="0.6"/>
-				</Texture>
-				
-				<Texture parentKey="borderMid" hidden="true" alphaMode="ADD" file="Interface\CHATFRAME\ChatFrameTab-HighlightRight-min">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="-10" y="0" relativePoint="TOPRIGHT"/>
-						<Anchor point="BOTTOMRIGHT" x="1" y="0"/>
-					</Anchors>
-					<TexCoords top="0.1875" bottom="0.8125" left="0" right="0.6875"/>
-					<Color r="1" g="1" b="1" a="0.6"/>
-				</Texture>
-				
-				<Texture parentKey="borderRight" hidden="true" alphaMode="ADD" file="Interface\CHATFRAME\ChatFrameTab-HighlightMid-min" horizTile="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="10" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="-10" y="0"/>
-					</Anchors>
-					<TexCoords top="0.1875" bottom="0.8125"/>
-					<Color r="1" g="1" b="1" a="0.6"/>
-				</Texture>
-				
 			</Layer>
 		</Layers>
 		<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
-			<TexCoords bottom="0" left="0.25" top="1" right="1" />
+			<Anchors>
+				<Anchor point="TOPLEFT" x="3" y="-3"/>
+				<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+			</Anchors>
 		</HighlightTexture>
 	</Button>
-	
 	
 	<Frame name="TRP3_Tools_TabBarTemplate" virtual="true" mixin="TRP3_Tools_TabBarMixin">
 		

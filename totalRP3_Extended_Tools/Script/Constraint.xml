@@ -7,17 +7,13 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	
 	<Script file="Constraint_mixins.lua"/>
 
-	<Frame name="TRP3_Tools_ScriptConstraintEditorListElementTemplate" inherits="BackdropTemplate" virtual="true" mixin="TRP3_Tools_ScriptConstraintEditorListElementMixin">
-		<KeyValues>
-			<KeyValue key="backdropInfo" value="TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555" type="global"/>
-		</KeyValues>
-		<Size y="32"/>
+	<Button name="TRP3_Tools_ScriptConstraintEditorListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_ScriptConstraintEditorListElementMixin">
 		<Layers>
 			<Layer level="OVERLAY">
 				<FontString parentKey="open" text="(" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="CENTER">
 					<Size x="10" y="22"/>
 					<Anchors>
-						<Anchor point="TOP" y="-10"/>
+						<Anchor point="TOP" y="-8"/>
 						<Anchor point="LEFT" x="65"/>
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />
@@ -26,8 +22,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<FontString parentKey="close" text=")" inherits="GameFontNormalLarge" justifyH="RIGHT" justifyV="CENTER">
 					<Size x="10" y="22"/>
 					<Anchors>
-						<Anchor point="TOP" y="-10"/>
-						<Anchor point="TOPRIGHT" x="-35" y="-10"/>
+						<Anchor point="TOP" y="-8"/>
+						<Anchor point="TOPRIGHT" x="-35" y="-8"/>
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />
 				</FontString>
@@ -35,49 +31,19 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<FontString parentKey="expression" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
 					<Size y="22"/>
 					<Anchors>
-						<Anchor point="TOP" y="-10"/>
+						<Anchor point="TOP" y="-8"/>
 						<Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.open"/>
 						<Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.close"/>
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />
 				</FontString>
 			</Layer>
-
-			<Layer level="BORDER">
-				<Texture parentKey="highlight" alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" hidden="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="6" y="-6" />
-						<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
-					</Anchors>
-					<TexCoords bottom="0" left="0.25" top="1" right="1" />
-				</Texture>
-			</Layer>
-
-			<Layer level="BACKGROUND">
-				<Texture parentKey="backgroundNormal" hidden="true" file="Interface\BUTTONS\ScrollBarProportionalHorizontal" horizTile="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-					</Anchors>
-					<TexCoords top="0.515625" bottom="0.6875" left="0" right="1"/>
-					<Color r="1" g="1" b="1" a="0.5"/>
-				</Texture>
-				
-				<Texture parentKey="backgroundSelected" hidden="true" file="Interface\BUTTONS\ScrollBarProportionalHorizontal" horizTile="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-					</Anchors>
-					<TexCoords top="0.515625" bottom="0.6875" left="0" right="1"/>
-					<Color r="0.8" g="0.4" b="0.1" a="0.8"/>
-				</Texture>
-			</Layer>
 		</Layers>
 		<Frames>
 			<Button parentKey="logicalOperatorButton" inherits="TRP3_CommonButton">
 				<Size x="50" y="22"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" x="10" y="-10"/>
+					<Anchor point="TOPLEFT" x="8" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -92,7 +58,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Button parentKey="delete">
 				<Size x="22" y="22"/>
 				<Anchors>
-					<Anchor point="TOPRIGHT" x="-10" y="-10"/>
+					<Anchor point="TOPRIGHT" x="-8" y="-8"/>
 				</Anchors>
 				<NormalTexture parentKey="normalTexture" atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
 				<PushedTexture parentKey="pushedTexture" atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>
@@ -105,11 +71,11 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnMouseUp method="OnClick"/>
+			<OnClick method="OnClick"/>
 			<OnEnter method="OnEnter"/>
 			<OnLeave method="OnLeave"/>
 		</Scripts>
-	</Frame>
+	</Button>
 
 	<Frame name="TRP3_Tools_ScriptConstraintEditorTemplate" virtual="true" inherits="TRP3_Tools_ListTemplate" mixin="TRP3_Tools_ScriptConstraintEditorMixin">
 		<KeyValues>

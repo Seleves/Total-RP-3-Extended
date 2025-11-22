@@ -16,10 +16,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 	<Script file="Script_mixins.lua"/>
 
-	<Button name="TRP3_Tools_ScriptTriggerListElementTemplate" virtual="true" inherits="BackdropTemplate" registerForClicks="AnyUp" mixin="TRP3_Tools_ScriptTriggerListElementMixin">
-		<KeyValues>
-			<KeyValue key="backdropInfo" value="BACKDROP_CALLOUT_GLOW_0_16" type="global"/>
-		</KeyValues>
+	<Button name="TRP3_Tools_ScriptTriggerListElementTemplate" virtual="true" inherits="TRP3_Tools_ListElementTemplate" mixin="TRP3_Tools_ScriptTriggerListElementMixin">
 
 		<Size x="0" y="65" />
 		<Frames>
@@ -52,15 +49,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Color r="0.95" g="0.95" b="0.95" />
 				</FontString>
 			</Layer>
-
 		</Layers>
-		<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
-			<Anchors>
-				<Anchor point="TOPLEFT" x="6" y="-6" />
-				<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
-			</Anchors>
-			<TexCoords bottom="0" left="0.25" top="1" right="1" />
-		</HighlightTexture>
 
 		<Scripts>
 			<OnClick method="OnClick"/>
@@ -69,11 +58,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</Scripts>
 	</Button>
 
-	<Button name="TRP3_Tools_ScriptEffectListElementTemplate" virtual="true" inherits="BackdropTemplate" registerForClicks="AnyUp" mixin="TRP3_Tools_ScriptEffectListElementMixin">
-		<KeyValues>
-			<KeyValue key="backdropInfo" value="TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555" type="global"/>
-		</KeyValues>
-
+	<Button name="TRP3_Tools_ScriptEffectListElementTemplate" virtual="true" inherits="TRP3_Tools_ListElementTemplate" mixin="TRP3_Tools_ScriptEffectListElementMixin">
 		<Size x="0" y="65" />
 		<Frames>
 			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
@@ -110,41 +95,14 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<Texture parentKey="securityIndicator">
 					<Color r="1" g="0.8" b="0.8"/>
 					<Anchors>
-						<Anchor point="TOP" y="-5"/>
-						<Anchor point="BOTTOM" y="5"/>
-						<Anchor point="LEFT" x="5"/>
-						<Anchor point="RIGHT" relativePoint="LEFT" x="10"/>
+						<Anchor point="TOP" y="-2"/>
+						<Anchor point="BOTTOM" y="2"/>
+						<Anchor point="LEFT" x="3"/>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="8"/>
 					</Anchors>
-				</Texture>
-			</Layer>
-
-			<Layer level="BACKGROUND">
-				<Texture parentKey="backgroundNormal" hidden="true" file="Interface\BUTTONS\ScrollBarProportionalHorizontal" horizTile="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-					</Anchors>
-					<TexCoords top="0.515625" bottom="0.6875" left="0" right="1"/>
-					<Color r="1" g="1" b="1" a="0.5"/>
-				</Texture>
-				
-				<Texture parentKey="backgroundSelected" hidden="true" file="Interface\BUTTONS\ScrollBarProportionalHorizontal" horizTile="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-					</Anchors>
-					<TexCoords top="0.515625" bottom="0.6875" left="0" right="1"/>
-					<Color r="0.8" g="0.4" b="0.1" a="0.8"/>
 				</Texture>
 			</Layer>
 		</Layers>
-		<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
-			<Anchors>
-				<Anchor point="TOPLEFT" x="6" y="-6" />
-				<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
-			</Anchors>
-			<TexCoords bottom="0" left="0.25" top="1" right="1" />
-		</HighlightTexture>
 		<Scripts>
 			<OnClick method="OnClick"/>
 			<OnEnter method="OnEnter"/>

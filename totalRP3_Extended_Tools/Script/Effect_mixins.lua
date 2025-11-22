@@ -112,6 +112,21 @@ function TRP3_Tools_EditorEffectMixin:Initialize()
 			self:OpenForEffect(effectData, scriptId);
 		end,
 	};
+
+	self.recentEffects = {};
+end
+
+function TRP3_Tools_EditorEffectMixin:PushRecentEffect(effectId)
+	for idx, id in ipairs(self.recentEffects) do
+		if id == effectId then
+			table.remove(self.recentEffects, idx);
+			break; 
+		end
+	end
+	table.insert(self.recentEffects, 1, effectId);
+	if CountTable(self.recentEffects) > 8 then
+		table.remove(self.recentEffects);
+	end
 end
 
 function TRP3_Tools_EditorEffectMixin:SetEffect(effectId)
@@ -169,6 +184,22 @@ function TRP3_Tools_EditorEffectMixin:ShowEffectMenu(noCancel)
 	self.effectCancelButton:SetShown(not noCancel);
 
 	local model = CreateTreeDataProvider();
+	if TableHasAnyEntries(self.recentEffects) then
+		local recentCategoryNode = model:Insert({
+			title = "Recently used",
+			isCategory = true
+		});
+		for _, effectId in ipairs(self.recentEffects) do
+			local effect = addon.script.getEffectById(effectId);
+			recentCategoryNode:Insert({
+				title = effect.title,
+				id = effect.id,
+				tooltip = effect.description,
+				icon = "Interface\\Icons\\" .. effect.icon
+			});
+		end
+		recentCategoryNode:SetCollapsed(false);
+	end
 	for _, category in ipairs(addon.script.getEffectMenu()) do
 		local categoryNode = model:Insert({
 			title = category[1],
@@ -182,11 +213,10 @@ function TRP3_Tools_EditorEffectMixin:ShowEffectMenu(noCancel)
 				icon = "Interface\\Icons\\" .. effect[4]
 			});
 		end
+		categoryNode:SetCollapsed(true);
 	end
-	model:CollapseAll();
 	self.effectTree.model = model;
 	self.effectTree.widget:SetDataProvider(model);
-
 end
 
 function TRP3_Tools_EditorEffectMixin:ShowEffectMain()
@@ -275,6 +305,7 @@ function TRP3_Tools_ScriptEffectTreeNodeMixin:OnClick()
 	if self.node.data.isCategory then
 		self:OnToggleChildren();
 	else
+		TRP3_Tools_EditorEffect:PushRecentEffect(self.node.data.id);
 		TRP3_Tools_EditorEffect:SetEffect(self.node.data.id);
 		TRP3_Tools_EditorEffect:ShowEffectMain();
 	end

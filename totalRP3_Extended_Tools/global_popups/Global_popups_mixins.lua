@@ -69,8 +69,10 @@ function TRP3_Tools_ObjectsBrowserListElementMixin:OnLeave()
 	TRP3_MainTooltip:Hide();
 end
 
-function TRP3_Tools_ObjectsBrowserListElementMixin:OnClick()
-	TRP3_Tools_ObjectsBrowser:Select(self.data.absoluteId);
+function TRP3_Tools_ObjectsBrowserListElementMixin:OnClick(button)
+	if button == "LeftButton" then
+		TRP3_Tools_ObjectsBrowser:Select(self.data.absoluteId);
+	end
 end
 
 TRP3_Tools_ObjectsBrowserMixin = {};
@@ -249,8 +251,10 @@ function TRP3_Tools_EmotesBrowserListElementMixin:OnLeave()
 	TRP3_MainTooltip:Hide();
 end
 
-function TRP3_Tools_EmotesBrowserListElementMixin:OnClick()
-	TRP3_Tools_EmotesBrowser:Select(self.data.token);
+function TRP3_Tools_EmotesBrowserListElementMixin:OnClick(button)
+	if button == "LeftButton" then
+		TRP3_Tools_EmotesBrowser:Select(self.data.token);
+	end
 end
 
 TRP3_Tools_EmotesBrowserMixin = {};
@@ -367,15 +371,17 @@ function TRP3_Tools_VariableInspectorListElementMixin:OnLeave()
 	TRP3_MainTooltip:Hide();
 end
 
-function TRP3_Tools_VariableInspectorListElementMixin:OnClick()
-	if self.data.keyType == "pop" then
-		self.data.inspector:StackPop();
-	elseif self.data.keyType == "add" then
-		self.data.inspector:EditKey(nil);
-	elseif self.data.valueType == "table" then
-		self.data.inspector:StackPush(self.data.key);
-	else
-		self.data.inspector:EditKey(self.data.key);
+function TRP3_Tools_VariableInspectorListElementMixin:OnClick(button)
+	if button == "LeftButton" then
+		if self.data.keyType == "pop" then
+			self.data.inspector:StackPop();
+		elseif self.data.keyType == "add" then
+			self.data.inspector:EditKey(nil);
+		elseif self.data.valueType == "table" then
+			self.data.inspector:StackPush(self.data.key);
+		else
+			self.data.inspector:EditKey(self.data.key);
+		end
 	end
 end
 

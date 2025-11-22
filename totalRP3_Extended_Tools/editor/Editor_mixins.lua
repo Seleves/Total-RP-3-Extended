@@ -21,8 +21,10 @@ function TRP3_Tools_CreationTreeNodeMixin:Refresh()
 			self.toggleChildren.normalTexture:SetTexture("Interface\\Buttons\\UI-MinusButton-UP");
 			self.toggleChildren.pushedTexture:SetTexture("Interface\\Buttons\\UI-MinusButton-DOWN");
 		end
+		self.icon:SetPoint("LEFT", 32, 0);
 	else
 		self.toggleChildren:Hide();
+		self.icon:SetPoint("LEFT", 8, 0);
 	end
 	self:SetHighlight(self.node.data.active);
 	self:SetSelected(self.node.data.selected);

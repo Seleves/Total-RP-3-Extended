@@ -233,11 +233,11 @@ end
 
 function TRP3_Tools_QuestObjectiveListElementMixin:GetElementExtent(data)
 	if data.active then
-		return 150
+		return 144
 	elseif data.isAddButton then
-		return 40
+		return 36
 	else
-		return 65;
+		return 60;
 	end
 end
 
@@ -278,14 +278,10 @@ function TRP3_Tools_QuestObjectiveListElementMixin:OnClick(button)
 end
 
 function TRP3_Tools_QuestObjectiveListElementMixin:OnEnter()
-	if not self.data.active then
-		self.highlight:Show();
-	end
 	TRP3_RefreshTooltipForFrame(self);
 end
 
 function TRP3_Tools_QuestObjectiveListElementMixin:OnLeave()
-	self.highlight:Hide();
 	TRP3_MainTooltip:Hide();
 end
 

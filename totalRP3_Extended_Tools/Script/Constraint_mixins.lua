@@ -150,7 +150,7 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:Initialize(data)
 	self:Refresh();
 	self.invalidated = nil;
 	if self.data.active then
-
+		self:ClearHighlightTexture(); -- TODO maybe find a better solution
 		local s = self;
 
 		local left = self:GetList().sharedLeftTermDropdown;
@@ -250,7 +250,8 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:Initialize(data)
 				offset = offset + 1;
 			end
 		end
-
+	else
+		self:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar", "ADD"); -- TODO maybe find a better solution
 	end
 end
 
@@ -280,8 +281,7 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:Refresh()
 		self.close:Hide();
 		self.expression:SetText("Add condition");
 		self.delete:Hide();
-		self.backgroundNormal:SetShown(false);
-		self.backgroundSelected:SetShown(false);
+		self:SetSelected(false);
 	else
 		self.logicalOperatorButton:SetShown(self.data.index > 1);
 		self.open:SetShown(self.data.isOpenParenthesis);
@@ -293,17 +293,16 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:Refresh()
 		end
 		self.expression:SetText(addon.script.getOperandPreview(self.data.equation.leftTerm) .. " " .. addon.script.getComparatorText(self.data.equation.comparator) .. " " .. addon.script.getOperandPreview(self.data.equation.rightTerm));
 		self.delete:Show();
-		self.backgroundNormal:SetShown(not self.data.selected);
-		self.backgroundSelected:SetShown(self.data.selected);
+		self:SetSelected(self.data.selected);
 	end
 
 end
 
 function TRP3_Tools_ScriptConstraintEditorListElementMixin:GetElementExtent(data)
 	if data.active then 
-		return 40 + 35 + 35*math.max(addon.script.operand.getOperandEditorExtent(data.equation.leftTerm.id), addon.script.operand.getOperandEditorExtent(data.equation.rightTerm.id));
+		return 38 + 35 + 35*math.max(addon.script.operand.getOperandEditorExtent(data.equation.leftTerm.id), addon.script.operand.getOperandEditorExtent(data.equation.rightTerm.id));
 	else
-		return 40;
+		return 38;
 	end
 end
 
@@ -464,9 +463,6 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:OnClick(button)
 end
 
 function TRP3_Tools_ScriptConstraintEditorListElementMixin:OnEnter()
-	if not self.data.active then
-		self.highlight:Show();
-	end
 	if self.data.index then
 
 		if self.data.active and not self.invalidated then
@@ -496,6 +492,5 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:OnEnter()
 end
 
 function TRP3_Tools_ScriptConstraintEditorListElementMixin:OnLeave()
-	self.highlight:Hide();
 	TRP3_MainTooltip:Hide();
 end

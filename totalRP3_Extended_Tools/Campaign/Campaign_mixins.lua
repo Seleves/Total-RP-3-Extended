@@ -274,7 +274,7 @@ function TRP3_Tools_CampaignNPCListElementMixin:Refresh()
 end
 
 function TRP3_Tools_CampaignNPCListElementMixin:GetElementExtent(data)
-	return data.active and 230 or 65;
+	return data.active and 230 or 60;
 end
 
 function TRP3_Tools_CampaignNPCListElementMixin:Reset()
@@ -316,14 +316,10 @@ function TRP3_Tools_CampaignNPCListElementMixin:OnClick(button)
 end
 
 function TRP3_Tools_CampaignNPCListElementMixin:OnEnter()
-	if not self.data.active then
-		self.highlight:Show();
-	end
 	TRP3_RefreshTooltipForFrame(self);
 end
 
 function TRP3_Tools_CampaignNPCListElementMixin:OnLeave()
-	self.highlight:Hide();
 	TRP3_MainTooltip:Hide();
 end
 

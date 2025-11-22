@@ -30,8 +30,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Layer level="OVERLAY">
 				<FontString parentKey="title" inherits="GameFontNormal" maxLines="1" justifyH="LEFT" justifyV="CENTER">
 					<Anchors>
-						<Anchor point="LEFT" x="4"/>
-						<Anchor point="RIGHT" x="-4"/>
+						<Anchor point="LEFT" x="8"/>
+						<Anchor point="RIGHT" x="-8"/>
 					</Anchors>
 					<Color b="0.95" r="0.95" g="0.95"/>
 				</FontString>
@@ -157,14 +157,14 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<FontString parentKey="token" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
 					<Size x="125"/>
 					<Anchors>
-						<Anchor point="LEFT" x="4"/>
+						<Anchor point="LEFT" x="8"/>
 					</Anchors>
 					<Color b="0.95" r="0.95" g="0.95"/>
 				</FontString>
 				<FontString parentKey="command" inherits="GameFontNormal" maxLines="1" justifyH="RIGHT" justifyV="CENTER">
 					<Anchors>
 						<Anchor point="LEFT" x="4" relativePoint="RIGHT" relativeKey="$parent.token"/>
-						<Anchor point="RIGHT" x="-4"/>
+						<Anchor point="RIGHT" x="-8"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -348,14 +348,14 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<FontString parentKey="key" inherits="GameFontNormal" maxLines="1" justifyH="LEFT" justifyV="CENTER">
 					<Size x="200"/>
 					<Anchors>
-						<Anchor point="LEFT" x="4"/>
+						<Anchor point="LEFT" x="8"/>
 					</Anchors>
 					<Color b="0.95" r="0.95" g="0.95"/>
 				</FontString>
 				<FontString parentKey="value" inherits="GameFontNormal" maxLines="1" justifyH="LEFT" justifyV="CENTER">
 					<Anchors>
 						<Anchor point="LEFT" x="4" relativePoint="RIGHT" relativeKey="$parent.key"/>
-						<Anchor point="RIGHT" x="-25"/>
+						<Anchor point="RIGHT" x="-32"/>
 					</Anchors>
 					<Color b="0.95" r="0.95" g="0.95"/>
 				</FontString>
@@ -365,7 +365,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Button parentKey="delete">
 				<Size x="22" y="22"/>
 				<Anchors>
-					<Anchor point="RIGHT"/>
+					<Anchor point="RIGHT" x="-8"/>
 				</Anchors>
 				<NormalTexture parentKey="normalTexture" atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
 				<PushedTexture parentKey="pushedTexture" atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>

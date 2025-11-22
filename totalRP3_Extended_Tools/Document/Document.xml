@@ -8,13 +8,13 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Script file="Document.lua"/>
 	<Script file="Document_mixins.lua"/>
 
-	<Button name="TRP3_Tools_DocumentPageListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" registerForClicks="AnyUp" virtual="true" mixin="TRP3_Tools_DocumentPageListElementMixin">
+	<Button name="TRP3_Tools_DocumentPageListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_DocumentPageListElementMixin">
 		<Layers>
 			<Layer level="OVERLAY">
 				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="5"/>
-						<Anchor point="BOTTOMRIGHT"/>
+						<Anchor point="LEFT" x="8"/>
+						<Anchor point="RIGHT" x="-8"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -24,7 +24,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Button parentKey="delete">
 				<Size x="22" y="22"/>
 				<Anchors>
-					<Anchor point="RIGHT" x="-2"/>
+					<Anchor point="RIGHT" x="-8"/>
 				</Anchors>
 				<NormalTexture parentKey="normalTexture" atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
 				<PushedTexture parentKey="pushedTexture" atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>

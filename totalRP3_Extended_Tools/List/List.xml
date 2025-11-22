@@ -7,31 +7,33 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	
 	<Include file="List_mixins.lua"/>
 	
-	<Button name="TRP3_Tools_CreationsListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" registerForClicks="AnyUp" virtual="true" mixin="TRP3_Tools_CreationsListElementMixin">
+	<Button name="TRP3_Tools_CreationsListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_CreationsListElementMixin">
 		<Layers>
 			<Layer level="OVERLAY">
 				<Texture parentKey="typeIcon">
 					<Size x="20" y="20"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="LEFT" x="8"/>
 					</Anchors>
 				</Texture>
 				<Texture parentKey="icon">
 					<Size x="20" y="20"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="26" y="-2"/>
+						<Anchor point="LEFT" x="2" relativePoint="RIGHT" relativeKey="$parent.typeIcon"/>
 					</Anchors>
 				</Texture>
 				<FontString parentKey="link" text="" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<Size y="28"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="52" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="-100" y="0"/>
+						<Anchor point="LEFT" x="2" relativePoint="RIGHT" relativeKey="$parent.icon"/>
+						<Anchor point="RIGHT" x="-120"/>
 					</Anchors>
 				</FontString>
 				<FontString parentKey="creator" text="" inherits="GameFontNormal" justifyH="RIGHT" justifyV="CENTER">
+					<Size y="28"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="-100" y="0" relativePoint="TOPRIGHT"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+						<Anchor point="LEFT" x="-120" relativePoint="RIGHT"/>
+						<Anchor point="RIGHT" x="-8" />
 					</Anchors>
 				</FontString>
 			</Layer>

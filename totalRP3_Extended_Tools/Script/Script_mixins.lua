@@ -549,12 +549,8 @@ function TRP3_Tools_ScriptTriggerListElementMixin:Initialize(data)
 end
 
 function TRP3_Tools_ScriptTriggerListElementMixin:Refresh()
-	self:Reset();	
-	if self.data.active then
-		self:SetBackdrop(BACKDROP_CALLOUT_GLOW_0_16);
-	else
-		self:SetBackdrop(TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555);
-	end
+	self:Reset();
+	self:SetHighlight(self.data.active);
 
 	local tooltipTitle;
 	local tooltipText;
@@ -712,8 +708,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:Refresh()
 		tooltipTitle = "Add effect";
 		tooltipText = TRP3_API.FormatShortcutWithInstruction("LCLICK", "Add effect");
 	end
-	self.backgroundNormal:SetShown(not self.data.selected);
-	self.backgroundSelected:SetShown(self.data.selected);
+	self:SetSelected(self.data.selected);
 
 	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, tooltipTitle, tooltipText);
 end

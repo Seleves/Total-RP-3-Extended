@@ -7,11 +7,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	
 	<Script file="Effect_mixins.lua"/>
 
-	<Button name="TRP3_Tools_ScriptEffectTreeNodeTemplate" virtual="true" inherits="BackdropTemplate" mixin="TRP3_Tools_ScriptEffectTreeNodeMixin">
-		<KeyValues>
-			<KeyValue key="backdropInfo" value="TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555" type="global"/>
-		</KeyValues>
-
+	<Button name="TRP3_Tools_ScriptEffectTreeNodeTemplate" virtual="true" inherits="TRP3_Tools_ListElementTemplate" mixin="TRP3_Tools_ScriptEffectTreeNodeMixin">
 		<Size x="0" y="40" />
 		<Frames>
 			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
@@ -47,15 +43,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Color r="0.95" g="0.95" b="0.95" />
 				</FontString>
 			</Layer>
-
 		</Layers>
-		<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
-			<Anchors>
-				<Anchor point="TOPLEFT" x="6" y="-6" />
-				<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
-			</Anchors>
-			<TexCoords bottom="0" left="0.25" top="1" right="1" />
-		</HighlightTexture>
 
 		<Scripts>
 			<OnClick method="OnClick"/>

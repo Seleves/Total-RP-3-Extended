@@ -9,7 +9,7 @@ function TRP3_Tools_CreationsListElementMixin:Initialize(data)
 	self.link:SetText(data.link);
 	
 	if data.source == "my" then
-		self.creator:SetText("You");
+		self.creator:SetText(TRP3_API.Colors.White("You"));
 	else
 		self.creator:SetText(data.creator:gsub("-.*", "")); -- character name without realm
 	end

@@ -8,19 +8,19 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Script file="Cutscene.lua"/>
 	<Script file="Cutscene_mixins.lua"/>
 	
-	<Button name="TRP3_Tools_CutsceneStepListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" registerForClicks="AnyUp" virtual="true" mixin="TRP3_Tools_CutsceneStepListElementMixin">
+	<Button name="TRP3_Tools_CutsceneStepListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_CutsceneStepListElementMixin">
 		<Layers>
 			<Layer level="OVERLAY">
 				<Texture parentKey="icon">
 					<Size x="20" y="20"/>
 					<Anchors>
-						<Anchor point="LEFT" x="2"/>
+						<Anchor point="LEFT" x="8"/>
 					</Anchors>
 				</Texture>
 				<FontString parentKey="label" maxLines="1" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="27"/>
-						<Anchor point="BOTTOMRIGHT" x="-30"/>
+						<Anchor point="LEFT" x="30"/>
+						<Anchor point="RIGHT" x="-30"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -30,7 +30,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Button parentKey="delete">
 				<Size x="22" y="22"/>
 				<Anchors>
-					<Anchor point="RIGHT" x="-2"/>
+					<Anchor point="RIGHT" x="-8"/>
 				</Anchors>
 				<NormalTexture parentKey="normalTexture" atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
 				<PushedTexture parentKey="pushedTexture" atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>

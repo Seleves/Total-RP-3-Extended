@@ -64,14 +64,19 @@ end
 
 TRP3_Tools_ListElementMixin = {};
 function TRP3_Tools_ListElementMixin:SetSelected(selected)
-	self.backgroundNormal:SetShown(not selected);
-	self.backgroundSelected:SetShown(selected);
+	if selected then
+		self.background:SetVertexColor(0.8, 0.4, 0.1);
+	else
+		self.background:SetVertexColor(0.5, 0.5, 0.5);
+	end
 end
 
 function TRP3_Tools_ListElementMixin:SetHighlight(highlight)
-	self.borderLeft:SetShown(highlight);
-	self.borderMid:SetShown(highlight);
-	self.borderRight:SetShown(highlight);
+	if highlight then
+		self:SetBackdrop(TRP3_THIN_LIST_ELEMENT_BORDER_HIGHLIGHT);
+	else
+		self:SetBackdrop(TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL);
+	end
 end
 
 TRP3_Tools_TabBarMixin = {};
