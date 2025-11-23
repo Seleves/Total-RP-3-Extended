@@ -55,14 +55,10 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Button parentKey="delete">
-				<Size x="22" y="22"/>
+			<Button parentKey="delete" inherits="TRP3_Tools_DeleteButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-8" y="-8"/>
 				</Anchors>
-				<NormalTexture parentKey="normalTexture" atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
-				<PushedTexture parentKey="pushedTexture" atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>
-				<HighlightTexture atlas="128-RedButton-Delete-Highlight" setAllPoints="true" useAtlasSize="false" alphaMode="ADD"/>
 				<Scripts>
 					<OnClick>
 						self:GetParent():OnDelete();

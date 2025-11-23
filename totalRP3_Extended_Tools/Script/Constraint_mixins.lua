@@ -150,7 +150,7 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:Initialize(data)
 	self:Refresh();
 	self.invalidated = nil;
 	if self.data.active then
-		self:ClearHighlightTexture(); -- TODO maybe find a better solution
+		self:SetHighlightEnabled(false);
 		local s = self;
 
 		local left = self:GetList().sharedLeftTermDropdown;
@@ -251,7 +251,7 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:Initialize(data)
 			end
 		end
 	else
-		self:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar", "ADD"); -- TODO maybe find a better solution
+		self:SetHighlightEnabled(true);
 	end
 end
 

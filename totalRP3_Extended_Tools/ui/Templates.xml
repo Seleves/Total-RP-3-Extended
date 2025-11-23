@@ -748,5 +748,15 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<OnLoad method="Initialize"/>
 		</Scripts>
 	</Button>
+
+	<Button name="TRP3_Tools_DeleteButtonTemplate" inherits="TRP3_CommonButton" virtual="true" mixin="TRP3_Tools_DeleteButtonMixin">
+		<Size x="22" y="22"/>
+		<NormalTexture atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
+		<PushedTexture atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>
+		<HighlightTexture atlas="128-RedButton-Delete-Highlight" setAllPoints="true" useAtlasSize="false" alphaMode="ADD"/>
+		<Scripts>
+			<OnLoad method="Initialize"/>
+		</Scripts>
+	</Button>
 	
 </Ui>

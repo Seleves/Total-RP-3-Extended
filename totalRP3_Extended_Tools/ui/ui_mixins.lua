@@ -79,6 +79,14 @@ function TRP3_Tools_ListElementMixin:SetHighlight(highlight)
 	end
 end
 
+function TRP3_Tools_ListElementMixin:SetHighlightEnabled(enabled)
+	if enabled then
+		self:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar", "ADD");
+	else
+		self:ClearHighlightTexture();
+	end	
+end
+
 TRP3_Tools_TabBarMixin = {};
 
 function TRP3_Tools_TabBarMixin:Initialize()
@@ -821,4 +829,10 @@ end
 
 function TRP3_Tools_TargetButtonMixin:Initialize()
 	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, self.titleText, self.helpText);
+end
+
+TRP3_Tools_DeleteButtonMixin = {};
+
+function TRP3_Tools_DeleteButtonMixin:Initialize()
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, DELETE);
 end

@@ -354,14 +354,14 @@ function TRP3_Tools_DocumentPageListElementMixin:Refresh()
 	local tooltipText;
 	if self.element.isAddButton then
 		self.label:SetText("|TInterface\\PaperDollInfoFrame\\Character-Plus:16:16|t " .. loc.DO_PAGE_ADD);
-		self:SetHighlight(false);
+		self:SetActive(false);
 		self:SetSelected(false);
 		self.delete:Hide();
 		tooltipTitle = loc.DO_PAGE_ADD;
 		tooltipText = TRP3_API.FormatShortcutWithInstruction("LCLICK", loc.DO_PAGE_ADD);
 	elseif self.element.page then
 		self.label:SetText("Page " .. self:GetElementDataIndex());
-		self:SetHighlight(self.element.active);
+		self:SetActive(self.element.active);
 		self:SetSelected(self.element.selected);
 		self.delete:Show();
 		tooltipTitle = "Page " .. self:GetElementDataIndex();
@@ -373,6 +373,12 @@ function TRP3_Tools_DocumentPageListElementMixin:Refresh()
 		;
 	end
 	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, tooltipTitle, tooltipText);
+end
+
+function TRP3_Tools_DocumentPageListElementMixin:SetActive(active)
+	self:SetHighlight(active);
+	self.highlightArrow:SetShown(active);
+	self.delete:SetPoint("RIGHT", active and -24 or -8, 0);
 end
 
 function TRP3_Tools_DocumentPageListElementMixin:OnEnter()

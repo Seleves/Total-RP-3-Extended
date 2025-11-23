@@ -17,18 +17,21 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						<Anchor point="RIGHT" x="-8"/>
 					</Anchors>
 				</FontString>
+				<Texture parentKey="highlightArrow" atlas="orderhalltalents-choice-arrow-large">
+					<Size x="16" y="16"/>
+					<TexCoords left="0.5" right="1"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-8"/>
+					</Anchors>
+				</Texture>
 			</Layer>
 		</Layers>
 
 		<Frames>
-			<Button parentKey="delete">
-				<Size x="22" y="22"/>
+			<Button parentKey="delete" inherits="TRP3_Tools_DeleteButtonTemplate">
 				<Anchors>
 					<Anchor point="RIGHT" x="-8"/>
 				</Anchors>
-				<NormalTexture parentKey="normalTexture" atlas="128-RedButton-Delete" setAllPoints="true" useAtlasSize="false"/>
-				<PushedTexture parentKey="pushedTexture" atlas="128-RedButton-Delete-Pressed" setAllPoints="true" useAtlasSize="false"/>
-				<HighlightTexture atlas="128-RedButton-Delete-Highlight" setAllPoints="true" useAtlasSize="false" alphaMode="ADD"/>
 				<Scripts>
 					<OnClick>
 						self:GetParent():OnDelete();
@@ -209,10 +212,10 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<KeyValue key="listElementMixin" value="TRP3_Tools_DocumentPageListElementMixin" type="global"/>
 								</KeyValues>
 								<Anchors>
-									<Anchor point="TOP" relativeKey="$parent.resizable" relativePoint="BOTTOM" y="-14"/>
-									<Anchor point="BOTTOM" y="25"/>
-									<Anchor point="RIGHT" x="-20" y="0"/>
-									<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
+									<Anchor point="TOP" y="-210"/>
+									<Anchor point="BOTTOM"/>
+									<Anchor point="RIGHT"/>
+									<Anchor point="LEFT" relativePoint="CENTER" x="18" y="0"/>
 								</Anchors>
 							</Frame>
 
@@ -223,18 +226,18 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 									<Color r="1" g="0.8" b="0.8"/>
 									<TexCoords left="0.0078125" right="0.171875"/>
 									<Anchors>
-										<Anchor point="TOP" y="-190"/>
+										<Anchor point="TOP" y="-202"/>
 										<Anchor point="BOTTOM"/>
-										<Anchor point="LEFT" relativePoint="CENTER" x="-4"/>
-										<Anchor point="RIGHT" relativePoint="CENTER" x="4"/>
+										<Anchor point="LEFT" relativePoint="CENTER" x="10"/>
+										<Anchor point="RIGHT" relativePoint="CENTER" x="18"/>
 									</Anchors>
 								</Texture>
 								<Texture file="Interface\AddOns\totalRP3\Resources\UI\_ui-frame-wooden-border" horizTile="true">
 									<Color r="1" g="0.8" b="0.8"/>
 									<Anchors>
-										<Anchor point="TOP" y="-190"/>
-										<Anchor point="BOTTOM" relativePoint="TOP" y="-198"/>
-										<Anchor point="LEFT" relativePoint="CENTER" x="-4"/>
+										<Anchor point="TOP" y="-202"/>
+										<Anchor point="BOTTOM" relativePoint="TOP" y="-210"/>
+										<Anchor point="LEFT" relativePoint="CENTER" x="10"/>
 										<Anchor point="RIGHT"/>
 									</Anchors>
 								</Texture>
