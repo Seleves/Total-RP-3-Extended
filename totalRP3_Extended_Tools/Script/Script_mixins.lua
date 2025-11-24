@@ -550,7 +550,7 @@ end
 
 function TRP3_Tools_ScriptTriggerListElementMixin:Refresh()
 	self:Reset();
-	self:SetHighlight(self.data.active);
+	self:SetActive(self.data.active);
 
 	local tooltipTitle;
 	local tooltipText;
@@ -587,6 +587,12 @@ function TRP3_Tools_ScriptTriggerListElementMixin:Refresh()
 		;
 	end
 	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, tooltipTitle, tooltipText);
+end
+
+function TRP3_Tools_ScriptTriggerListElementMixin:SetActive(active)
+	self:SetHighlight(active);
+	self.highlightArrow:SetShown(active);
+	self.whenText:SetPoint("RIGHT", active and -24 or -8, -12);
 end
 
 function TRP3_Tools_ScriptTriggerListElementMixin:GetElementExtent(data)

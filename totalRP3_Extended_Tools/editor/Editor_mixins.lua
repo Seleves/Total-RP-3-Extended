@@ -26,7 +26,7 @@ function TRP3_Tools_CreationTreeNodeMixin:Refresh()
 		self.toggleChildren:Hide();
 		self.icon:SetPoint("LEFT", 8, 0);
 	end
-	self:SetHighlight(self.node.data.active);
+	self:SetActive(self.node.data.active);
 	self:SetSelected(self.node.data.selected);
 
 	local tooltipText = 
@@ -48,6 +48,12 @@ end
 function TRP3_Tools_CreationTreeNodeMixin:OnLeave()
 	TRP3_MainTooltip:Hide();
 	TRP3_ItemTooltip:Hide();
+end
+
+function TRP3_Tools_CreationTreeNodeMixin:SetActive(active)
+	self:SetHighlight(active);
+	self.highlightArrow:SetShown(active);
+	self.id:SetPoint("RIGHT", active and -24 or -8, 0);
 end
 
 function requestInnerObject(absoluteId, type)

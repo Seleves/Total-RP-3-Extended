@@ -9,23 +9,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Script file="Cutscene_mixins.lua"/>
 	
 	<Button name="TRP3_Tools_CutsceneStepListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_CutsceneStepListElementMixin">
-		<Layers>
-			<Layer level="OVERLAY">
-				<Texture parentKey="icon">
-					<Size x="20" y="20"/>
-					<Anchors>
-						<Anchor point="LEFT" x="8"/>
-					</Anchors>
-				</Texture>
-				<FontString parentKey="label" maxLines="1" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
-					<Anchors>
-						<Anchor point="LEFT" x="30"/>
-						<Anchor point="RIGHT" x="-30"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-
+		
 		<Frames>
 			<Button parentKey="delete" inherits="TRP3_Tools_DeleteButtonTemplate">
 				<Anchors>
@@ -38,6 +22,30 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				</Scripts>
 			</Button>
 		</Frames>
+		
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="icon">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="LEFT" x="8"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="label" maxLines="1" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<Anchors>
+						<Anchor point="LEFT" x="30"/>
+						<Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.delete" x="-2"/>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="highlightArrow" atlas="orderhalltalents-choice-arrow-large">
+					<Size x="16" y="16"/>
+					<TexCoords left="0.5" right="1"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-8"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
 
 		<Scripts>
 			<OnEnter method="OnEnter"/>

@@ -433,7 +433,7 @@ function TRP3_Tools_CutsceneStepListElementMixin:Refresh()
 	if self.element.isAddButton then
 		self.icon:SetTexture("Interface\\PaperDollInfoFrame\\Character-Plus");
 		self.label:SetText(loc.DI_STEP_ADD);
-		self:SetHighlight(false);
+		self:SetActive(false);
 		self:SetSelected(false);
 		self.delete:Hide();
 		tooltipTitle = loc.DI_STEP_ADD;
@@ -452,7 +452,7 @@ function TRP3_Tools_CutsceneStepListElementMixin:Refresh()
 			tooltipTitle = loc.DI_STEP;
 		end
 
-		self:SetHighlight(self.element.active);
+		self:SetActive(self.element.active);
 		self:SetSelected(self.element.selected);
 		self.delete:Show();
 
@@ -472,6 +472,12 @@ end
 
 function TRP3_Tools_CutsceneStepListElementMixin:OnLeave()
 	TRP3_MainTooltip:Hide();
+end
+
+function TRP3_Tools_CutsceneStepListElementMixin:SetActive(active)
+	self:SetHighlight(active);
+	self.highlightArrow:SetShown(active);
+	self.delete:SetPoint("RIGHT", active and -24 or -8, 0);
 end
 
 function TRP3_Tools_CutsceneStepListElementMixin:OnClick(button)

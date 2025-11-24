@@ -48,6 +48,13 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						<Anchor point="RIGHT" x="-8"/>
 					</Anchors>
 				</FontString>
+				<Texture parentKey="highlightArrow" atlas="orderhalltalents-choice-arrow-large">
+					<Size x="16" y="16"/>
+					<TexCoords left="0.5" right="1"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-8"/>
+					</Anchors>
+				</Texture>
 			</Layer>
 		</Layers>
 		<Scripts>
