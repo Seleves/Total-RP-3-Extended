@@ -570,7 +570,7 @@ function TRP3_Tools_ScriptTriggerListElementMixin:Refresh()
 			local widget = conditionPreviewTermFramePool:Acquire();
 			widget:SetParent(self);
 			widget:ClearAllPoints();
-			widget:SetPoint("TOP", 0, -(16 + index*20));
+			widget:SetPoint("TOP", 0, -(12 + index*20));
 			widget:SetPoint("LEFT");
 			widget:SetPoint("RIGHT");
 			widget.open:SetText(constraint.open);
@@ -596,7 +596,7 @@ function TRP3_Tools_ScriptTriggerListElementMixin:SetActive(active)
 end
 
 function TRP3_Tools_ScriptTriggerListElementMixin:GetElementExtent(data)
-	return data.isAddButton and 48 or (64 + 20*#data.constraint);
+	return data.isAddButton and 40 or (60 + 20*#data.constraint);
 end
 
 function TRP3_Tools_ScriptTriggerListElementMixin:Reset()
@@ -687,7 +687,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:Refresh()
 			local widget = conditionPreviewTermFramePool:Acquire();
 			widget:SetParent(self);
 			widget:ClearAllPoints();
-			widget:SetPoint("TOP", 0, -(16 + index*20));
+			widget:SetPoint("TOP", 0, -(12 + index*20));
 			widget:SetPoint("LEFT");
 			widget:SetPoint("RIGHT");
 			widget.open:SetText(constraint.open);
@@ -721,7 +721,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:Refresh()
 end
 
 function TRP3_Tools_ScriptEffectListElementMixin:GetElementExtent(data)
-	return not data.isAddButton and (72 + 20*#data.constraint) or 48;
+	return not data.isAddButton and (68 + 20*#data.constraint) or 40;
 end
 
 function TRP3_Tools_ScriptEffectListElementMixin:Reset()

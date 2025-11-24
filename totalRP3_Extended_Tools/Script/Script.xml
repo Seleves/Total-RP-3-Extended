@@ -49,10 +49,10 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 				<FontString parentKey="thenText" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOP" relativePoint="BOTTOM" y="26" />
-						<Anchor point="LEFT" x="12" />
-						<Anchor point="RIGHT" x="-12" />
-						<Anchor point="BOTTOM" y="12" />
+						<Anchor point="TOP" relativePoint="BOTTOM" y="28" />
+						<Anchor point="LEFT" x="8" />
+						<Anchor point="RIGHT" x="-8" />
+						<Anchor point="BOTTOM" y="8" />
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />
 				</FontString>
@@ -72,7 +72,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
 				<Size x="24" y="24"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" x="8" y="-8"/>
+					<Anchor point="TOPLEFT" x="12" y="-8"/>
 				</Anchors>
 			</Frame>
 			<Button parentKey="delete" inherits="TRP3_Tools_DeleteButtonTemplate">
@@ -91,8 +91,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Layer level="OVERLAY">
 				<FontString parentKey="title" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="5" y="0" />
-						<Anchor point="RIGHT" x="-5" />
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="4" y="0" />
+						<Anchor point="RIGHT" x="-2" relativePoint="LEFT" relativeKey="$parent.delete"/>
 						<Anchor point="BOTTOM" relativeKey="$parent.icon" />
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />
@@ -100,9 +100,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
 				<FontString parentKey="preview" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOP" relativePoint="BOTTOM" y="32" />
+						<Anchor point="TOP" relativePoint="BOTTOM" y="36" />
 						<Anchor point="LEFT" x="12" />
-						<Anchor point="RIGHT" x="-12" />
+						<Anchor point="RIGHT" x="-8" />
 						<Anchor point="BOTTOM" y="8" />
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />
