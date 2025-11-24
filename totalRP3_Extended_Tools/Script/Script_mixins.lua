@@ -714,6 +714,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:Refresh()
 		tooltipTitle = "Add effect";
 		tooltipText = TRP3_API.FormatShortcutWithInstruction("LCLICK", "Add effect");
 	end
+	self.delete:SetShown(not self.data.isAddButton);
 	self:SetSelected(self.data.selected);
 
 	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOMRIGHT", 0, 0, tooltipTitle, tooltipText);
@@ -970,4 +971,10 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 		end
 	end
 
+end
+
+function TRP3_Tools_ScriptEffectListElementMixin:OnDelete()
+	local scriptId = addon.editor.script.scriptList:GetSelectedValue();
+	local effectIndex = addon.editor.script.effectList.model:FindIndex(self.data);
+	addon.editor.script:DeleteEffect(scriptId, effectIndex);
 end
