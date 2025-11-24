@@ -4,29 +4,19 @@ local loc = TRP3_API.loc;
 TRP3_Tools_EditorItemMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
 
 function TRP3_Tools_EditorItemMixin:OnSizeChanged()
-	if self:GetHeight() < self.content:GetHeight() then
-		self:SetPoint("BOTTOMRIGHT", -16, 0);
-	else
-		self:SetPoint("BOTTOMRIGHT", 0, 0);
-	end
-	self.content:SetWidth(self:GetWidth());
-	self.content.display.preview.Name:SetWidth(self:GetWidth()/8);
-	self.content.display.preview.InfoText:SetWidth(self:GetWidth()/8);
+	self.display.preview.Name:SetWidth(self:GetWidth()/8);
+	self.display.preview.InfoText:SetWidth(self:GetWidth()/8);
 end
 
 function TRP3_Tools_EditorItemMixin:Initialize()
-	
 	local s = self;
-	
-	self.ScrollBar:SetHideIfUnscrollable(true);
-	
 	
 	--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 	-- DISPLAY
 	--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 	-- Display
-	local display = self.content.display;
+	local display = self.display;
 	
 	display.name:SetScript("OnTextChanged", function()
 		s:UpdatePreviews();
@@ -89,7 +79,7 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 	--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 	-- Gameplay
-	local gameplay = self.content.gameplay;
+	local gameplay = self.gameplay;
 	
 	-- Value edit box title != tooltip title
 	gameplay.value.title:SetText(loc.IT_TT_VALUE_FORMAT:format(TRP3_API.utils.str.texture("Interface\\MONEYFRAME\\UI-CopperIcon", 15)));
@@ -142,43 +132,43 @@ function TRP3_Tools_EditorItemMixin:ClassToInterface(class, _, cursor)
 	local BA = class.BA or TRP3_API.globals.empty;
 	local US = class.US or TRP3_API.globals.empty;
 	
-	self.content.display.name:SetText(BA.NA or "");
-	self.content.display.description:SetText(BA.DE or "");
-	self.content.display.quality:SetSelectedValue(BA.QA or Enum.ItemQuality.Common);
-	self.content.display.left:SetText(BA.LE or "");
-	self.content.display.right:SetText(BA.RI or "");
-	self.content.gameplay.component:SetChecked(BA.CO or false);
-	self.content.gameplay.crafted:SetChecked(BA.CR or false);
-	self.content.gameplay.quest:SetChecked(BA.QE or false);
+	self.display.name:SetText(BA.NA or "");
+	self.display.description:SetText(BA.DE or "");
+	self.display.quality:SetSelectedValue(BA.QA or Enum.ItemQuality.Common);
+	self.display.left:SetText(BA.LE or "");
+	self.display.right:SetText(BA.RI or "");
+	self.gameplay.component:SetChecked(BA.CO or false);
+	self.gameplay.crafted:SetChecked(BA.CR or false);
+	self.gameplay.quest:SetChecked(BA.QE or false);
 	
-	self.content.gameplay.value:SetText(BA.VA or "0");
-	self.content.gameplay.weight:SetText(BA.WE or "0");
-	self.content.gameplay.soulbound:SetChecked(BA.SB or false);
-	self.content.gameplay.unique:SetChecked((BA.UN or 0) > 0);
-	self.content.gameplay.uniquecount:SetText(BA.UN or "1");
-	self.content.gameplay.stack:SetChecked((BA.ST or 0) > 0);
-	self.content.gameplay.stackcount:SetText(BA.ST or "20");
-	self.content.gameplay.use:SetChecked(BA.US or false);
-	self.content.gameplay.usetext:SetText(US.AC or "");
-	self.content.gameplay.wearable:SetChecked(BA.WA or false);
-	self.content.display.container:SetChecked(BA.CT or false);
-	self.content.gameplay.noAdd:SetChecked(BA.PA or false);
-	self.content.gameplay.mute = true;
-	self.content.gameplay.pickSound:SetSelectedValue(BA.PS or 1186);
-	self.content.gameplay.dropSound:SetSelectedValue(BA.DS or 1203);
-	self.content.gameplay.mute = nil;
+	self.gameplay.value:SetText(BA.VA or "0");
+	self.gameplay.weight:SetText(BA.WE or "0");
+	self.gameplay.soulbound:SetChecked(BA.SB or false);
+	self.gameplay.unique:SetChecked((BA.UN or 0) > 0);
+	self.gameplay.uniquecount:SetText(BA.UN or "1");
+	self.gameplay.stack:SetChecked((BA.ST or 0) > 0);
+	self.gameplay.stackcount:SetText(BA.ST or "20");
+	self.gameplay.use:SetChecked(BA.US or false);
+	self.gameplay.usetext:SetText(US.AC or "");
+	self.gameplay.wearable:SetChecked(BA.WA or false);
+	self.display.container:SetChecked(BA.CT or false);
+	self.gameplay.noAdd:SetChecked(BA.PA or false);
+	self.gameplay.mute = true;
+	self.gameplay.pickSound:SetSelectedValue(BA.PS or 1186);
+	self.gameplay.dropSound:SetSelectedValue(BA.DS or 1203);
+	self.gameplay.mute = nil;
 	
 	local containerData = BA.CT and BA.CO or TRP3_API.globals.empty;
-	self.content.display.containerType:SetSelectedValue(containerData.SI or "5x4");
-	self.content.display.containerDurability:SetText(containerData.DU or "0");
-	self.content.display.containerMaxweight:SetText(containerData.MW or "0");
-	self.content.display.containerOnlyinner:SetChecked(containerData.OI or false);
+	self.display.containerType:SetSelectedValue(containerData.SI or "5x4");
+	self.display.containerDurability:SetText(containerData.DU or "0");
+	self.display.containerMaxweight:SetText(containerData.MW or "0");
+	self.display.containerOnlyinner:SetChecked(containerData.OI or false);
 	
 	self:UpdatePreviews(BA.IC or "TEMP");
 
 	self:UpdateElementVisibility();
 
-	self.content.display.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
+	self.display.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 	
 end
 
@@ -186,43 +176,43 @@ function TRP3_Tools_EditorItemMixin:InterfaceToClass(targetClass, targetCursor)
 	targetClass.BA = targetClass.BA or {};
 	targetClass.US = targetClass.US or {};
 	
-	targetClass.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.name:GetText()));
-	targetClass.BA.DE = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.description:GetText()));
-	targetClass.BA.LE = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.left:GetText()));
-	targetClass.BA.RI = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.right:GetText()));
-	targetClass.BA.QA = self.content.display.quality:GetSelectedValue() or Enum.ItemQuality.Common;
-	targetClass.BA.CO = self.content.gameplay.component:GetChecked();
-	targetClass.BA.CR = self.content.gameplay.crafted:GetChecked();
-	targetClass.BA.QE = self.content.gameplay.quest:GetChecked();
-	targetClass.BA.IC = self.content.display.preview.selectedIcon;
-	targetClass.BA.VA = tonumber(self.content.gameplay.value:GetText()) or 0;
-	targetClass.BA.WE = tonumber(self.content.gameplay.weight:GetText()) or 0;
-	targetClass.BA.SB = self.content.gameplay.soulbound:GetChecked();
-	targetClass.BA.UN = self.content.gameplay.unique:GetChecked() and tonumber(self.content.gameplay.uniquecount:GetText());
-	targetClass.BA.ST = self.content.gameplay.stack:GetChecked() and tonumber(self.content.gameplay.stackcount:GetText());
-	targetClass.BA.WA = self.content.gameplay.wearable:GetChecked();
-	targetClass.BA.CT = self.content.display.container:GetChecked();
-	targetClass.BA.PA = self.content.gameplay.noAdd:GetChecked();
-	targetClass.BA.US = self.content.gameplay.use:GetChecked();
+	targetClass.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(self.display.name:GetText()));
+	targetClass.BA.DE = TRP3_API.utils.str.emptyToNil(strtrim(self.display.description:GetText()));
+	targetClass.BA.LE = TRP3_API.utils.str.emptyToNil(strtrim(self.display.left:GetText()));
+	targetClass.BA.RI = TRP3_API.utils.str.emptyToNil(strtrim(self.display.right:GetText()));
+	targetClass.BA.QA = self.display.quality:GetSelectedValue() or Enum.ItemQuality.Common;
+	targetClass.BA.CO = self.gameplay.component:GetChecked();
+	targetClass.BA.CR = self.gameplay.crafted:GetChecked();
+	targetClass.BA.QE = self.gameplay.quest:GetChecked();
+	targetClass.BA.IC = self.display.preview.selectedIcon;
+	targetClass.BA.VA = tonumber(self.gameplay.value:GetText()) or 0;
+	targetClass.BA.WE = tonumber(self.gameplay.weight:GetText()) or 0;
+	targetClass.BA.SB = self.gameplay.soulbound:GetChecked();
+	targetClass.BA.UN = self.gameplay.unique:GetChecked() and tonumber(self.gameplay.uniquecount:GetText());
+	targetClass.BA.ST = self.gameplay.stack:GetChecked() and tonumber(self.gameplay.stackcount:GetText());
+	targetClass.BA.WA = self.gameplay.wearable:GetChecked();
+	targetClass.BA.CT = self.display.container:GetChecked();
+	targetClass.BA.PA = self.gameplay.noAdd:GetChecked();
+	targetClass.BA.US = self.gameplay.use:GetChecked();
 	if targetClass.BA.US then
-		targetClass.US.AC = TRP3_API.utils.str.emptyToNil(strtrim(self.content.gameplay.usetext:GetText()));
+		targetClass.US.AC = TRP3_API.utils.str.emptyToNil(strtrim(self.gameplay.usetext:GetText()));
 		targetClass.US.SC = "onUse";
 	else
 		targetClass.US.AC = nil;
 		targetClass.US.SC = nil;
 	end
-	targetClass.BA.PS = self.content.gameplay.pickSound:GetSelectedValue() or 1186;
-	targetClass.BA.DS = self.content.gameplay.dropSound:GetSelectedValue() or 1203;
+	targetClass.BA.PS = self.gameplay.pickSound:GetSelectedValue() or 1186;
+	targetClass.BA.DS = self.gameplay.dropSound:GetSelectedValue() or 1203;
 	
 	if targetClass.BA.CT then
 		targetClass.CO = targetClass.CO or {};
-		targetClass.CO.SI = self.content.display.containerType:GetSelectedValue() or "5x4";
+		targetClass.CO.SI = self.display.containerType:GetSelectedValue() or "5x4";
 		local row, column = targetClass.CO.SI:match("(%d)x(%d)");
 		targetClass.CO.SR = row;
 		targetClass.CO.SC = column;
-		targetClass.CO.DU = tonumber(self.content.display.containerDurability:GetText());
-		targetClass.CO.MW = tonumber(self.content.display.containerMaxweight:GetText());
-		targetClass.CO.OI = self.content.display.containerOnlyinner:GetChecked() or false;
+		targetClass.CO.DU = tonumber(self.display.containerDurability:GetText());
+		targetClass.CO.MW = tonumber(self.display.containerMaxweight:GetText());
+		targetClass.CO.OI = self.display.containerOnlyinner:GetChecked() or false;
 	elseif targetClass.CO then
 		-- TODO not sure if intended, but previously, these fields were not cleared if an item is changed from container item to regular item
 		wipe(targetClass.CO);
@@ -232,22 +222,22 @@ function TRP3_Tools_EditorItemMixin:InterfaceToClass(targetClass, targetCursor)
 end
 
 function TRP3_Tools_EditorItemMixin:UpdatePreviews(icon)
-	icon = icon or self.content.display.preview.selectedIcon;
-	self.content.display.preview.Icon:SetTexture("Interface\\ICONS\\" .. (icon or "TEMP"));
-	self.content.display.preview.selectedIcon = icon or "TEMP";
+	icon = icon or self.display.preview.selectedIcon;
+	self.display.preview.Icon:SetTexture("Interface\\ICONS\\" .. (icon or "TEMP"));
+	self.display.preview.selectedIcon = icon or "TEMP";
 	
 	local durability = "";
-	local durabilityValue = tonumber(self.content.display.containerDurability:GetText());
+	local durabilityValue = tonumber(self.display.containerDurability:GetText());
 	if durabilityValue and durabilityValue > 0 then
 		durability = (TRP3_API.utils.str.texture("Interface\\GROUPFRAME\\UI-GROUP-MAINTANKICON", 15) .. "%s/%s"):format(durabilityValue, durabilityValue);
 	end
 	
 	for _, bagPreview in pairs({"bag5x4", "bag2x4", "bag1x4"}) do
-		local preview = self.content.display[bagPreview];
+		local preview = self.display[bagPreview];
 		TRP3_API.inventory.decorateContainer(preview, {
 			BA = {
 				IC = icon,
-				NA = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.name:GetText()))
+				NA = TRP3_API.utils.str.emptyToNil(strtrim(self.display.name:GetText()))
 			}
 		});
 		preview.DurabilityText:SetText(durability);
@@ -257,45 +247,45 @@ function TRP3_Tools_EditorItemMixin:UpdatePreviews(icon)
 end
 
 function TRP3_Tools_EditorItemMixin:UpdateElementVisibility()
-	self.content.gameplay.uniquecount:Hide();
-	self.content.gameplay.stackcount:Hide();
-	self.content.gameplay.usetext:Hide();
-	self.content.display.preview.Quest:Hide();
-	if self.content.gameplay.unique:GetChecked() then
-		self.content.gameplay.uniquecount:Show();
+	self.gameplay.uniquecount:Hide();
+	self.gameplay.stackcount:Hide();
+	self.gameplay.usetext:Hide();
+	self.display.preview.Quest:Hide();
+	if self.gameplay.unique:GetChecked() then
+		self.gameplay.uniquecount:Show();
 	end
-	if self.content.gameplay.stack:GetChecked() then
-		self.content.gameplay.stackcount:Show();
+	if self.gameplay.stack:GetChecked() then
+		self.gameplay.stackcount:Show();
 	end
-	if self.content.gameplay.use:GetChecked() then
-		self.content.gameplay.usetext:Show();
+	if self.gameplay.use:GetChecked() then
+		self.gameplay.usetext:Show();
 	end
-	if self.content.gameplay.quest:GetChecked() then
-		self.content.display.preview.Quest:Show();
+	if self.gameplay.quest:GetChecked() then
+		self.display.preview.Quest:Show();
 	end
 	
-	self.content.display.bag5x4:Hide();
-	self.content.display.bag2x4:Hide();
-	self.content.display.bag1x4:Hide();
+	self.display.bag5x4:Hide();
+	self.display.bag2x4:Hide();
+	self.display.bag1x4:Hide();
 	
-	if self.content.display.container:GetChecked() then
-		self.content.display.containerType:Show();
-		self.content.display.containerDurability:Show();
-		self.content.display.containerMaxweight:Show();
-		self.content.display.containerOnlyinner:Show();
-		local size = self.content.display.containerType:GetSelectedValue() or "5x4"
+	if self.display.container:GetChecked() then
+		self.display.containerType:Show();
+		self.display.containerDurability:Show();
+		self.display.containerMaxweight:Show();
+		self.display.containerOnlyinner:Show();
+		local size = self.display.containerType:GetSelectedValue() or "5x4"
 		if size == "5x4" then
-			self.content.display.bag5x4:Show();
+			self.display.bag5x4:Show();
 		elseif size == "2x4" then
-			self.content.display.bag2x4:Show();
+			self.display.bag2x4:Show();
 		elseif size == "1x4" then
-			self.content.display.bag1x4:Show();
+			self.display.bag1x4:Show();
 		end
 	else
-		self.content.display.containerType:Hide();
-		self.content.display.containerDurability:Hide();
-		self.content.display.containerMaxweight:Hide();
-		self.content.display.containerOnlyinner:Hide();
+		self.display.containerType:Hide();
+		self.display.containerDurability:Hide();
+		self.display.containerMaxweight:Hide();
+		self.display.containerOnlyinner:Hide();
 	end
 end
 
@@ -303,8 +293,8 @@ function TRP3_Tools_EditorItemMixin:OnScriptsChanged(changes)
 	-- TODO presence of an "onUse" workflow and Usable should be equivalent, so both things should be linked
 	-- on the other hand, the UI should probably not auto-sync those settings.
 	-- temporary solution: activate Usable when the user creates an onUse, but don't deactivate if onUse is deleted
-	if not self.content.gameplay.use:GetChecked() and addon.editor.script:HasScriptForTrigger("OU", addon.script.triggerType.OBJECT) then
-		self.content.gameplay.use:SetChecked(true);
+	if not self.gameplay.use:GetChecked() and addon.editor.script:HasScriptForTrigger("OU", addon.script.triggerType.OBJECT) then
+		self.gameplay.use:SetChecked(true);
 		self:UpdateElementVisibility();
 	end
 end

@@ -3,26 +3,16 @@ local loc = TRP3_API.loc;
 
 TRP3_Tools_EditorAuraMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
 
-function TRP3_Tools_EditorAuraMixin:OnSizeChanged()
-	if self:GetHeight() < self.content:GetHeight() then
-		self:SetPoint("BOTTOMRIGHT", -16, 0);
-	else
-		self:SetPoint("BOTTOMRIGHT", 0, 0);
-	end
-	self.content:SetWidth(self:GetWidth());
-end
-
 function TRP3_Tools_EditorAuraMixin:OnIconSelected(icon)
-	self.content.display.preview.aura.class.BA.IC = icon;
-	self.content.display.preview:SetAuraAndShow(self.content.display.preview.aura);
+	self.display.preview.aura.class.BA.IC = icon;
+	self.display.preview:SetAuraAndShow(self.display.preview.aura);
 end
 
 function TRP3_Tools_EditorAuraMixin:Initialize()
-	self.ScrollBar:SetHideIfUnscrollable(true);
 	local s = self;
 
-	local display = self.content.display;
-	local gameplay = self.content.gameplay;
+	local display = self.display;
+	local gameplay = self.gameplay;
 
 	local presetBuffs = {
 		{category = ""                   , color = nil     , helpful = true},
@@ -167,64 +157,64 @@ end
 function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, cursor)
 	local BA = class.BA or TRP3_API.globals.empty;
 
-	self.content.display.name:SetText(BA.NA or "");
-	self.content.display.category:SetText(BA.CA or "");
+	self.display.name:SetText(BA.NA or "");
+	self.display.category:SetText(BA.CA or "");
 	if BA.CO then
-		self.content.display.borderPicker.setColor(TRP3_API.CreateColorFromHexString(BA.CO):GetRGBAsBytes());
+		self.display.borderPicker.setColor(TRP3_API.CreateColorFromHexString(BA.CO):GetRGBAsBytes());
 	else
-		self.content.display.borderPicker.setColor(nil);
+		self.display.borderPicker.setColor(nil);
 	end
 
-	self.content.display.description:SetText(BA.DE or "");
-	self.content.display.flavor:SetText(BA.FL or "");
-	self.content.display.overlay:SetText(BA.OV or "");
-	self.content.display.helpful:SetChecked(BA.HE or false);
-	self.content.display.preview:SetAuraTexts(nil, BA.OV or "");
+	self.display.description:SetText(BA.DE or "");
+	self.display.flavor:SetText(BA.FL or "");
+	self.display.overlay:SetText(BA.OV or "");
+	self.display.helpful:SetChecked(BA.HE or false);
+	self.display.preview:SetAuraTexts(nil, BA.OV or "");
 	self:OnIconSelected(BA.IC);
 
 	local hasDuration = (BA.DU or math.huge) < math.huge;
-	self.content.gameplay.hasDuration:SetChecked(hasDuration);
-	self.content.gameplay.duration:SetShown(hasDuration);
-	self.content.gameplay.duration:SetText(("%0.1f"):format(BA.DU or 300):gsub("%.0+", "")); --  getting rid of ugly floating point artifacts
+	self.gameplay.hasDuration:SetChecked(hasDuration);
+	self.gameplay.duration:SetShown(hasDuration);
+	self.gameplay.duration:SetText(("%0.1f"):format(BA.DU or 300):gsub("%.0+", "")); --  getting rid of ugly floating point artifacts
 
-	self.content.gameplay.alwaysActive:SetChecked(BA.AA or false);
-	self.content.gameplay.ensureExpiry:SetChecked(BA.EE or false);
-	self.content.gameplay.ensureExpiry:SetShown(BA.AA);
+	self.gameplay.alwaysActive:SetChecked(BA.AA or false);
+	self.gameplay.ensureExpiry:SetChecked(BA.EE or false);
+	self.gameplay.ensureExpiry:SetShown(BA.AA);
 
-	self.content.gameplay.boundToCampaign:SetShown(creationClass.TY == TRP3_DB.types.CAMPAIGN);
-	self.content.gameplay.boundToCampaign:SetChecked(BA.BC or false);
+	self.gameplay.boundToCampaign:SetShown(creationClass.TY == TRP3_DB.types.CAMPAIGN);
+	self.gameplay.boundToCampaign:SetChecked(BA.BC or false);
 
-	self.content.gameplay.cancellable:SetChecked(BA.CC or false);
+	self.gameplay.cancellable:SetChecked(BA.CC or false);
 
 	local hasInterval = (BA.IV or math.huge) < math.huge;
-	self.content.gameplay.hasInterval:SetChecked(hasInterval);
-	self.content.gameplay.interval:SetShown(hasInterval);
-	self.content.gameplay.interval:SetText(("%0.1f"):format(BA.IV or 10):gsub("%.0+", ""));
-	self.content.gameplay.inspectable:SetChecked(BA.WE or false);
+	self.gameplay.hasInterval:SetChecked(hasInterval);
+	self.gameplay.interval:SetShown(hasInterval);
+	self.gameplay.interval:SetText(("%0.1f"):format(BA.IV or 10):gsub("%.0+", ""));
+	self.gameplay.inspectable:SetChecked(BA.WE or false);
 
-	self.content.display.applyAura:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
-	self.content.display.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
+	self.display.applyAura:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
+	self.display.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 end
 
 function TRP3_Tools_EditorAuraMixin:InterfaceToClass(targetClass, targetCursor)
 	targetClass.BA = targetClass.BA or {};
 	
-	targetClass.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.name:GetText()));
-	targetClass.BA.CA = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.category:GetText()));
-	local r, g, b = self.content.display.borderPicker.red, self.content.display.borderPicker.green, self.content.display.borderPicker.blue;
+	targetClass.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(self.display.name:GetText()));
+	targetClass.BA.CA = TRP3_API.utils.str.emptyToNil(strtrim(self.display.category:GetText()));
+	local r, g, b = self.display.borderPicker.red, self.display.borderPicker.green, self.display.borderPicker.blue;
 	if r and g and b then
 		targetClass.BA.CO = TRP3_API.CreateColorFromBytes(r, g, b):GenerateHexColorOpaque();
 	else
 		targetClass.BA.CO = nil;
 	end
-	targetClass.BA.DE = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.description:GetText()));
-	targetClass.BA.FL = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.flavor:GetText()));
-	targetClass.BA.OV = TRP3_API.utils.str.emptyToNil(strtrim(self.content.display.overlay:GetText()));
-	targetClass.BA.HE = self.content.display.helpful:GetChecked();
-	targetClass.BA.IC = self.content.display.preview.aura.class.BA.IC;
+	targetClass.BA.DE = TRP3_API.utils.str.emptyToNil(strtrim(self.display.description:GetText()));
+	targetClass.BA.FL = TRP3_API.utils.str.emptyToNil(strtrim(self.display.flavor:GetText()));
+	targetClass.BA.OV = TRP3_API.utils.str.emptyToNil(strtrim(self.display.overlay:GetText()));
+	targetClass.BA.HE = self.display.helpful:GetChecked();
+	targetClass.BA.IC = self.display.preview.aura.class.BA.IC;
 
-	if self.content.gameplay.hasDuration:GetChecked() then
-		targetClass.BA.DU = self.content.gameplay.duration:GetNumber();
+	if self.gameplay.hasDuration:GetChecked() then
+		targetClass.BA.DU = self.gameplay.duration:GetNumber();
 		if targetClass.BA.DU <= 0 then
 			targetClass.BA.DU = nil;
 		end
@@ -232,14 +222,14 @@ function TRP3_Tools_EditorAuraMixin:InterfaceToClass(targetClass, targetCursor)
 		targetClass.BA.DU = nil;
 	end
 
-	targetClass.BA.AA = self.content.gameplay.alwaysActive:GetChecked();
-	targetClass.BA.EE = self.content.gameplay.ensureExpiry:GetChecked();
-	targetClass.BA.BC = self.content.gameplay.boundToCampaign:GetChecked();
-	targetClass.BA.CC = self.content.gameplay.cancellable:GetChecked();
-	targetClass.BA.WE = self.content.gameplay.inspectable:GetChecked();
+	targetClass.BA.AA = self.gameplay.alwaysActive:GetChecked();
+	targetClass.BA.EE = self.gameplay.ensureExpiry:GetChecked();
+	targetClass.BA.BC = self.gameplay.boundToCampaign:GetChecked();
+	targetClass.BA.CC = self.gameplay.cancellable:GetChecked();
+	targetClass.BA.WE = self.gameplay.inspectable:GetChecked();
 
-	if self.content.gameplay.hasInterval:GetChecked() then
-		targetClass.BA.IV = math.max(self.content.gameplay.interval:GetNumber(), 0.1); -- because I say so
+	if self.gameplay.hasInterval:GetChecked() then
+		targetClass.BA.IV = math.max(self.gameplay.interval:GetNumber(), 0.1); -- because I say so
 	else
 		targetClass.BA.IV = nil;
 	end

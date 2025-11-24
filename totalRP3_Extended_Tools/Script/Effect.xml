@@ -36,7 +36,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Layer level="OVERLAY">
 				<FontString parentKey="title" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="5" y="0" />
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="4" y="0" />
 						<Anchor point="RIGHT" x="-8" />
 						<Anchor point="BOTTOM" relativeKey="$parent.icon" />
 					</Anchors>

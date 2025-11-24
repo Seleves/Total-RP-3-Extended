@@ -8,12 +8,12 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Script file="Trigger_mixins.lua"/>
 
 	<Button name="TRP3_Tools_ScriptObjectEventListElementTemplate" virtual="true" inherits="TRP3_Tools_ListElementTemplate" mixin="TRP3_Tools_ScriptObjectEventListElementMixin">
-		<Size x="0" y="50" />
+		<Size x="0" y="40" />
 		<Frames>
 			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
 				<Size x="24" y="24" />
 				<Anchors>
-					<Anchor point="TOPLEFT" x="12" y="-12"/>
+					<Anchor point="TOPLEFT" x="8" y="-8"/>
 				</Anchors>
 			</Frame>
 		</Frames>
@@ -22,8 +22,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Layer level="OVERLAY">
 				<FontString parentKey="whenText" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="5" y="0" />
-						<Anchor point="RIGHT" x="-12" />
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="4" y="0" />
+						<Anchor point="RIGHT" x="-8" />
 						<Anchor point="BOTTOM" relativeKey="$parent.icon" />
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />
@@ -37,18 +37,18 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	</Button>
 
 	<Button name="TRP3_Tools_ScriptGameEventTreeNodeTemplate" virtual="true" inherits="TRP3_Tools_ListElementTemplate" mixin="TRP3_Tools_ScriptGameEventTreeNodeMixin">
-		<Size x="0" y="50" />
+		<Size x="0" y="40" />
 		<Frames>
 			<Frame parentKey="icon" inherits="TRP3_SimpleIcon">
 				<Size x="24" y="24" />
 				<Anchors>
-					<Anchor point="TOPLEFT" x="12" y="-12"/>
+					<Anchor point="TOPLEFT" x="8" y="-8"/>
 				</Anchors>
 			</Frame>
 			<EventButton parentKey="toggleChildren" hidden="true">
 				<Size x="24" y="24"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" x="12" y="-12"/>
+					<Anchor point="TOPLEFT" x="8" y="-8"/>
 				</Anchors>
 				<NormalTexture parentKey="normalTexture" file="Interface\Buttons\UI-MinusButton-UP"/>
 				<PushedTexture parentKey="pushedTexture" file="Interface\Buttons\UI-MinusButton-DOWN"/>
@@ -65,8 +65,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Layer level="OVERLAY">
 				<FontString parentKey="whenText" inherits="GameFontNormal" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="5" y="0" />
-						<Anchor point="RIGHT" x="-12" />
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="4" y="0" />
+						<Anchor point="RIGHT" x="-8" />
 						<Anchor point="BOTTOM" relativeKey="$parent.icon" />
 					</Anchors>
 					<Color r="0.95" g="0.95" b="0.95" />

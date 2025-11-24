@@ -34,24 +34,13 @@ local CAMPAIGN_PORTRAITS = {
 
 TRP3_Tools_EditorCampaignMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
 
-function TRP3_Tools_EditorCampaignMixin:OnSizeChanged()
-	if self:GetHeight() < self.content:GetHeight() then
-		self:SetPoint("BOTTOMRIGHT", -16, 0);
-	else
-		self:SetPoint("BOTTOMRIGHT", 0, 0);
-	end
-	self.content:SetWidth(self:GetWidth());
-end
-
 function TRP3_Tools_EditorCampaignMixin:Initialize()
 
-	self.ScrollBar:SetHideIfUnscrollable(true);
-	
-	self.content.main.name:SetScript("OnTextChanged", function()
+	self.main.name:SetScript("OnTextChanged", function()
 		self:UpdatePreview();
 	end);
 
-	self.content.main.description:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
+	self.main.description:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
 	local vignetteMenu = {};
 	for _, value in ipairs(CAMPAIGN_PORTRAITS) do
@@ -61,21 +50,21 @@ function TRP3_Tools_EditorCampaignMixin:Initialize()
 			("|TInterface\\ExtraButton\\%s:96:192|t"):format(value)
 		});
 	end
-	TRP3_API.ui.listbox.setupListBox(self.content.main.vignette, vignetteMenu, function(value) self:UpdatePreview(); end);
+	TRP3_API.ui.listbox.setupListBox(self.main.vignette, vignetteMenu, function(value) self:UpdatePreview(); end);
 
-	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.content.main.icon, "RIGHT", 0, 5, loc.CA_ICON, loc.CA_ICON_TT);
-	self.content.main.icon:SetScript("OnClick", function()
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.main.icon, "RIGHT", 0, 5, loc.CA_ICON, loc.CA_ICON_TT);
+	self.main.icon:SetScript("OnClick", function()
 		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon) 
-				self.content.main.icon.Icon:SetTexture("Interface\\ICONS\\" .. icon);
-				self.content.main.icon.selectedIcon = icon;
+				self.main.icon.Icon:SetTexture("Interface\\ICONS\\" .. icon);
+				self.main.icon.selectedIcon = icon;
 				self:UpdatePreview();
 			end, 
 			nil, 
 			nil, 
-			self.content.main.icon.selectedIcon});
+			self.main.icon.selectedIcon});
 	end);	
 
-	local sharedNPCEditor = self.content.npc.sharedNPCEditor;
+	local sharedNPCEditor = self.npc.sharedNPCEditor;
 	sharedNPCEditor.icon:SetScript("OnClick", function()
 		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon) 
 				TRP3_API.ui.frame.setupIconButton(sharedNPCEditor.icon, icon);
@@ -95,7 +84,7 @@ function TRP3_Tools_EditorCampaignMixin:Initialize()
 		end
 	end);
 
-	self.content.main.inspectVariables:SetScript("OnClick", function() 
+	self.main.inspectVariables:SetScript("OnClick", function() 
 		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
 		addon.modal:ShowModal(TRP3_API.popup.VARIABLE_INSPECTOR, {absoluteId, TRP3_DB.types.CAMPAIGN});
 	end);
@@ -104,11 +93,11 @@ end
 
 function TRP3_Tools_EditorCampaignMixin:ClassToInterface(class, creationClass, cursor)
 	local BA = class.BA or TRP3_API.globals.empty;
-	self.content.main.name:SetText(BA.NA or "");
-	self.content.main.description:SetText(BA.DE or "");
-	self.content.main.icon.Icon:SetTexture("Interface\\ICONS\\" .. (BA.IC or "TEMP"));
-	self.content.main.icon.selectedIcon = BA.IC;
-	self.content.main.vignette:SetSelectedValue(BA.IM or "GarrZoneAbility-Stables");
+	self.main.name:SetText(BA.NA or "");
+	self.main.description:SetText(BA.DE or "");
+	self.main.icon.Icon:SetTexture("Interface\\ICONS\\" .. (BA.IC or "TEMP"));
+	self.main.icon.selectedIcon = BA.IC;
+	self.main.vignette:SetSelectedValue(BA.IM or "GarrZoneAbility-Stables");
 	self:UpdatePreview();
 
 	local npcs = {};
@@ -126,25 +115,25 @@ function TRP3_Tools_EditorCampaignMixin:ClassToInterface(class, creationClass, c
 		isAddButton = true
 	});
 	
-	self.content.npc.list.model:Flush();
-	self.content.npc.list.model:InsertTable(npcs);
-	self.content.npc.sharedNPCEditor:Hide();
+	self.npc.list.model:Flush();
+	self.npc.list.model:InsertTable(npcs);
+	self.npc.sharedNPCEditor:Hide();
 
-	self.content.main.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
+	self.main.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 end
 
 function TRP3_Tools_EditorCampaignMixin:InterfaceToClass(targetClass, targetCursor)
 	self:SaveActiveNPCIndex();
 	targetClass.BA = targetClass.BA or {};
 	
-	targetClass.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(self.content.main.name:GetText()));
-	targetClass.BA.DE = TRP3_API.utils.str.emptyToNil(strtrim(self.content.main.description:GetText()));
-	targetClass.BA.IC = self.content.main.icon.selectedIcon;
-	targetClass.BA.IM = self.content.main.vignette:GetSelectedValue();
+	targetClass.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(self.main.name:GetText()));
+	targetClass.BA.DE = TRP3_API.utils.str.emptyToNil(strtrim(self.main.description:GetText()));
+	targetClass.BA.IC = self.main.icon.selectedIcon;
+	targetClass.BA.IM = self.main.vignette:GetSelectedValue();
 	
 	targetClass.ND = targetClass.ND or {}; -- TODO maybe set nil if empty?
 	wipe(targetClass.ND);
-	for _, npcData in self.content.npc.list.model:EnumerateEntireRange() do
+	for _, npcData in self.npc.list.model:EnumerateEntireRange() do
 		if not npcData.isAddButton and npcData.ID then
 			targetClass.ND[npcData.ID] = {
 				NA = npcData.NA,
@@ -157,38 +146,38 @@ function TRP3_Tools_EditorCampaignMixin:InterfaceToClass(targetClass, targetCurs
 end
 
 function TRP3_Tools_EditorCampaignMixin:UpdatePreview()
-	self.content.main.previewIcon:SetTexture("Interface\\ICONS\\" .. (self.content.main.icon.selectedIcon or "TEMP"));
-	self.content.main.previewIconBorder:SetTexture("Interface\\ExtraButton\\" .. self.content.main.vignette:GetSelectedValue());
-	self.content.main.previewName:SetText(self.content.main.name:GetText());
+	self.main.previewIcon:SetTexture("Interface\\ICONS\\" .. (self.main.icon.selectedIcon or "TEMP"));
+	self.main.previewIconBorder:SetTexture("Interface\\ExtraButton\\" .. self.main.vignette:GetSelectedValue());
+	self.main.previewName:SetText(self.main.name:GetText());
 end
 
 function TRP3_Tools_EditorCampaignMixin:SaveActiveNPCIndex()
-	for index, data in self.content.npc.list.model:EnumerateEntireRange() do
+	for index, data in self.npc.list.model:EnumerateEntireRange() do
 		if data.active then
-			self.content.npc.list.model:ReplaceAtIndex(index, data);
+			self.npc.list.model:ReplaceAtIndex(index, data);
 			break;
 		end
 	end
 end
 
 function TRP3_Tools_EditorCampaignMixin:SetActiveNPCIndex(index)
-	for npcIndex, npcData in self.content.npc.list.model:EnumerateEntireRange() do
+	for npcIndex, npcData in self.npc.list.model:EnumerateEntireRange() do
 		if npcData.active then
 			npcData.active = nil;
-			self.content.npc.list.model:ReplaceAtIndex(npcIndex, npcData);
+			self.npc.list.model:ReplaceAtIndex(npcIndex, npcData);
 			break;
 		end
 	end
-	local data = self.content.npc.list.model:Find(index);
+	local data = self.npc.list.model:Find(index);
 	if data and not data.isAddButton then
 		data.active = true;
-		self.content.npc.list.model:ReplaceAtIndex(index, data);
-		self.content.npc.list.widget:ScrollToElementDataIndex(index);
+		self.npc.list.model:ReplaceAtIndex(index, data);
+		self.npc.list.widget:ScrollToElementDataIndex(index);
 	end
 end
 
 function TRP3_Tools_EditorCampaignMixin:AddNPC()
-	local numElements = self.content.npc.list.model:GetSize();
+	local numElements = self.npc.list.model:GetSize();
 	local newNPC = {
 	};
 	if UnitExists("target") then
@@ -198,12 +187,12 @@ function TRP3_Tools_EditorCampaignMixin:AddNPC()
 			newNPC.NA = UnitName("target");
 		end
 	end
-	self.content.npc.list.model:InsertAtIndex(newNPC, numElements);
+	self.npc.list.model:InsertAtIndex(newNPC, numElements);
 	self:SetActiveNPCIndex(numElements)
 end
 
 function TRP3_Tools_EditorCampaignMixin:DeleteNPCAtIndex(index)
-	self.content.npc.list.model:RemoveIndex(index);
+	self.npc.list.model:RemoveIndex(index);
 end
 
 TRP3_Tools_CampaignNPCListElementMixin = {};
@@ -216,7 +205,7 @@ end
 function TRP3_Tools_CampaignNPCListElementMixin:Refresh()
 	local tooltipTitle;
 	local tooltipText;
-	local editor = addon.editor.getCurrentPropertiesEditor().content.npc.sharedNPCEditor;
+	local editor = addon.editor.getCurrentPropertiesEditor().npc.sharedNPCEditor;
 	if self.data.isAddButton then
 		self.icon:Show();
 		self.icon.Icon:SetTexture("Interface\\PaperDollInfoFrame\\Character-Plus");
@@ -292,7 +281,7 @@ end
 
 function TRP3_Tools_CampaignNPCListElementMixin:OnClick(button)
 	local campaignEditor = addon.editor.getCurrentPropertiesEditor();
-	local npcIndex = campaignEditor.content.npc.list.model:FindIndex(self.data);
+	local npcIndex = campaignEditor.npc.list.model:FindIndex(self.data);
 	if self.data.isAddButton then
 		campaignEditor:AddNPC();
 	elseif button == "LeftButton" and not self.data.active then
@@ -325,6 +314,6 @@ end
 
 function TRP3_Tools_CampaignNPCListElementMixin:OnDelete()
 	local campaignEditor = addon.editor.getCurrentPropertiesEditor();
-	local npcIndex = campaignEditor.content.npc.list.model:FindIndex(self.data);
+	local npcIndex = campaignEditor.npc.list.model:FindIndex(self.data);
 	campaignEditor:DeleteNPCAtIndex(npcIndex);
 end
