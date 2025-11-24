@@ -238,9 +238,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</KeyValues>
 						<Anchors>
 							<Anchor point="TOP" y="-45"/>
-							<Anchor point="BOTTOM" y="40"/>
-							<Anchor point="LEFT" x="20"/>
-							<Anchor point="RIGHT" x="-20"/>
+							<Anchor point="BOTTOM" y="0"/>
+							<Anchor point="LEFT" x="0"/>
+							<Anchor point="RIGHT" x="0"/>
 						</Anchors>
 					</Frame>
 
