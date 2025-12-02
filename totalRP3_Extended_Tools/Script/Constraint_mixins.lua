@@ -35,7 +35,7 @@ function TRP3_Tools_ScriptConstraintEditorMixin:Update()
 
 	local orStart, prev;
 	local hasAnd = false;
-	for index, equation in ipairs(self.constraint) do
+	for index, equation in ipairs(self.constraint or TRP3_API.globals.empty) do
 		local modelItem = {
 			equation           = equation,
 			isOpenParenthesis  = false,
@@ -63,7 +63,9 @@ function TRP3_Tools_ScriptConstraintEditorMixin:Update()
 		orStart.isOpenParenthesis = true;
 		prev.isCloseParenthesis = true;
 	end
-	table.insert(model, {});
+	if self.constraint then
+		table.insert(model, {});
+	end
 	
 	local scrollPct = self.widget:GetScrollPercentage();
 	self.sharedLeftTermDropdown:Hide();
@@ -84,6 +86,13 @@ function TRP3_Tools_ScriptConstraintEditorMixin:LinkWithConstraint(constraint)
 	self.model:Flush();
 	self.widget:SetScrollPercentage(0);
 	self:Update();
+end
+
+function TRP3_Tools_ScriptConstraintEditorMixin:Unlink()
+	local constraint = self.constraint;
+	self.model:Flush();
+	self.constraint = nil;
+	return constraint;
 end
 
 function TRP3_Tools_ScriptConstraintEditorMixin:SetScriptContext(scriptContextFunction)
@@ -295,7 +304,6 @@ function TRP3_Tools_ScriptConstraintEditorListElementMixin:Refresh()
 		self.delete:Show();
 		self:SetSelected(self.data.selected);
 	end
-
 end
 
 function TRP3_Tools_ScriptConstraintEditorListElementMixin:GetElementExtent(data)

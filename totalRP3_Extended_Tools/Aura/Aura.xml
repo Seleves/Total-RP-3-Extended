@@ -127,12 +127,22 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</Anchors>
 					</Button>
 
-					<Frame parentKey="preview" inherits="TRP3_AuraTemplate">
+					<Button parentKey="icon" inherits="TRP3_IconButton">
 						<Anchors>
 							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
 							<Anchor point="TOP" relativePoint="BOTTOM" relativeKey="$parent.flavor" x="0" y="-25"/>
 						</Anchors>
-					</Frame>
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="label" text="${OP_OP_AURA_ICON}" maxLines="1" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+									<Size x="100" y="20"/>
+									<Anchors>
+										<Anchor point="LEFT" x="35"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Button>
 
 					<Button parentKey="applyAura" inherits="TRP3_CommonButton" text="Apply aura">
 						<Size x="125" y="22"/>
@@ -151,25 +161,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					</Button>
 
 				</Frames>
-
-				<Layers>
-					<Layer level="OVERLAY">
-						<FontString parentKey="previewText" inherits="SystemFont_Large" justifyH="LEFT" text="${EDITOR_PREVIEW}">
-							<Anchors>
-								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.preview" x="8" y="0"/>
-								<Anchor point="RIGHT" x="-20" y="0"/>
-							</Anchors>
-							<Color r="0.95" g="0.95" b="0.95"/>
-						</FontString>
-						<FontString parentKey="previewInfo" inherits="SystemFont_Med1" maxLines="2" justifyH="LEFT" justifyV="TOP" text="${EDITOR_ICON_SELECT}">
-							<Anchors>
-								<Anchor point="TOPLEFT" relativeKey="$parent.previewText" relativePoint="BOTTOMLEFT" x="0" y="-1"/>
-								<Anchor point="RIGHT" x="-20" y="0"/>
-							</Anchors>
-							<Color r="0.95" g="0.95" b="0.95"/>
-						</FontString>
-					</Layer>
-				</Layers>
 
 			</Frame>
 			

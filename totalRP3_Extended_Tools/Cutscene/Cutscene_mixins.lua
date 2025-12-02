@@ -100,6 +100,7 @@ function TRP3_Tools_EditorCutsceneMixin:Initialize()
 	self.step.choices:SetScript("OnClick", function()
 		local index, element = self.main.list.model:FindByPredicate(function(e) return e.active; end);
 		if element then
+			self:SaveCurrentStep();
 			addon.modal:ShowModal(TRP3_API.popup.CUTSCENE_CHOICE, {element.step.CH, function(CH)
 				element.step.CH = CH;
 				self:ShowStep(index);
@@ -636,21 +637,20 @@ function TRP3_Tools_EditorCutsceneChoiceMixin:OpenOption(optionIndex)
 	if self.choiceData[self.optionIndex] then
 		self.choiceData[self.optionIndex].text = TRP3_API.utils.str.emptyToNil(strtrim(self.optionEditor.text:GetText()));
 		self.choiceData[self.optionIndex].next = tonumber(self.optionEditor.next:GetText());
-		self.optionEditor.constraint:Update();
+		self.optionEditor.constraint:Unlink();
 	end
-	self.optionEditor:Hide();
+	self.optionEditor:SetShown(optionIndex > 0); -- careful, ScrollBoxListLinearView may behave strange when using :Show()/:Hide() too often
 	self.optionIndex = optionIndex;
 	for index, option in ipairs(self.choiceData) do
 		local optionFrame = self["option" .. index];
 		if self.optionIndex == index then
 			optionFrame:SetHeight(200);
 			optionFrame.button:Hide();
+			self.optionEditor.constraint:LinkWithConstraint(option.constraint);
 			self.optionEditor:SetParent(optionFrame);
 			self.optionEditor:SetAllPoints();
-			self.optionEditor:Show();
 			self.optionEditor.text:SetText(option.text or "");
 			self.optionEditor.next:SetText(option.next or "");
-			self.optionEditor.constraint:LinkWithConstraint(option.constraint);
 		else
 			if option.text then
 				if TableHasAnyEntries(option.constraint) then

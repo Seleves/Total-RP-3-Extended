@@ -62,7 +62,7 @@ function TRP3_Tools_EditorCampaignMixin:Initialize()
 			nil, 
 			nil, 
 			self.main.icon.selectedIcon});
-	end);	
+	end);
 
 	local sharedNPCEditor = self.npc.sharedNPCEditor;
 	sharedNPCEditor.icon:SetScript("OnClick", function()

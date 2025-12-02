@@ -1,0 +1,273 @@
+<!--
+	Copyright The Total RP 3 Extended Authors
+	SPDX-License-Identifier: Apache-2.0
+-->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
+	
+	<Script file="Object_ribbon_mixins.lua"/>
+	
+	<Frame name="TRP3_Tools_IconButtonPlus" inherits="TRP3_IconButton" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY" textureSubLevel="1">
+				<Texture file="Interface\PaperDollInfoFrame\Character-Plus">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="CENTER"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="TRP3_Tools_EditorObjectRibbonTemplate" virtual="true" mixin="TRP3_Tools_EditorObjectRibbonMixin">
+		<Size y="40"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\AddOns\totalRP3\Resources\UI\_ui-frame-wooden-border" horizTile="true" setAllPoints="true">
+					<Color r="1" g="0.8" b="0.8"/>
+					<TexCoords top="0.484375" bottom="0.8125"/>
+				</Texture>
+			</Layer>
+
+			<Layer level="OVERLAY">
+				<FontString parentKey="title" inherits="GameFontNormalLarge" justifyH="LEFT">
+					<Size x="200"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-5"/>
+					</Anchors>
+					<Color b="0.95" r="0.95" g="0.95"/>
+				</FontString>
+				<FontString parentKey="id" inherits="GameFontNormalSmall" justifyH="LEFT">
+					<Size x="200"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-25"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+
+		</Layers>
+
+		<Frames>
+			<Button parentKey="noteButton" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+				</KeyValues>
+				<Size y="34"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="CENTER"/>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="background" atlas="GO-bg-panel" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+							<Color r="1" g="0.25" b="0.25" a="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="text" inherits="GameFontNormal" justifyH="LEFT" text="">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="4" y="-4"/>
+								<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+							</Anchors>
+							<Color b="0.95" r="0.95" g="0.95"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
+					</Anchors>
+				</HighlightTexture>
+				<Scripts>
+					<OnEnter>
+						TRP3_RefreshTooltipForFrame(self);
+					</OnEnter>
+					<OnLeave>
+						TRP3_MainTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Frame parentKey="innerObjectsPanel" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+				</KeyValues>
+				<Size x="136" y="34"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-2" y="0" relativeKey="$parent.noteButton" relativePoint="LEFT"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="QU" inherits="TRP3_Tools_IconButtonPlus">
+						<Anchors>
+							<Anchor point="LEFT" x="8"/>
+						</Anchors>
+					</Button>
+					<Button parentKey="ST" inherits="TRP3_Tools_IconButtonPlus">
+						<Anchors>
+							<Anchor point="LEFT" x="8"/>
+						</Anchors>
+					</Button>
+					<Button parentKey="DI" inherits="TRP3_Tools_IconButtonPlus">
+						<Anchors>
+							<Anchor point="RIGHT" x="-7"/>
+						</Anchors>
+					</Button>
+					<Button parentKey="DO" inherits="TRP3_Tools_IconButtonPlus">
+						<Anchors>
+							<Anchor point="RIGHT" relativeKey="$parent.DI" relativePoint="LEFT" x="-6"/>
+						</Anchors>
+					</Button>
+					<Button parentKey="AU" inherits="TRP3_Tools_IconButtonPlus">
+						<Anchors>
+							<Anchor point="RIGHT" relativeKey="$parent.DO" relativePoint="LEFT" x="-6"/>
+						</Anchors>
+					</Button>
+					<Button parentKey="IT" inherits="TRP3_Tools_IconButtonPlus">
+						<Anchors>
+							<Anchor point="RIGHT" relativeKey="$parent.AU" relativePoint="LEFT" x="-6"/>
+						</Anchors>
+					</Button>
+				</Frames>
+			</Frame>
+
+			<Button parentKey="documentPreview" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+				</KeyValues>
+				<Size x="120" y="38"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-2" y="0" relativeKey="$parent.innerObjectsPanel" relativePoint="LEFT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="background" atlas="GO-bg-panel" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+							<Color r="1" g="0.25" b="0.25" a="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture parentKey="icon" file="Interface\icons\inv_darkmoon_eye">
+							<Size x="32" y="32"/>
+							<Anchors>
+								<Anchor point="LEFT" x="4"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="text" inherits="GameFontNormal" justifyH="CENTER" text="${EDITOR_PREVIEW}">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="4" y="0" relativePoint="TOPRIGHT" relativeKey="$parent.icon"/>
+								<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+							</Anchors>
+							<Color b="0.95" r="0.95" g="0.95"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="36" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
+					</Anchors>
+				</HighlightTexture>
+			</Button>
+
+			<Button parentKey="cutscenePreview" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+				</KeyValues>
+				<Size x="120" y="38"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-2" y="0" relativeKey="$parent.innerObjectsPanel" relativePoint="LEFT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="background" atlas="GO-bg-panel" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+							<Color r="1" g="0.25" b="0.25" a="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture parentKey="icon" file="Interface\icons\inv_darkmoon_eye">
+							<Size x="32" y="32"/>
+							<Anchors>
+								<Anchor point="LEFT" x="4"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="text" inherits="GameFontNormal" justifyH="CENTER" text="${EDITOR_PREVIEW}">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="4" y="0" relativePoint="TOPRIGHT" relativeKey="$parent.icon"/>
+								<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+							</Anchors>
+							<Color b="0.95" r="0.95" g="0.95"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="36" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
+					</Anchors>
+				</HighlightTexture>
+			</Button>
+
+			<Button parentKey="auraPreview" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+				</KeyValues>
+				<Size x="120" y="38"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-2" y="0" relativeKey="$parent.innerObjectsPanel" relativePoint="LEFT"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="aura" enableMouse="false" inherits="TRP3_AuraTemplate">
+						<Anchors>
+							<Anchor point="LEFT" x="4"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="background" atlas="GO-bg-panel" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+							<Color r="1" g="0.25" b="0.25" a="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="text" inherits="GameFontNormal" justifyH="CENTER" text="${EDITOR_PREVIEW}">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="4" y="0" relativePoint="TOPRIGHT" relativeKey="$parent.aura"/>
+								<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+							</Anchors>
+							<Color b="0.95" r="0.95" g="0.95"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="36" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
+					</Anchors>
+				</HighlightTexture>
+			</Button>
+			
+		</Frames>
+	</Frame>
+	
+</Ui>

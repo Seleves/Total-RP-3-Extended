@@ -72,7 +72,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		<Frames>
 			
 			<Frame parentKey="statusBar">
-				<Size y="32"/>
+				<Size y="36"/>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" x="8" y="8"/>
 					<Anchor point="BOTTOMRIGHT" x="-8" y="8"/>
@@ -88,7 +88,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						<FontString parentKey="labelId" inherits="GameFontNormal" justifyH="RIGHT" justifyV="MIDDLE" text="Creation Id">
 							<Size x="100" y="16"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="TOPLEFT" x="0" y="-2"/>
 							</Anchors>
 							<Color r="1" g="0.6" b="0"/>
 						</FontString>
@@ -118,7 +118,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						<FontString parentKey="creationTime" inherits="GameFontNormal" justifyH="RIGHT" justifyV="MIDDLE">
 							<Size x="450" y="16"/>
 							<Anchors>
-								<Anchor point="TOPRIGHT" x="0" y="0"/>
+								<Anchor point="TOPRIGHT" x="0" y="-2"/>
 							</Anchors>
 						</FontString>
 						<FontString parentKey="changeTime" inherits="GameFontNormal" justifyH="RIGHT" justifyV="MIDDLE">
@@ -183,49 +183,61 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</KeyValues>
 					</Frame>
 					
-					<Frame parentKey="split" inherits="TRP3_Tools_SplitPaneTemplate">
+					<Frame parentKey="object">
 						<KeyValues>
-							<KeyValue key="orientation" value="TRP3_Tools_SplitPaneMixin.Direction.VERTICAL" type="global"/>
 							<KeyValue key="ratio" value="0.9" type="number"/>
 							<KeyValue key="minExtent" value="760" type="number"/>
 						</KeyValues>
 						<Frames>
-							<Frame parentKey="properties">
+							<Frame parentKey="objectRibbon" inherits="TRP3_Tools_EditorObjectRibbonTemplate">
+								<Anchors>
+									<Anchor point="TOP" y="0"/>
+									<Anchor point="LEFT" x="0"/>
+									<Anchor point="RIGHT" x="0"/>
+								</Anchors>
+							</Frame>
+
+							<Frame parentKey="split" inherits="TRP3_Tools_SplitPaneTemplate">
+								<Anchors>
+									<Anchor point="TOP" y="0" relativePoint="BOTTOM" relativeKey="$parent.objectRibbon"/>
+									<Anchor point="LEFT" x="0"/>
+									<Anchor point="RIGHT" x="0"/>
+									<Anchor point="BOTTOM" y="0"/>
+								</Anchors>
 								<KeyValues>
-									<KeyValue key="collapsible" value="true" type="boolean"/>
-									<KeyValue key="collapsedLabel" value="Object Properties" type="string"/>
-									<KeyValue key="minExtent" value="400" type="number"/>
-									<KeyValue key="maxExtent" value="400" type="number"/>
+									<KeyValue key="orientation" value="TRP3_Tools_SplitPaneMixin.Direction.VERTICAL" type="global"/>
 								</KeyValues>
 								<Frames>
-									
-									<Frame parentKey="item" inherits="TRP3_Tools_EditorItemTemplate" useParentLevel="true"/>
-									<Frame parentKey="aura" inherits="TRP3_Tools_EditorAuraTemplate" useParentLevel="true"/>
-									<Frame parentKey="document" inherits="TRP3_Tools_EditorDocumentTemplate" useParentLevel="true"/>
-									<Frame parentKey="cutscene" inherits="TRP3_Tools_EditorCutsceneTemplate" useParentLevel="true"/>
-									<Frame parentKey="campaign" inherits="TRP3_Tools_EditorCampaignTemplate" useParentLevel="true"/>
-									<Frame parentKey="quest" inherits="TRP3_Tools_EditorQuestTemplate" useParentLevel="true"/>
-									<Frame parentKey="questStep" inherits="TRP3_Tools_EditorQuestStepTemplate" useParentLevel="true"/>
-									
-									<Button name="$parentNoteButton" parentKey="noteButton" inherits="TRP3_Tools_EditorNoteButtonTemplate"/>
-									
+									<Frame parentKey="properties">
+										<KeyValues>
+											<KeyValue key="collapsible" value="true" type="boolean"/>
+											<KeyValue key="collapsedLabel" value="Object Properties" type="string"/>
+											<KeyValue key="minExtent" value="400" type="number"/>
+											<KeyValue key="maxExtent" value="400" type="number"/>
+										</KeyValues>
+										<Frames>
+											<Frame parentKey="item" inherits="TRP3_Tools_EditorItemTemplate"/>
+											<Frame parentKey="aura" inherits="TRP3_Tools_EditorAuraTemplate"/>
+											<Frame parentKey="document" inherits="TRP3_Tools_EditorDocumentTemplate"/>
+											<Frame parentKey="cutscene" inherits="TRP3_Tools_EditorCutsceneTemplate"/>
+											<Frame parentKey="campaign" inherits="TRP3_Tools_EditorCampaignTemplate"/>
+											<Frame parentKey="quest" inherits="TRP3_Tools_EditorQuestTemplate"/>
+											<Frame parentKey="questStep" inherits="TRP3_Tools_EditorQuestStepTemplate"/>
+										</Frames>
+									</Frame>
+									<Frame parentKey="script" inherits="TRP3_Tools_EditorScriptTemplate">
+										<KeyValues>
+											<KeyValue key="collapsedLabel" value="Triggers and Workflows" type="string"/>
+											<KeyValue key="minExtent" value="120" type="number"/>
+										</KeyValues>
+									</Frame>
 								</Frames>
-							</Frame>
-							<Frame parentKey="script" inherits="TRP3_Tools_EditorScriptTemplate">
-								<KeyValues>
-									<KeyValue key="collapsedLabel" value="Triggers and Workflows" type="string"/>
-									<KeyValue key="minExtent" value="150" type="number"/>
-								</KeyValues>
 							</Frame>
 						</Frames>
 					</Frame>
 					
 				</Frames>
 			</Frame>
-			
-			<!-- Popups -->
-			
-			<Frame parentKey="noteFrame" name="$parentNote" inherits="TRP3_Tools_EditorNoteTemplate"/>
 			
 		</Frames>
 	</Frame>

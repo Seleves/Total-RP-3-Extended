@@ -56,23 +56,6 @@ function TRP3_Tools_CreationTreeNodeMixin:SetActive(active)
 	self.id:SetPoint("RIGHT", active and -24 or -8, 0);
 end
 
-function requestInnerObject(absoluteId, type)
-	TRP3_API.popup.showTextInputPopup(loc.IN_INNER_ENTER_ID .. "|n|n" .. loc.IN_INNER_ENTER_ID_TT, function(relativeId)
-		relativeId = relativeId or "";
-		relativeId = TRP3_API.extended.checkID(relativeId);
-		if relativeId:len() == 0 then
-			return;
-		elseif relativeId:find(" ") then
-			TRP3_API.popup.showAlertPopup(loc.IN_INNER_ENTER_ID_NO_SPACE);
-		else
-			local success, message = addon.appendInnerObject(absoluteId, relativeId, type);
-			if not success then
-				TRP3_API.utils.message.displayMessage(message, 4);
-			end
-		end
-	end, nil, "");
-end
-
 function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 	if button == "LeftButton" then
 		if IsControlKeyDown() then
@@ -171,29 +154,29 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 				end		
 			end
 
-			local createInnerOption = contextMenu:CreateButton("Create inner object...");
+			local createInnerOption = contextMenu:CreateButton(loc.IN_INNER_ADD);
 
 			if class.TY == TRP3_DB.types.CAMPAIGN then
 				local createInnerOptionQuest = createInnerOption:CreateButton(loc.TYPE_QUEST, function() 
-					requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.QUEST);
+					addon.editor.requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.QUEST);
 				end);
 			end
 			if class.TY == TRP3_DB.types.QUEST then
 				local createInnerOptionQuestStep = createInnerOption:CreateButton(loc.TYPE_QUEST_STEP, function() 
-					requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.QUEST_STEP);
+					addon.editor.requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.QUEST_STEP);
 				end);
 			end
 			local createInnerOptionItem = createInnerOption:CreateButton(loc.TYPE_ITEM, function() 
-				requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.ITEM);
+				addon.editor.requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.ITEM);
 			end);
 			local createInnerOptionAura = createInnerOption:CreateButton(loc.TYPE_AURA, function() 
-				requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.AURA);
+				requestInneaddon.editor.requestInnerObjectrObject(self.node.data.absoluteId, TRP3_DB.types.AURA);
 			end);
 			local createInnerOptionDocument = createInnerOption:CreateButton(loc.TYPE_DOCUMENT, function() 
-				requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.DOCUMENT);
+				addon.editor.requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.DOCUMENT);
 			end);
 			local createInnerOptionDialog = createInnerOption:CreateButton(loc.TYPE_DIALOG, function() 
-				requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.DIALOG);
+				addon.editor.requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.DIALOG);
 			end);
 			
 			contextMenu:CreateDivider();

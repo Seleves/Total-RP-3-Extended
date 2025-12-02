@@ -340,6 +340,22 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</Frames>
 	</Frame>
 
+	<Frame name="TRP3_Tools_NoteEditor" inherits="TRP3_Tools_TitledPopupTemplate" hidden="true" mixin="TRP3_Tools_NoteEditorMixin">
+		<KeyValues>
+			<KeyValue key="titleText" value="${EDITOR_NOTES}" type="string"/>
+		</KeyValues>
+		<Frames>
+			<Frame parentKey="note" inherits="TRP3_TextArea">
+				<Anchors>
+					<Anchor point="TOP" y="-40"/>
+					<Anchor point="LEFT" x="30"/>
+					<Anchor point="RIGHT" x="-30"/>
+					<Anchor point="BOTTOM" y="30"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+
 	<!-- Variable inspector -->
 
 	<Button name="TRP3_Tools_VariableInspectorListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_VariableInspectorListElementMixin">

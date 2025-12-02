@@ -105,7 +105,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</KeyValues>
 		<Frames>
 
-			<Frame parentKey="optionEditor" inherits="BackdropTemplate" hidden="true">
+			<Frame name="TRP3_Tools_EditorCutsceneChoicePopupOptionEditor" parentKey="optionEditor" inherits="BackdropTemplate" hidden="true">
 				<KeyValues>
 					<KeyValue key="backdropInfo" value="TRP3_BACKDROP_MIXED_TUTORIAL_TOOLTIP_418_24_5555" type="global"/>
 				</KeyValues>

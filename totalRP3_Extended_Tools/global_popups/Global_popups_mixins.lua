@@ -751,3 +751,22 @@ function TRP3_Tools_TextEditorMixin:Close()
 	end
 	self:Hide();
 end
+
+TRP3_Tools_NoteEditorMixin = {};
+
+function TRP3_Tools_NoteEditorMixin:Initialize()
+	addon.localize(self);
+	TRP3_API.popup.NOTE_EDITOR = "note_editor";
+	TRP3_API.popup.POPUPS[TRP3_API.popup.NOTE_EDITOR] = {
+		frame = self,
+		showMethod = function(note, callback)
+			self.note.scroll.text:SetText(note or "");
+			self.callback = callback;
+		end,
+	};
+end
+
+function TRP3_Tools_NoteEditorMixin:Close()
+	self.callback(strtrim(self.note.scroll.text:GetText()));
+	self:Hide();
+end

@@ -28,7 +28,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Include file="item\Item.xml"/>
 	
 	<Include file="list\List.xml"/>
-	<Include file="note\Note.xml"/>
+	<Include file="object_ribbon\Object_ribbon.xml"/>
 	<Include file="editor\Editor.xml"/>
 	<Include file="global_popups\Global_popups.xml"/>
 	<Include file="static_analysis\Static_analysis.xml"/>

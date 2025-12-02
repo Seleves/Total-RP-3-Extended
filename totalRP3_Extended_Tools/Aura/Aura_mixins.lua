@@ -3,9 +3,34 @@ local loc = TRP3_API.loc;
 
 TRP3_Tools_EditorAuraMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
 
-function TRP3_Tools_EditorAuraMixin:OnIconSelected(icon)
-	self.display.preview.aura.class.BA.IC = icon;
-	self.display.preview:SetAuraAndShow(self.display.preview.aura);
+function TRP3_Tools_EditorAuraMixin:UpdatePreview(doFullUpdate)
+	self.preview.class.BA.IC = self.display.icon.selectedIcon;
+	self.preview.class.BA.OV = TRP3_API.utils.str.emptyToNil(strtrim(self.display.overlay:GetText()));
+	
+	local r, g, b = self.display.borderPicker.red, self.display.borderPicker.green, self.display.borderPicker.blue;
+	if r and g and b then
+		self.preview.class.BA.CO = TRP3_API.CreateColorFromBytes(r, g, b):GenerateHexColorOpaque();
+		self.preview.color = {
+			h = TRP3_API.CreateColorFromBytes(r, g, b):GenerateHexColorOpaque(),
+			r = r/255,
+			g = g/255,
+			b = b/255,
+		};
+	else
+		self.preview.class.BA.CO = nil;
+		self.preview.color = nil;
+	end
+
+	if doFullUpdate then
+		self.preview.persistent.expiry = time() + (self.gameplay.hasDuration:GetChecked() and tonumber(self.gameplay.duration:GetText()) or math.huge);
+		self.preview.class.BA.DE = TRP3_API.script.parseArgs(TRP3_API.utils.str.emptyToNil(strtrim(self.display.description.scroll.text:GetText())), TRP3_API.globals.empty);
+		self.preview.class.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(self.display.name:GetText()));
+		self.preview.class.BA.CA = TRP3_API.utils.str.emptyToNil(strtrim(self.display.category:GetText()));
+		self.preview.class.BA.FL = TRP3_API.utils.str.emptyToNil(strtrim(self.display.flavor.scroll.text:GetText()));
+		self.preview.class.BA.CC = self.gameplay.cancellable:GetChecked();
+	end
+
+	addon.editor.object:SetAuraPreview(self.preview);
 end
 
 function TRP3_Tools_EditorAuraMixin:Initialize()
@@ -41,7 +66,7 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 	end
 	
 	display.overlay:SetScript("OnTextChanged", function()
-		display.preview:SetAuraTexts(nil, TRP3_API.utils.str.emptyToNil(strtrim(display.overlay:GetText())));
+		self:UpdatePreview();
 	end);
 	display.overlay:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 
@@ -56,17 +81,7 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 	end);
 
 	display.borderPicker.onSelection = function(red, green, blue)
-		if red and green and blue then
-			display.preview.aura.color = {
-				h = TRP3_API.CreateColorFromBytes(red, green, blue):GenerateHexColorOpaque(),
-				r = red/255,
-				g = green/255,
-				b = blue/255,
-			};
-		else
-			display.preview.aura.color = nil;
-		end
-		display.preview:SetAuraAndShow(display.preview.aura);
+		self:UpdatePreview();
 	end
 	display.borderPicker:SetScript("OnClick", function(self, button)
 		if button == "LeftButton" then
@@ -84,7 +99,19 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 	.. "|n" .. TRP3_API.FormatShortcutWithInstruction("RCLICK", loc.REG_PLAYER_COLOR_TT_DISCARD)
 	.. "|n" .. TRP3_API.FormatShortcutWithInstruction("SHIFT-CLICK", loc.REG_PLAYER_COLOR_TT_DEFAULTPICKER));
 
-	display.preview.aura = {
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(display.icon, "RIGHT", 0, 5, "Aura icon", "select an aura icon");
+	display.icon:SetScript("OnClick", function()
+		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon) 
+				display.icon.Icon:SetTexture("Interface\\ICONS\\" .. icon);
+				display.icon.selectedIcon = icon;
+				self:UpdatePreview();
+			end, 
+			nil, 
+			nil, 
+			display.icon.selectedIcon});
+	end);
+
+	self.preview = {
 		persistent = {
 			expiry = math.huge,
 		},
@@ -93,18 +120,6 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 			}
 		},
 	};
-	display.preview:SetScript("OnEnter", function(self)
-		display.preview.aura.persistent.expiry = time() + (gameplay.hasDuration:GetChecked() and tonumber(gameplay.duration:GetText()) or math.huge);
-		display.preview.aura.class.BA.DE = TRP3_API.script.parseArgs(TRP3_API.utils.str.emptyToNil(strtrim(display.description.scroll.text:GetText())), TRP3_API.globals.empty);
-		display.preview.aura.class.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(display.name:GetText()));
-		display.preview.aura.class.BA.CA = TRP3_API.utils.str.emptyToNil(strtrim(display.category:GetText()));
-		display.preview.aura.class.BA.FL = TRP3_API.utils.str.emptyToNil(strtrim(display.flavor.scroll.text:GetText()));
-		display.preview.aura.class.BA.CC = gameplay.cancellable:GetChecked();
-		TRP3_AuraTooltip:Attach(display.preview);
-	end);
-	display.preview:SetScript("OnMouseUp", function(self)
-		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon) s:OnIconSelected(icon); end, nil, nil, display.preview.aura.class.BA.IC});
-	end);
 
 	gameplay.hasDuration:SetScript("OnClick", function()
 		if gameplay.hasDuration:GetChecked() then
@@ -169,8 +184,9 @@ function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, curso
 	self.display.flavor:SetText(BA.FL or "");
 	self.display.overlay:SetText(BA.OV or "");
 	self.display.helpful:SetChecked(BA.HE or false);
-	self.display.preview:SetAuraTexts(nil, BA.OV or "");
-	self:OnIconSelected(BA.IC);
+
+	self.display.icon.Icon:SetTexture("Interface\\ICONS\\" .. (BA.IC or "TEMP"));
+	self.display.icon.selectedIcon = BA.IC;
 
 	local hasDuration = (BA.DU or math.huge) < math.huge;
 	self.gameplay.hasDuration:SetChecked(hasDuration);
@@ -194,6 +210,8 @@ function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, curso
 
 	self.display.applyAura:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 	self.display.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
+
+	self:UpdatePreview();
 end
 
 function TRP3_Tools_EditorAuraMixin:InterfaceToClass(targetClass, targetCursor)
@@ -211,7 +229,7 @@ function TRP3_Tools_EditorAuraMixin:InterfaceToClass(targetClass, targetCursor)
 	targetClass.BA.FL = TRP3_API.utils.str.emptyToNil(strtrim(self.display.flavor:GetText()));
 	targetClass.BA.OV = TRP3_API.utils.str.emptyToNil(strtrim(self.display.overlay:GetText()));
 	targetClass.BA.HE = self.display.helpful:GetChecked();
-	targetClass.BA.IC = self.display.preview.aura.class.BA.IC;
+	targetClass.BA.IC = self.display.icon.selectedIcon;
 
 	if self.gameplay.hasDuration:GetChecked() then
 		targetClass.BA.DU = self.gameplay.duration:GetNumber();

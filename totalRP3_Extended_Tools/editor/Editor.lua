@@ -6,9 +6,9 @@ addon.editor = {};
 
 local statusBar;
 local objectTree;
-local noteFrame;
+local objectEditor;
+local objectRibbon;
 local editorsByType = {};
-local modalPopups = {};
 
 local currentEditor;
 local currentDraft;
@@ -223,6 +223,23 @@ function addon.pasteClipboardAsInnerObjects(absoluteId)
 	end
 end
 
+function addon.editor.requestInnerObject(absoluteId, type)
+	TRP3_API.popup.showTextInputPopup(loc.IN_INNER_ENTER_ID .. "|n|n" .. loc.IN_INNER_ENTER_ID_TT, function(relativeId)
+		relativeId = relativeId or "";
+		relativeId = TRP3_API.extended.checkID(relativeId);
+		if relativeId:len() == 0 then
+			return;
+		elseif relativeId:find(" ") then
+			TRP3_API.popup.showAlertPopup(loc.IN_INNER_ENTER_ID_NO_SPACE);
+		else
+			local success, message = addon.appendInnerObject(absoluteId, relativeId, type);
+			if not success then
+				TRP3_API.utils.message.displayMessage(message, 4);
+			end
+		end
+	end, nil, "");
+end
+
 function addon.appendInnerObject(absoluteId, relativeId, type)
 	local object = currentDraft.index[absoluteId];
 	if isRelativeIdAvailable(object.class, relativeId) then
@@ -359,7 +376,7 @@ function addon.updateCurrentObjectDraft()
 	local objectCursor = currentEditor.cursor.objects[currentEditor.cursor.objectId];
 
 	if currentObject.class.TY and editorsByType[currentObject.class.TY] then
-		objectCursor.objectRatio = TRP3_ToolFrameEditor.split.split:GetRatio();
+		objectCursor.objectRatio = objectEditor.split:GetRatio();
 		editorsByType[currentObject.class.TY]:InterfaceToClass(currentObject.class, objectCursor);
 		currentObject.node.data.icon, currentObject.node.data.link = addon.utils.getObjectIconAndLink(currentObject.class);
 		addon.editor.refreshObjectTree();
@@ -369,7 +386,7 @@ function addon.updateCurrentObjectDraft()
 	currentObject.class.MD = currentObject.class.MD or {MO = TRP3_DB.modes.EXPERT}; -- TODO backwards compatibility
 	-- MD serves no purpose in non-root objects, but it will crash older versions if not present
 	
-	noteFrame:InterfaceToClass(currentObject.class);
+	objectRibbon:InterfaceToClass(currentObject.class);
 	addon.editor.script:InterfaceToClass(currentObject.class, objectCursor);
 end
 
@@ -419,13 +436,14 @@ function addon.displayObject(objectId)
 	currentEditor.cursor.objects[objectId] = currentEditor.cursor.objects[objectId] or {};
 	local objectCursor = currentEditor.cursor.objects[objectId];
 
+	objectRibbon:ClassToInterface(currentObject.class);
+
 	if currentObject.class.TY and editorsByType[currentObject.class.TY] then
-		TRP3_ToolFrameEditor.split.split:SetRatio(objectCursor.objectRatio or 1);
+		objectEditor.split:SetRatio(objectCursor.objectRatio or 1);
 		editorsByType[currentObject.class.TY]:Show();
 		editorsByType[currentObject.class.TY]:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
 	end
 	
-	noteFrame:ClassToInterface(currentObject.class);
 	addon.editor.script:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
 end
 
@@ -617,13 +635,6 @@ function addon.editor.populateObjectTagMenu(menu, onAccept, scriptContext, event
 	
 end
 
-function addon.hidePopups()
-	TRP3_API.popup.hidePopups();
-	for _, popup in pairs(modalPopups) do
-		popup:Close();
-	end
-end
-
 function addon.createDraft(creationId)
 	local draftClass = {};
 	TRP3_API.utils.table.copy(draftClass, TRP3_API.extended.getClass(creationId));
@@ -736,25 +747,28 @@ local function onSave()
 end
 
 function TRP3_API.extended.tools.initEditor(toolFrame)
-	statusBar  = TRP3_ToolFrameEditor.statusBar;
-	objectTree = TRP3_ToolFrameEditor.split.tree; -- = TRP3_ToolFrameEditorTree
-	noteFrame  = TRP3_ToolFrameEditor.noteFrame;
+	statusBar    = TRP3_ToolFrameEditor.statusBar;
+	objectTree   = TRP3_ToolFrameEditor.split.tree; -- = TRP3_ToolFrameEditorTree
+	objectEditor = TRP3_ToolFrameEditor.split.object;
+	objectRibbon = TRP3_ToolFrameEditor.split.object.objectRibbon;
 
-	addon.editor.script  = TRP3_ToolFrameEditor.split.split.script;
+	addon.editor.object  = objectRibbon;
+	addon.editor.script  = objectEditor.split.script;
 
 	-- statusBar.id:SetText(loc.EDITOR_ID_COPY);
 	-- statusBar.id:SetScript("OnClick", function()
 		-- TRP3_API.popup.showTextInputPopup(loc.EDITOR_ID_COPY_POPUP, nil, nil, currentEditor.creationId);
 	-- end); -- TODO copy id feature
 	
-	editorsByType[TRP3_DB.types.CAMPAIGN]   = TRP3_ToolFrameEditor.split.split.properties.campaign;
-	editorsByType[TRP3_DB.types.QUEST]      = TRP3_ToolFrameEditor.split.split.properties.quest;
-	editorsByType[TRP3_DB.types.QUEST_STEP] = TRP3_ToolFrameEditor.split.split.properties.questStep;
-	editorsByType[TRP3_DB.types.ITEM]       = TRP3_ToolFrameEditor.split.split.properties.item;
-	editorsByType[TRP3_DB.types.DOCUMENT]   = TRP3_ToolFrameEditor.split.split.properties.document;
-	editorsByType[TRP3_DB.types.DIALOG]     = TRP3_ToolFrameEditor.split.split.properties.cutscene;
-	editorsByType[TRP3_DB.types.AURA]       = TRP3_ToolFrameEditor.split.split.properties.aura;
+	editorsByType[TRP3_DB.types.CAMPAIGN]   = objectEditor.split.properties.campaign;
+	editorsByType[TRP3_DB.types.QUEST]      = objectEditor.split.properties.quest;
+	editorsByType[TRP3_DB.types.QUEST_STEP] = objectEditor.split.properties.questStep;
+	editorsByType[TRP3_DB.types.ITEM]       = objectEditor.split.properties.item;
+	editorsByType[TRP3_DB.types.DOCUMENT]   = objectEditor.split.properties.document;
+	editorsByType[TRP3_DB.types.DIALOG]     = objectEditor.split.properties.cutscene;
+	editorsByType[TRP3_DB.types.AURA]       = objectEditor.split.properties.aura;
 	
+	objectRibbon:Initialize();
 	for _, editor in pairs(editorsByType) do
 		if editor then
 			editor:Initialize();
@@ -789,9 +803,5 @@ function TRP3_API.extended.tools.initEditor(toolFrame)
 	end);
 
 	statusBar.save:SetScript("OnClick", onSave);
-	
-	noteFrame:AssociateWith(TRP3_ToolFrameEditor.split.split.properties.noteButton);
-	
-	table.insert(modalPopups, noteFrame);
 	
 end
