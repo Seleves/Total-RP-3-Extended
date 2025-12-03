@@ -38,9 +38,23 @@ read_globals = {
 		},
 	},
 
+	C_ChatInfo = {
+		fields = {
+			"SendChatMessage",
+			"PerformEmote",
+		},
+	},
+
 	C_CurrencyInfo = {
 		fields = {
 			"GetCoinTextureString",
+		},
+	},
+
+	C_Housing = {
+		fields = {
+			"GetCurrentHouseInfo",
+			"GetCurrentNeighborhoodGUID",
 		},
 	},
 
@@ -83,6 +97,12 @@ read_globals = {
 	C_ToyBox = {
 		fields = {
 			"GetToyLink",
+		},
+	},
+
+	ChatFrameUtil = {
+		fields = {
+			"GetActiveWindow",
 		},
 	},
 
@@ -178,6 +198,7 @@ read_globals = {
 	"ITEM_SOULBOUND",
 	"ITEM_UNIQUE",
 	"LibStub",
+	"MAXEMOTEINDEX",
 	"min",
 	"Mixin",
 	"mod",
@@ -207,7 +228,6 @@ read_globals = {
 	"SecondsFormatter.Abbreviation.OneLetter",
 	"SecondsFormatterMixin",
 	"SECURITY_LEVEL",
-	"SendChatMessage",
 	"SetCursor",
 	"SetView",
 	"SPELL_FAILED_BAD_IMPLICIT_TARGETS",
