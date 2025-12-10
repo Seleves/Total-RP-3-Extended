@@ -212,8 +212,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 										<KeyValues>
 											<KeyValue key="collapsible" value="true" type="boolean"/>
 											<KeyValue key="collapsedLabel" value="Object Properties" type="string"/>
-											<KeyValue key="minExtent" value="400" type="number"/>
-											<KeyValue key="maxExtent" value="400" type="number"/>
+											<KeyValue key="minExtent" value="350" type="number"/>
+											<KeyValue key="maxExtent" value="350" type="number"/>
 										</KeyValues>
 										<Frames>
 											<Frame parentKey="item" inherits="TRP3_Tools_EditorItemTemplate"/>

@@ -252,7 +252,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Anchor point="TOPLEFT"/>
 			<Anchor point="BOTTOMRIGHT"/>
 		</Anchors>
-		<Size y="400"/>
+		<Size y="350"/>
 		
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -272,9 +272,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		<Frames>
 			
 			<Frame parentKey="main" inherits="TRP3_Tools_TitledPanelTemplate">
-				<KeyValues>
-					<KeyValue key="titleText" value="Cutscene" type="string"/>
-				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="0" y="0"/>
 					<Anchor point="BOTTOM"/>
@@ -286,8 +283,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<Color r="1" g="0.8" b="0.8"/>
 							<TexCoords top="0.484375" bottom="0.8125"/>
 							<Anchors>
-								<Anchor point="TOP" y="-120"/>
-								<Anchor point="BOTTOM" y="-128" relativePoint="TOP"/>
+								<Anchor point="TOP" y="-95"/>
+								<Anchor point="BOTTOM" y="-103" relativePoint="TOP"/>
 								<Anchor point="LEFT"/>
 								<Anchor point="RIGHT"/>
 							</Anchors>
@@ -302,7 +299,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_DISTANCE_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-45"/>
+							<Anchor point="TOP" y="-20"/>
 							<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
@@ -325,7 +322,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="listElementMixin" value="TRP3_Tools_CutsceneStepListElementMixin" type="global"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-128"/>
+							<Anchor point="TOP" y="-103"/>
 							<Anchor point="BOTTOM" y="0"/>
 							<Anchor point="LEFT" x="0"/>
 							<Anchor point="RIGHT" x="0"/>
@@ -337,9 +334,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			</Frame>
 			
 			<Frame parentKey="step" inherits="TRP3_Tools_TitledPanelTemplate">
-				<KeyValues>
-					<KeyValue key="titleText" value="Step Editor" type="string"/>
-				</KeyValues>
 				<Anchors>
 					<Anchor point="TOP"/>
 					<Anchor point="BOTTOM"/>
@@ -353,9 +347,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="titleText" value="${DI_STEP_TEXT}" type="string"/>
 							<KeyValue key="helpText" value="${DI_STEP_TEXT}" type="string"/>
 						</KeyValues>
-						<Size x="0" y="80"/>
+						<Size x="0" y="74"/>
 						<Anchors>
-							<Anchor point="TOP" y="-45"/>
+							<Anchor point="TOP" y="-10"/>
 							<Anchor point="RIGHT" x="-20" y="0"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
@@ -366,7 +360,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="titleText" value="Workflow" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.text"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.text"/>
 							<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
@@ -378,7 +372,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_LOOT_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.text"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.text"/>
 							<Anchor point="LEFT" x="10" y="0" relativePoint="CENTER"/>
 						</Anchors>
 					</CheckButton>
@@ -386,7 +380,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Button parentKey="choices" name="$parentChoices" text="${DI_CHOICES}" inherits="TRP3_CommonButton">
 						<Size y="22"/>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.workflow"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.workflow"/>
 							<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
@@ -398,7 +392,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_END_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.loot"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.loot"/>
 							<Anchor point="LEFT" x="10" y="0" relativePoint="CENTER"/>
 						</Anchors>
 					</CheckButton>
@@ -409,7 +403,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_NEXT_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.loot"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.loot"/>
 							<Anchor point="LEFT" relativePoint="CENTER" x="100" y="0"/>
 							<Anchor point="RIGHT" x="-20" y="0"/>
 						</Anchors>
@@ -421,7 +415,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_NAME_DIRECTION}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-11" relativePoint="BOTTOM" relativeKey="$parent.choices"/>
+							<Anchor point="TOP" y="-10" relativePoint="BOTTOM" relativeKey="$parent.choices"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
 					</CheckButton>
@@ -431,7 +425,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="titleText" value="${DI_NAME_DIRECTION}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.endpoint"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.endpoint"/>
 							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
 							<Anchor point="RIGHT" x="-20" y="0"/>
 						</Anchors>
@@ -443,7 +437,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_NAME_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.direction"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.direction"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
 					</CheckButton>
@@ -454,7 +448,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="Set the new name [TODO]" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.directionValue"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.directionValue"/>
 							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
 							<Anchor point="RIGHT" x="-20" y="0"/>
 						</Anchors>
@@ -466,14 +460,14 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_BKG}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.name"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.name"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
 					</CheckButton>
 
 					<Button parentKey="backgroundBrowse" hidden="true" inherits="TRP3_Tools_BrowseButtonTemplate">
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.nameValue"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.nameValue"/>
 							<Anchor point="RIGHT" x="-20" y="0"/>
 						</Anchors>
 					</Button>
@@ -484,7 +478,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="Background image [TODO]" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.nameValue"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.nameValue"/>
 							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
 							<Anchor point="RIGHT" x="-5" y="0" relativePoint="LEFT" relativeKey="$parent.backgroundBrowse"/>
 						</Anchors>
@@ -496,7 +490,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_IMAGE}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.background"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.background"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
 					</CheckButton>
@@ -504,14 +498,14 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Button parentKey="imageMore" hidden="true" text="|TInterface\CURSOR\Crosshair\UI-Cursor-Move:14:14|t" inherits="TRP3_CommonButton">
 						<Size x="25" y="25"/>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.backgroundBrowse"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.backgroundBrowse"/>
 							<Anchor point="RIGHT" x="-20" y="0"/>
 						</Anchors>
 					</Button>
 
 					<Button parentKey="imageBrowse" hidden="true" inherits="TRP3_Tools_BrowseButtonTemplate">
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.backgroundBrowse"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.backgroundBrowse"/>
 							<Anchor point="RIGHT" x="-5" y="0" relativePoint="LEFT" relativeKey="$parent.imageMore"/>
 						</Anchors>
 					</Button>
@@ -522,7 +516,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="Image [TODO]" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.backgroundValue"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.backgroundValue"/>
 							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
 							<Anchor point="RIGHT" x="-5" y="0" relativePoint="LEFT" relativeKey="$parent.imageBrowse"/>
 						</Anchors>
@@ -534,7 +528,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_UNIT_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.image"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.image"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
 					</CheckButton>
@@ -545,7 +539,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_GET_ID_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.imageBrowse"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.imageBrowse"/>
 							<Anchor point="RIGHT" x="-20" y="0"/>
 						</Anchors>
 					</Button>
@@ -556,7 +550,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_UNIT_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.imageValue"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.imageValue"/>
 							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
 							<Anchor point="RIGHT" x="-5" y="0" relativePoint="LEFT" relativeKey="$parent.leftUnitTarget"/>
 						</Anchors>
@@ -568,7 +562,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_UNIT_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.leftUnit"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.leftUnit"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
 					</CheckButton>
@@ -579,7 +573,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_GET_ID_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.leftUnitTarget"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.leftUnitTarget"/>
 							<Anchor point="RIGHT" x="-20" y="0"/>
 						</Anchors>
 					</Button>
@@ -590,7 +584,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${DI_UNIT_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-8" relativePoint="BOTTOM" relativeKey="$parent.leftUnitValue"/>
+							<Anchor point="TOP" y="-7" relativePoint="BOTTOM" relativeKey="$parent.leftUnitValue"/>
 							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
 							<Anchor point="RIGHT" x="-5" y="0" relativePoint="LEFT" relativeKey="$parent.rightUnitTarget"/>
 						</Anchors>

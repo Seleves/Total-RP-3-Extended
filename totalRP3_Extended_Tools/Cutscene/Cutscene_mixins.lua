@@ -231,7 +231,7 @@ function TRP3_Tools_EditorCutsceneMixin:ShowStep(stepIndex)
 	local element = list.model:Find(stepIndex);
 	if element and element.step then
 		self.step.imageEditor:Hide();
-		self.step.title:SetText(("%s: %d"):format(loc.DI_STEP_EDIT, stepIndex));
+		--self.step.title:SetText(("%s: %d"):format(loc.DI_STEP_EDIT, stepIndex));
 		self.step.text:SetText(element.step.TX or "");
 		self.step.next:SetText(element.step.N or "");
 		local numOptions = CountTable(element.step.CH or TRP3_API.globals.empty);

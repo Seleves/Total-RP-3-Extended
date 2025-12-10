@@ -53,7 +53,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Anchor point="TOPLEFT"/>
 			<Anchor point="BOTTOMRIGHT"/>
 		</Anchors>
-		<Size y="400"/>
+		<Size y="350"/>
 		
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -73,9 +73,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		<Frames>
 			
 			<Frame parentKey="main" inherits="TRP3_Tools_TitledPanelTemplate">
-				<KeyValues>
-					<KeyValue key="titleText" value="${TYPE_QUEST}" type="string"/>
-				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="0" y="0"/>
 					<Anchor point="BOTTOM"/>
@@ -90,7 +87,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${QE_NAME_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-45"/>
+							<Anchor point="TOP" y="-20"/>
 							<Anchor point="RIGHT" x="-20" y="0"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
@@ -170,9 +167,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</KeyValues>
 						<Anchors>
 							<Anchor point="TOP" y="-45"/>
-							<Anchor point="BOTTOM" y="40"/>
-							<Anchor point="LEFT" x="20"/>
-							<Anchor point="RIGHT" x="-20"/>
+							<Anchor point="BOTTOM"/>
+							<Anchor point="LEFT"/>
+							<Anchor point="RIGHT"/>
 						</Anchors>
 					</Frame>
 

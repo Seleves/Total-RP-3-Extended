@@ -52,7 +52,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Anchor point="TOPLEFT"/>
 			<Anchor point="BOTTOMRIGHT"/>
 		</Anchors>
-		<Size y="400"/>
+		<Size y="350"/>
 		
 		<Layers>
 			<Layer level="BACKGROUND">

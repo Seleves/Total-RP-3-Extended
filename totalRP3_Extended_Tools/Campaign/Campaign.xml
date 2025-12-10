@@ -73,7 +73,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			<Anchor point="BOTTOMRIGHT"/>
 		</Anchors>
 
-		<Size y="400"/>
+		<Size y="350"/>
 		
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -93,9 +93,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		<Frames>
 			
 			<Frame parentKey="main" inherits="TRP3_Tools_TitledPanelTemplate">
-				<KeyValues>
-					<KeyValue key="titleText" value="${TYPE_CAMPAIGN}" type="string"/>
-				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="0" y="0"/>
 					<Anchor point="BOTTOM"/>
@@ -110,7 +107,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${CA_NAME_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-45"/>
+							<Anchor point="TOP" y="-20"/>
 							<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
@@ -165,7 +162,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						<Texture parentKey="previewIconBorder" file="Interface\ExtraButton\GarrZoneAbility-BarracksAlliance">
 							<Size x="175" y="85"/>
 							<Anchors>
-								<Anchor point="TOP" x="0" y="-250"/>
+								<Anchor point="TOP" x="0" y="-225"/>
 							</Anchors>
 						</Texture>
 					</Layer>
@@ -180,8 +177,8 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<Color r="1" g="0.8" b="0.8"/>
 							<TexCoords top="0.484375" bottom="0.8125"/>
 							<Anchors>
-								<Anchor point="TOP" y="-220"/>
-								<Anchor point="BOTTOM" y="-212" relativePoint="TOP"/>
+								<Anchor point="TOP" y="-195"/>
+								<Anchor point="BOTTOM" y="-187" relativePoint="TOP"/>
 								<Anchor point="LEFT"/>
 								<Anchor point="RIGHT"/>
 							</Anchors>
@@ -191,7 +188,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						<FontString parentKey="previewText" text="${EDITOR_PREVIEW}" maxLines="1" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
 							<Size x="100" y="20"/>
 							<Anchors>
-								<Anchor point="TOP" x="0" y="-230"/>
+								<Anchor point="TOP" x="0" y="-205"/>
 							</Anchors>
 							<Color r="0.95" g="0.95" b="0.95" />
 						</FontString>
