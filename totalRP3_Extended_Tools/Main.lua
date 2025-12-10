@@ -199,12 +199,14 @@ function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
 		addon.showEditor(data);
 		toolFrame.editor:Show();
 	elseif data.type == TAB_TYPE.CREDITS then
+		setBackground(1);
 		toolFrame.backers.scroll.child.HTML:SetText(TRP3_API.utils.str.toHTML(TRP3_KS_BACKERS:format(TRP3_API.extended.tools.formatVersion())));
 		toolFrame.backers.scroll.child.HTML:SetScript("OnHyperlinkClick", function(self, url, text, button) -- luacheck: ignore 212
 			TRP3_API.Ellyb.Popups:OpenURL(url);
 		end)
 		toolFrame.backers:Show();
 	elseif data.type == TAB_TYPE.DISCLAIMER then
+		setBackground(1);
 		--toolFrame.disclaimer.html:SetText(TRP3_API.utils.str.toHTML(loc.DISCLAIMER)); -- TODO uncomment
 		toolFrame.disclaimer.html:SetText(TRP3_API.utils.str.toHTML([[{h1:c}Prototype - please read{/h1}
 
