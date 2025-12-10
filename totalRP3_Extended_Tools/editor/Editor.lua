@@ -442,9 +442,11 @@ function addon.displayObject(objectId)
 		objectEditor.split:SetRatio(objectCursor.objectRatio or 1);
 		editorsByType[currentObject.class.TY]:Show();
 		editorsByType[currentObject.class.TY]:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
+		addon.setTypeBackground(currentObject.class.TY);
 	end
 	
 	addon.editor.script:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
+
 end
 
 function addon.editor.getCurrentPropertiesEditor()

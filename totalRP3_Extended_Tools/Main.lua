@@ -72,7 +72,11 @@ local PAGE_BY_TYPE = {
 	[TRP3_DB.types.AURA] = {
 		background = 6,
 	},
-}
+};
+
+function addon.setTypeBackground(type)
+	setBackground(PAGE_BY_TYPE[type] and PAGE_BY_TYPE[type].background or 1);
+end
 
 local function getTypeLocale(type)
 	if PAGE_BY_TYPE[type] and PAGE_BY_TYPE[type].loc then

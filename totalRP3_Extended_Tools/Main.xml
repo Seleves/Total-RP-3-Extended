@@ -41,14 +41,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<TexCoords left="0" right="0.973" top="0.1" bottom="1"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="16" y="-66"/>
-						<Anchor point="BOTTOMRIGHT" x="-40" y="16"/>
-					</Anchors>
-				</Texture>
-				<Texture parentKey="BkgScroll" file="Interface\ENCOUNTERJOURNAL\UI-EJ-MistsofPandaria">
-					<Size x="24" y="0"/>
-					<TexCoords left="0.973" right="1" top="0.1" bottom="1"/>
-					<Anchors>
-						<Anchor point="TOPRIGHT" x="-16" y="-66"/>
 						<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
 					</Anchors>
 				</Texture>
