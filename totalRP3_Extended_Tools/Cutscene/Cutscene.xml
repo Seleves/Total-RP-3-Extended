@@ -308,14 +308,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</Anchors>
 					</EditBox>
 
-					<Button parentKey="preview" name="$parentPreview" text="${EDITOR_PREVIEW}" inherits="TRP3_CommonButton">
-						<Anchors>
-							<Anchor point="TOP" y="-45"/>
-							<Anchor point="RIGHT" x="-20" y="0"/>
-							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
-						</Anchors>
-					</Button>
-					
 					<CheckButton parentKey="alternate" inherits="TRP3_Tools_CheckBoxTemplate" name="$parentAlternate">
 						<KeyValues>
 							<KeyValue key="titleText" value="Switch dialog direction automatically" type="string"/>

@@ -149,23 +149,9 @@ function TRP3_Tools_EditorAuraMixin:Initialize()
 		end
 	end);
 
-	-- text might be longer in some translations, let's ensure it doesn't clip out of frame
+	-- text might be longer in some localizations, let's ensure it doesn't clip out of frame
 	gameplay.ensureExpiry.Text:SetPoint("RIGHT", gameplay, "RIGHT", -20, 0);
 	gameplay.ensureExpiry.Text:SetJustifyH("LEFT");
-
-	display.applyAura:SetScript("OnClick", function() 
-		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
-		if TRP3_API.extended.classExists(absoluteId) then
-			TRP3_API.extended.auras.apply(absoluteId);
-		else
-			TRP3_API.utils.message.displayMessage("The aura cannot be activated because it hasn't been saved.", 4);
-		end
-	end);
-
-	display.inspectVariables:SetScript("OnClick", function() 
-		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
-		addon.modal:ShowModal(TRP3_API.popup.VARIABLE_INSPECTOR, {absoluteId, TRP3_DB.types.AURA});
-	end);
 
 end
 
@@ -207,9 +193,6 @@ function TRP3_Tools_EditorAuraMixin:ClassToInterface(class, creationClass, curso
 	self.gameplay.interval:SetShown(hasInterval);
 	self.gameplay.interval:SetText(("%0.1f"):format(BA.IV or 10):gsub("%.0+", ""));
 	self.gameplay.inspectable:SetChecked(BA.WE or false);
-
-	self.display.applyAura:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
-	self.display.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 
 	self:UpdatePreview();
 end

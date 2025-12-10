@@ -106,26 +106,33 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
 					</Frame>
-					
-					<Button parentKey="preview" inherits="TRP3_Tools_QuestButtonTemplate">
+
+					<Button parentKey="icon" inherits="TRP3_IconButton">
 						<Anchors>
-							<Anchor point="LEFT" relativePoint="RIGHT" x="25" y="0" relativeKey="$parent.description"/>
+							<Anchor point="TOP" y="-12" relativePoint="BOTTOM" relativeKey="$parent.right"/>
+							<Anchor point="LEFT" relativePoint="CENTER" x="13" y="0"/>
 						</Anchors>
-						<KeyValues>
-							<KeyValue key="name" value="${EDITOR_PREVIEW}" type="string"/>
-							<KeyValue key="infoText" value="${EDITOR_ICON_SELECT}" type="string"/>
-						</KeyValues>
 						<Layers>
-							<Layer level="ARTWORK">
-								<Texture parentKey="Quest" file="Interface\ContainerFrame\UI-Icon-QuestBang">
-									<Size x="36" y="36"/>
+							<Layer level="OVERLAY">
+								<FontString parentKey="label" text="${OP_OP_INV_ICON}" maxLines="1" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
 									<Anchors>
-										<Anchor point="CENTER" x="0" y="0"/>
+										<Anchor point="LEFT" x="35"/>
 									</Anchors>
-								</Texture>
+								</FontString>
 							</Layer>
 						</Layers>
 					</Button>
+
+					<CheckButton parentKey="quest" inherits="TRP3_Tools_CheckBoxTemplate" name="$parentQuest">
+						<KeyValues>
+							<KeyValue key="titleText" value="${IT_QUEST}" type="string"/>
+							<KeyValue key="helpText" value="${IT_QUEST_TT}" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.icon"/>
+							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
+						</Anchors>
+					</CheckButton>
 					
 					<CheckButton parentKey="container" inherits="TRP3_Tools_CheckBoxTemplate" name="$parentContainer">
 						<KeyValues>
@@ -143,9 +150,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="titleText" value="${IT_CO_SIZE}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.container"/>
-							<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
-							<Anchor point="LEFT" x="20" y="0"/>
+							<Anchor point="TOP" relativeKey="$parent.container"/>
+							<Anchor point="RIGHT" x="-20" y="0"/>
+							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
 						</Anchors>
 					</DropdownButton>
 
@@ -155,7 +162,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${IT_CO_DURABILITY_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.containerType"/>
+							<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.container"/>
 							<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
@@ -167,9 +174,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${IT_CO_MAX_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.containerDurability"/>
-							<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
-							<Anchor point="LEFT" x="20" y="0"/>
+							<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.containerType"/>
+							<Anchor point="RIGHT" x="-20" y="0"/>
+							<Anchor point="LEFT" relativePoint="CENTER" x="10" y="0"/>
 						</Anchors>
 					</EditBox>
 
@@ -183,31 +190,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
 					</CheckButton>
-					
-					<Frame parentKey="bag5x4" inherits="TRP3_Container5x4Template" name="$parent5x4" hidden="false" toplevel="false" movable="false">
-						<Anchors>
-							<Anchor point="TOPLEFT" x="25" y="0" relativePoint="BOTTOMRIGHT" relativeKey="$parent.description"/>
-						</Anchors>
-					</Frame>
-
-					<Frame parentKey="bag2x4" inherits="TRP3_Container2x4Template" name="$parent2x4" hidden="false" toplevel="false" movable="false">
-						<Anchors>
-							<Anchor point="TOPLEFT" x="25" y="0" relativePoint="BOTTOMRIGHT" relativeKey="$parent.description"/>
-						</Anchors>
-					</Frame>
-
-					<Frame parentKey="bag1x4" inherits="TRP3_Container1x4Template" name="$parent1x4" hidden="false" toplevel="false" movable="false">
-						<Anchors>
-							<Anchor point="TOPLEFT" x="25" y="0" relativePoint="BOTTOMRIGHT" relativeKey="$parent.description"/>
-						</Anchors>
-					</Frame>
-
-					<Button parentKey="inspectVariables" inherits="TRP3_CommonButton" text="Inspect variables">
-						<Size x="125" y="22"/>
-						<Anchors>
-							<Anchor point="BOTTOM" y="20"/>
-						</Anchors>
-					</Button> <!-- TODO button placement!-->
 				</Frames>
 			</Frame>
 			
@@ -358,17 +340,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<Anchor point="LEFT" x="10" y="0" relativePoint="CENTER"/>
 						</Anchors>
 					</CheckButton>
-					
-					<CheckButton parentKey="quest" inherits="TRP3_Tools_CheckBoxTemplate" name="$parentQuest">
-						<KeyValues>
-							<KeyValue key="titleText" value="${IT_QUEST}" type="string"/>
-							<KeyValue key="helpText" value="${IT_QUEST_TT}" type="string"/>
-						</KeyValues>
-						<Anchors>
-							<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.component"/>
-							<Anchor point="LEFT" x="20" y="0"/>
-						</Anchors>
-					</CheckButton>
 
 					<CheckButton parentKey="noAdd" inherits="TRP3_Tools_CheckBoxTemplate" name="$parentNoAdd">
 						<KeyValues>
@@ -376,7 +347,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 							<KeyValue key="helpText" value="${IT_NO_ADD_TT}" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.quest"/>
+							<Anchor point="TOP" y="-14" relativePoint="BOTTOM" relativeKey="$parent.crafted"/>
 							<Anchor point="LEFT" x="20" y="0"/>
 						</Anchors>
 					</CheckButton>
@@ -407,9 +378,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 			</Frame>
 			
 		</Frames>
-		<Scripts>
-			<OnSizeChanged method="OnSizeChanged"/>
-		</Scripts>
 	</Frame>
 
 </Ui>

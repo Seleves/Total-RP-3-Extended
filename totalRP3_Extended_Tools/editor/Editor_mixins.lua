@@ -142,6 +142,7 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 						TRP3_API.inventory.addItem(nil, self.node.data.absoluteId, {count = inputValue or 1, madeBy = storedClass.BA and storedClass.BA.CR});
 					end, nil, 1);
 				end);
+				-- TODO check if madeBy should use the BA.CR from the creation instead
 				if not isStored then
 					addItemOption:SetEnabled(false);
 					TRP3_MenuUtil.SetElementTooltip(addItemOption, "Can't add an unsaved item.");

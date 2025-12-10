@@ -188,17 +188,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</Anchors>
 					</Button>
 
-					<Button parentKey="preview" inherits="TRP3_Tools_QuestButtonTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="16" y="-20" relativeKey="$parent.importBook"/>
-						</Anchors>
-						<KeyValues>
-							<KeyValue key="name" value="${EDITOR_PREVIEW}" type="string"/>
-							<KeyValue key="infoText" value="${DO_PREVIEW}" type="string"/>
-							<KeyValue key="icon" value="inv_darkmoon_eye" type="string"/>
-						</KeyValues>
-					</Button>
-
 					<Frame name="$parentPageList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
 						<KeyValues>
 							<KeyValue key="listElementTemplate" value="TRP3_Tools_DocumentPageListElementTemplate" type="string"/>

@@ -83,11 +83,6 @@ function TRP3_Tools_EditorCampaignMixin:Initialize()
 			end
 		end
 	end);
-
-	self.main.inspectVariables:SetScript("OnClick", function() 
-		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
-		addon.modal:ShowModal(TRP3_API.popup.VARIABLE_INSPECTOR, {absoluteId, TRP3_DB.types.CAMPAIGN});
-	end);
 	
 end
 
@@ -118,8 +113,6 @@ function TRP3_Tools_EditorCampaignMixin:ClassToInterface(class, creationClass, c
 	self.npc.list.model:Flush();
 	self.npc.list.model:InsertTable(npcs);
 	self.npc.sharedNPCEditor:Hide();
-
-	self.main.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 end
 
 function TRP3_Tools_EditorCampaignMixin:InterfaceToClass(targetClass, targetCursor)

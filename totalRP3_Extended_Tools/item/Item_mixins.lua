@@ -3,9 +3,9 @@ local loc = TRP3_API.loc;
 
 TRP3_Tools_EditorItemMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
 
-function TRP3_Tools_EditorItemMixin:OnSizeChanged()
-	self.display.preview.Name:SetWidth(self:GetWidth()/8);
-	self.display.preview.InfoText:SetWidth(self:GetWidth()/8);
+function TRP3_Tools_EditorItemMixin:UpdatePreview()
+	self:InterfaceToClass(self.preview);
+	addon.editor.object:SetItemPreview(self.preview);
 end
 
 function TRP3_Tools_EditorItemMixin:Initialize()
@@ -17,10 +17,6 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 
 	-- Display
 	local display = self.display;
-	
-	display.name:SetScript("OnTextChanged", function()
-		s:UpdatePreviews();
-	end);
 
 	display.left:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
 	display.right:SetupSuggestions("Tag", addon.editor.populateObjectTagMenu);
@@ -37,7 +33,7 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 		{TRP3_API.inventory.getQualityColorText(Enum.ItemQuality.Artifact) .. ITEM_QUALITY6_DESC, Enum.ItemQuality.Artifact},
 		{TRP3_API.inventory.getQualityColorText(Enum.ItemQuality.Heirloom) .. ITEM_QUALITY7_DESC, Enum.ItemQuality.Heirloom},
 	};
-	TRP3_API.ui.listbox.setupListBox(display.quality, qualityList);
+	TRP3_API.ui.listbox.setupListBox(display.quality, qualityList, function() self:UpdatePreview(); end);
 
 	local containerTypes = {
 		{loc.IT_CO_SIZE_COLROW:format(5, 4), "5x4"},
@@ -45,40 +41,25 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 		{loc.IT_CO_SIZE_COLROW:format(1, 4), "1x4"},
 	};
 	-- Container Size
-	TRP3_API.ui.listbox.setupListBox(display.containerType, containerTypes, function() s:UpdateElementVisibility(); end);
-	
-	-- Container Durability
-	display.containerDurability:SetScript("OnTextChanged", function() s:UpdatePreviews(); end);
-	
-	-- Preview
-	display.preview:SetScript("OnEnter", function(self)
-		local tempObject = {};
-		s:InterfaceToClass(tempObject);
-		TRP3_API.inventory.showItemTooltip(self, {madeBy = TRP3_API.globals.player_id}, tempObject, true);
+	TRP3_API.ui.listbox.setupListBox(display.containerType, containerTypes);
+
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(display.icon, "RIGHT", 0, 5, loc.OP_OP_INV_ICON, "select an item icon");
+	display.icon:SetScript("OnClick", function()
+		addon.modal:ShowModal(TRP3_API.popup.ICONS, {
+			function(icon) 
+				display.icon.Icon:SetTexture("Interface\\ICONS\\" .. icon);
+				display.icon.selectedIcon = icon;
+				self:UpdatePreview();
+			end, 
+			nil, 
+			nil, 
+			display.icon.selectedIcon});
 	end);
-	display.preview:SetScript("OnLeave", function(self)
-		TRP3_ItemTooltip:Hide();
-	end);
-	display.preview:SetScript("OnClick", function(self)
-		addon.modal:ShowModal(TRP3_API.popup.ICONS, {function(icon) s:UpdatePreviews(icon); end, nil, nil, display.preview.selectedIcon});
-	end);
-	
-	for _, bagPreview in pairs({"bag5x4", "bag2x4", "bag1x4"}) do
-		local preview = display[bagPreview];
-		preview.close:Disable();
-		preview.LockIcon:Hide();
-		if bagPreview == "bag5x4" then
-			preview:SetScale(0.5);
-		else
-			preview:SetScale(0.75);
-		end
-	end
 
 	--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 	-- Gameplay
 	--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-	-- Gameplay
 	local gameplay = self.gameplay;
 	
 	-- Value edit box title != tooltip title
@@ -119,12 +100,10 @@ function TRP3_Tools_EditorItemMixin:Initialize()
 	gameplay.stack:SetScript("OnClick", onCheckClicked);
 	gameplay.use:SetScript("OnClick", onCheckClicked);
 	display.container:SetScript("OnClick", onCheckClicked);
-	gameplay.quest:SetScript("OnClick", onCheckClicked);
+	
+	display.quest:SetScript("OnClick", function() self:UpdatePreview(); end);
 
-	display.inspectVariables:SetScript("OnClick", function() 
-		local absoluteId = addon.editor.getCurrentObjectAbsoluteId();
-		addon.modal:ShowModal(TRP3_API.popup.VARIABLE_INSPECTOR, {absoluteId, TRP3_DB.types.ITEM});
-	end);
+	self.preview = {};
 
 end
 
@@ -139,7 +118,7 @@ function TRP3_Tools_EditorItemMixin:ClassToInterface(class, _, cursor)
 	self.display.right:SetText(BA.RI or "");
 	self.gameplay.component:SetChecked(BA.CO or false);
 	self.gameplay.crafted:SetChecked(BA.CR or false);
-	self.gameplay.quest:SetChecked(BA.QE or false);
+	self.display.quest:SetChecked(BA.QE or false);
 	
 	self.gameplay.value:SetText(BA.VA or "0");
 	self.gameplay.weight:SetText(BA.WE or "0");
@@ -164,11 +143,11 @@ function TRP3_Tools_EditorItemMixin:ClassToInterface(class, _, cursor)
 	self.display.containerMaxweight:SetText(containerData.MW or "0");
 	self.display.containerOnlyinner:SetChecked(containerData.OI or false);
 	
-	self:UpdatePreviews(BA.IC or "TEMP");
+	self.display.icon.Icon:SetTexture("Interface\\ICONS\\" .. (BA.IC or "TEMP"));
+	self.display.icon.selectedIcon = BA.IC;
 
+	self:UpdatePreview();
 	self:UpdateElementVisibility();
-
-	self.display.inspectVariables:SetShown(TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()));
 	
 end
 
@@ -183,8 +162,8 @@ function TRP3_Tools_EditorItemMixin:InterfaceToClass(targetClass, targetCursor)
 	targetClass.BA.QA = self.display.quality:GetSelectedValue() or Enum.ItemQuality.Common;
 	targetClass.BA.CO = self.gameplay.component:GetChecked();
 	targetClass.BA.CR = self.gameplay.crafted:GetChecked();
-	targetClass.BA.QE = self.gameplay.quest:GetChecked();
-	targetClass.BA.IC = self.display.preview.selectedIcon;
+	targetClass.BA.QE = self.display.quest:GetChecked();
+	targetClass.BA.IC = self.display.icon.selectedIcon;
 	targetClass.BA.VA = tonumber(self.gameplay.value:GetText()) or 0;
 	targetClass.BA.WE = tonumber(self.gameplay.weight:GetText()) or 0;
 	targetClass.BA.SB = self.gameplay.soulbound:GetChecked();
@@ -221,72 +200,16 @@ function TRP3_Tools_EditorItemMixin:InterfaceToClass(targetClass, targetCursor)
 	
 end
 
-function TRP3_Tools_EditorItemMixin:UpdatePreviews(icon)
-	icon = icon or self.display.preview.selectedIcon;
-	self.display.preview.Icon:SetTexture("Interface\\ICONS\\" .. (icon or "TEMP"));
-	self.display.preview.selectedIcon = icon or "TEMP";
-	
-	local durability = "";
-	local durabilityValue = tonumber(self.display.containerDurability:GetText());
-	if durabilityValue and durabilityValue > 0 then
-		durability = (TRP3_API.utils.str.texture("Interface\\GROUPFRAME\\UI-GROUP-MAINTANKICON", 15) .. "%s/%s"):format(durabilityValue, durabilityValue);
-	end
-	
-	for _, bagPreview in pairs({"bag5x4", "bag2x4", "bag1x4"}) do
-		local preview = self.display[bagPreview];
-		TRP3_API.inventory.decorateContainer(preview, {
-			BA = {
-				IC = icon,
-				NA = TRP3_API.utils.str.emptyToNil(strtrim(self.display.name:GetText()))
-			}
-		});
-		preview.DurabilityText:SetText(durability);
-		preview.WeightText:SetText(TRP3_API.extended.formatWeight(0) .. TRP3_API.utils.str.texture("Interface\\GROUPFRAME\\UI-Group-MasterLooter", 15));
-	end
-	
-end
-
 function TRP3_Tools_EditorItemMixin:UpdateElementVisibility()
-	self.gameplay.uniquecount:Hide();
-	self.gameplay.stackcount:Hide();
-	self.gameplay.usetext:Hide();
-	self.display.preview.Quest:Hide();
-	if self.gameplay.unique:GetChecked() then
-		self.gameplay.uniquecount:Show();
-	end
-	if self.gameplay.stack:GetChecked() then
-		self.gameplay.stackcount:Show();
-	end
-	if self.gameplay.use:GetChecked() then
-		self.gameplay.usetext:Show();
-	end
-	if self.gameplay.quest:GetChecked() then
-		self.display.preview.Quest:Show();
-	end
+	self.gameplay.uniquecount:SetShown(self.gameplay.unique:GetChecked());
+	self.gameplay.stackcount:SetShown(self.gameplay.stack:GetChecked());
+	self.gameplay.usetext:SetShown(self.gameplay.use:GetChecked());
 	
-	self.display.bag5x4:Hide();
-	self.display.bag2x4:Hide();
-	self.display.bag1x4:Hide();
-	
-	if self.display.container:GetChecked() then
-		self.display.containerType:Show();
-		self.display.containerDurability:Show();
-		self.display.containerMaxweight:Show();
-		self.display.containerOnlyinner:Show();
-		local size = self.display.containerType:GetSelectedValue() or "5x4"
-		if size == "5x4" then
-			self.display.bag5x4:Show();
-		elseif size == "2x4" then
-			self.display.bag2x4:Show();
-		elseif size == "1x4" then
-			self.display.bag1x4:Show();
-		end
-	else
-		self.display.containerType:Hide();
-		self.display.containerDurability:Hide();
-		self.display.containerMaxweight:Hide();
-		self.display.containerOnlyinner:Hide();
-	end
+	local isContainer = self.display.container:GetChecked();
+	self.display.containerType:SetShown(isContainer);
+	self.display.containerDurability:SetShown(isContainer);
+	self.display.containerMaxweight:SetShown(isContainer);
+	self.display.containerOnlyinner:SetShown(isContainer);
 end
 
 function TRP3_Tools_EditorItemMixin:OnScriptsChanged(changes)

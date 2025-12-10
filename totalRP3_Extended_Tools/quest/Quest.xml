@@ -148,22 +148,6 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						</Layers>
 					</Button>
 
-					<Button parentKey="revealQuest" inherits="TRP3_CommonButton" text="(Re-)start quest">
-						<Size x="125" y="22"/>
-						<Anchors>
-							<Anchor point="BOTTOM" y="20"/>
-							<Anchor point="RIGHT" x="-5" relativePoint="CENTER"/>
-						</Anchors>
-					</Button>
-
-					<Button parentKey="unrevealQuest" inherits="TRP3_CommonButton" text="Unreveal quest">
-						<Size x="125" y="22"/>
-						<Anchors>
-							<Anchor point="BOTTOM" y="20"/>
-							<Anchor point="LEFT" x="5" relativePoint="CENTER"/>
-						</Anchors>
-					</Button>
-
 				</Frames>
 
 			</Frame>

@@ -13,13 +13,6 @@ TRP3_Tools_EditorCutsceneMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
 
 function TRP3_Tools_EditorCutsceneMixin:Initialize()
 
-	self.main.preview:SetScript("OnClick", function()
-		self:SaveCurrentStep();
-		local dialogData = {};
-		self:InterfaceToClass(dialogData);
-		TRP3_API.extended.dialog.startDialog(nil, dialogData);
-	end);
-
 	TRP3_API.ui.listbox.setupListBox(self.step.directionValue, {
 		{loc.CM_LEFT, "LEFT"},
 		{loc.CM_RIGHT, "RIGHT"},

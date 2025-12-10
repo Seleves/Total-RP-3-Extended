@@ -50,99 +50,14 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</Layers>
 
 		<Frames>
-			<Button parentKey="noteButton" inherits="BackdropTemplate">
-				<KeyValues>
-					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
-				</KeyValues>
-				<Size y="34"/>
-				<Anchors>
-					<Anchor point="LEFT" relativePoint="CENTER"/>
-					<Anchor point="RIGHT"/>
-				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture parentKey="background" atlas="GO-bg-panel" useAtlasSize="true">
-							<Anchors>
-								<Anchor point="TOPLEFT" x="3" y="-3"/>
-								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
-							</Anchors>
-							<Color r="1" g="0.25" b="0.25" a="0.5"/>
-						</Texture>
-					</Layer>
-					<Layer level="OVERLAY">
-						<FontString parentKey="text" inherits="GameFontNormal" justifyH="LEFT" text="">
-							<Anchors>
-								<Anchor point="TOPLEFT" x="4" y="-4"/>
-								<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
-							</Anchors>
-							<Color b="0.95" r="0.95" g="0.95"/>
-						</FontString>
-					</Layer>
-				</Layers>
-				<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="3" y="-2"/>
-						<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
-					</Anchors>
-				</HighlightTexture>
-				<Scripts>
-					<OnEnter>
-						TRP3_RefreshTooltipForFrame(self);
-					</OnEnter>
-					<OnLeave>
-						TRP3_MainTooltip:Hide();
-					</OnLeave>
-				</Scripts>
-			</Button>
-			<Frame parentKey="innerObjectsPanel" inherits="BackdropTemplate">
-				<KeyValues>
-					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
-				</KeyValues>
-				<Size x="136" y="34"/>
-				<Anchors>
-					<Anchor point="RIGHT" x="-2" y="0" relativeKey="$parent.noteButton" relativePoint="LEFT"/>
-				</Anchors>
-				<Frames>
-					<Button parentKey="QU" inherits="TRP3_Tools_IconButtonPlus">
-						<Anchors>
-							<Anchor point="LEFT" x="8"/>
-						</Anchors>
-					</Button>
-					<Button parentKey="ST" inherits="TRP3_Tools_IconButtonPlus">
-						<Anchors>
-							<Anchor point="LEFT" x="8"/>
-						</Anchors>
-					</Button>
-					<Button parentKey="DI" inherits="TRP3_Tools_IconButtonPlus">
-						<Anchors>
-							<Anchor point="RIGHT" x="-7"/>
-						</Anchors>
-					</Button>
-					<Button parentKey="DO" inherits="TRP3_Tools_IconButtonPlus">
-						<Anchors>
-							<Anchor point="RIGHT" relativeKey="$parent.DI" relativePoint="LEFT" x="-6"/>
-						</Anchors>
-					</Button>
-					<Button parentKey="AU" inherits="TRP3_Tools_IconButtonPlus">
-						<Anchors>
-							<Anchor point="RIGHT" relativeKey="$parent.DO" relativePoint="LEFT" x="-6"/>
-						</Anchors>
-					</Button>
-					<Button parentKey="IT" inherits="TRP3_Tools_IconButtonPlus">
-						<Anchors>
-							<Anchor point="RIGHT" relativeKey="$parent.AU" relativePoint="LEFT" x="-6"/>
-						</Anchors>
-					</Button>
-				</Frames>
-			</Frame>
 
 			<Button parentKey="documentPreview" inherits="BackdropTemplate">
 				<KeyValues>
 					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
 				</KeyValues>
-				<Size x="120" y="38"/>
+				<Size x="110" y="38"/>
 				<Anchors>
-					<Anchor point="RIGHT" x="-2" y="0" relativeKey="$parent.innerObjectsPanel" relativePoint="LEFT"/>
+					<Anchor point="LEFT" x="0"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
@@ -184,10 +99,10 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<KeyValues>
 					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
 				</KeyValues>
-				<Size x="120" y="38"/>
 				<Anchors>
-					<Anchor point="RIGHT" x="-2" y="0" relativeKey="$parent.innerObjectsPanel" relativePoint="LEFT"/>
+					<Anchor point="LEFT" x="0"/>
 				</Anchors>
+				<Size x="110" y="38"/>
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture parentKey="background" atlas="GO-bg-panel" useAtlasSize="true">
@@ -228,9 +143,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<KeyValues>
 					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
 				</KeyValues>
-				<Size x="120" y="38"/>
+				<Size x="110" y="38"/>
 				<Anchors>
-					<Anchor point="RIGHT" x="-2" y="0" relativeKey="$parent.innerObjectsPanel" relativePoint="LEFT"/>
+					<Anchor point="LEFT" x="0"/>
 				</Anchors>
 				<Frames>
 					<Frame parentKey="aura" enableMouse="false" inherits="TRP3_AuraTemplate">
@@ -265,6 +180,148 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
 					</Anchors>
 				</HighlightTexture>
+			</Button>
+
+			<Button parentKey="itemPreview" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+				</KeyValues>
+				<Size x="110" y="38"/>
+				<Anchors>
+					<Anchor point="LEFT" x="0"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="item" enableMouse="false" inherits="TRP3_ContainerSlotTemplate">
+						<Anchors>
+							<Anchor point="LEFT" x="2"/>
+						</Anchors>
+					</Button>
+
+					<Frame parentKey="bag5x4" inherits="TRP3_Container5x4Template" name="$parent5x4" movable="false">
+						<Anchors>
+							<Anchor point="TOP" y="-10" relativePoint="BOTTOM"/>
+						</Anchors>
+					</Frame>
+
+					<Frame parentKey="bag2x4" inherits="TRP3_Container2x4Template" name="$parent2x4" movable="false">
+						<Anchors>
+							<Anchor point="TOP" y="-10" relativePoint="BOTTOM"/>
+						</Anchors>
+					</Frame>
+
+					<Frame parentKey="bag1x4" inherits="TRP3_Container1x4Template" name="$parent1x4" movable="false">
+						<Anchors>
+							<Anchor point="TOP" y="-10" relativePoint="BOTTOM"/>
+						</Anchors>
+					</Frame>
+
+				</Frames>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="background" atlas="GO-bg-panel" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+							<Color r="1" g="0.25" b="0.25" a="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="text" inherits="GameFontNormal" justifyH="CENTER" text="${EDITOR_PREVIEW}">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="4" y="0" relativePoint="TOPRIGHT" relativeKey="$parent.item"/>
+								<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+							</Anchors>
+							<Color b="0.95" r="0.95" g="0.95"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="36" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
+					</Anchors>
+				</HighlightTexture>
+			</Button>
+
+			<Frame parentKey="actionsPanel" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+				</KeyValues>
+				<Size x="100" y="38"/>
+				<Anchors>
+					<Anchor point="LEFT" x="0"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="addItem" inherits="TRP3_IconButton"/>
+					<Button parentKey="startQuest" inherits="TRP3_IconButton"/>
+					<Button parentKey="unrevealQuest" inherits="TRP3_IconButton"/>
+					<Button parentKey="goToStep" inherits="TRP3_IconButton"/>
+					<Button parentKey="applyAura" inherits="TRP3_IconButton"/>
+					<Button parentKey="showVariables" inherits="TRP3_IconButton"/>
+				</Frames>
+			</Frame>
+			
+			<Frame parentKey="innerObjectsPanel" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+				</KeyValues>
+				<Size x="100" y="38"/>
+				<Anchors>
+					<Anchor point="LEFT" x="0"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="QU" inherits="TRP3_Tools_IconButtonPlus"/>
+					<Button parentKey="ST" inherits="TRP3_Tools_IconButtonPlus"/>
+					<Button parentKey="IT" inherits="TRP3_Tools_IconButtonPlus"/>
+					<Button parentKey="AU" inherits="TRP3_Tools_IconButtonPlus"/>
+					<Button parentKey="DO" inherits="TRP3_Tools_IconButtonPlus"/>
+					<Button parentKey="DI" inherits="TRP3_Tools_IconButtonPlus"/>
+				</Frames>
+			</Frame>
+
+			<Button parentKey="noteButton" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRP3_THIN_LIST_ELEMENT_BORDER_NORMAL" type="global"/>
+				</KeyValues>
+				<Size x="100" y="38"/>
+				<Anchors>
+					<Anchor point="LEFT" x="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="background" atlas="GO-bg-panel" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+							<Color r="1" g="0.25" b="0.25" a="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="text" inherits="GameFontNormal" justifyH="LEFT" text="">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="4" y="-4"/>
+								<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+							</Anchors>
+							<Color b="0.95" r="0.95" g="0.95"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<HighlightTexture alphaMode="ADD" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
+					</Anchors>
+				</HighlightTexture>
+				<Scripts>
+					<OnEnter>
+						TRP3_RefreshTooltipForFrame(self);
+					</OnEnter>
+					<OnLeave>
+						TRP3_MainTooltip:Hide();
+					</OnLeave>
+				</Scripts>
 			</Button>
 			
 		</Frames>

@@ -8,9 +8,6 @@ local MAX_TOOLBAR_BUTTON_WIDTH = 120;
 TRP3_Tools_EditorDocumentMixin = CreateFromMixins(TRP3_Tools_EditorObjectMixin);
 
 function TRP3_Tools_EditorDocumentMixin:OnSizeChanged()
-	self.display.preview.Name:SetWidth(90);
-	self.display.preview.InfoText:SetWidth(90);
-
 	-- custom adaptive toolbar layout, don't tell meorawr
 	local toolbarWidthAvailable = self.pages.toolbar:GetWidth() - 10;
 	local numButtons = self.pages.toolbar:GetNumChildren();
@@ -63,12 +60,6 @@ function TRP3_Tools_EditorDocumentMixin:Initialize()
 	TRP3_API.ui.listbox.setupListBox(display.p_font, getFontStructure("P"));
 	
 	TRP3_API.ui.text.setupToolbar(pages.toolbar, pages.editor.scroll.text, TRP3_ToolFrame, "CENTER", "CENTER");
-
-	display.preview:SetScript("OnClick", function()
-		local temp = {};
-		self:InterfaceToClass(temp);
-		TRP3_API.extended.document.showDocumentClass(temp, nil);
-	end);
 	
 	display.importBook:SetScript("OnClick", function()
 		self:ImportItemTextFrame();

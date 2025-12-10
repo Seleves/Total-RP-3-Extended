@@ -20,26 +20,6 @@ function TRP3_Tools_EditorQuestMixin:Initialize()
 			self.main.icon.selectedIcon});
 	end);
 	
-	self.main.revealQuest:SetScript("OnClick", function() 
-		if TRP3_API.extended.classExists(addon.editor.getCurrentObjectAbsoluteId()) then
-			TRP3_API.quest.startQuest(addon.getCurrentDraftCreationId(), addon.editor.getCurrentObjectRelativeId());
-		else
-			TRP3_API.utils.message.displayMessage("The quest cannot be started because it hasn't been saved.", 4);
-		end
-	end);
-	self.main.unrevealQuest:SetScript("OnClick", function() 
-		local campaignId = addon.getCurrentDraftCreationId();
-		local questLog   = TRP3_API.quest.getQuestLog()[campaignId];
-		local questId    = addon.editor.getCurrentObjectRelativeId();
-		if questLog and questLog.QUEST then
-			if questLog.QUEST[questId] and questLog.QUEST[questId].CS then
-				TRP3_API.quest.clearStepHandlers(TRP3_API.extended.getFullID(campaignId, questId, questLog.QUEST[questId].CS));
-			end
-			TRP3_API.quest.clearQuestHandlers(TRP3_API.extended.getFullID(campaignId, questId));
-			questLog.QUEST[questId] = nil;
-		end
-		TRP3_Extended:TriggerEvent(TRP3_Extended.Events.CAMPAIGN_REFRESH_LOG); -- unreveal is not part of the API
-	end);
 end
 
 function TRP3_Tools_EditorQuestMixin:ClassToInterface(class, creationClass, cursor)
@@ -68,10 +48,6 @@ function TRP3_Tools_EditorQuestMixin:ClassToInterface(class, creationClass, curs
 	self.objective.list.model:Flush();
 	self.objective.list.model:InsertTable(objectives);
 	self.objective.sharedObjectiveEditor:Hide();
-
-	local isMine = TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId());
-	self.main.revealQuest:SetShown(isMine);
-	self.main.unrevealQuest:SetShown(isMine);
 end
 
 function TRP3_Tools_EditorQuestMixin:InterfaceToClass(targetClass, targetCursor)
