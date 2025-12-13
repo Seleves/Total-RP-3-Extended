@@ -194,7 +194,7 @@ function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
 	if data.type == TAB_TYPE.DATABASE then
 		setBackground(1);
 		toolFrame.database:Show();
-		addon.refreshCreationsList();
+		addon.database.refreshCreationsList();
 	elseif data.type == TAB_TYPE.CREATION then
 		addon.editor.show(data);
 		toolFrame.editor:Show();
@@ -458,13 +458,35 @@ local function onStart()
 	UIDropDownMenu_Initialize(DummyDropdownFrame, nop); -- Some voodoo magic to prevent taint due to Edit Mode
 	-- TODO check if the voodoo is really needed
 
-	TRP3_API.extended.tools.initList(toolFrame);
+	addon.database.initialize(toolFrame.database)
 	addon.editor.initialize(toolFrame.editor);
 	TRP3_API.extended.tools.initItemQuickEditor(toolFrame);
 
 	addon.global_popups.initialize();
 	addon.static_analysis.initialize();
 	addon.modal = toolFrame.modalOverlay;
+
+	-- Button on toolbar
+	TRP3_API.RegisterCallback(TRP3_Addon, TRP3_Addon.Events.WORKFLOW_ON_LOADED, function()
+		if TRP3_API.toolbar then
+			local toolbarButton = {
+				id = "bb_extended_tools",
+				icon = "Inv_engineering_90_toolbox_blue",
+				configText = loc.TB_TOOLS,
+				tooltip = loc.TB_TOOLS,
+				tooltipSub = TRP3_API.FormatShortcutWithInstruction("CLICK", loc.TB_TOOLS_TT),
+				onClick = function()
+					if toolFrame:IsVisible() then
+						toolFrame:Hide();
+					else
+						TRP3_API.extended.tools.showFrame();
+					end
+				end,
+				visible = 1
+			};
+			TRP3_API.toolbar.toolbarAddButton(toolbarButton);
+		end
+	end);
 
 	TRP3_Extended:TriggerEvent(TRP3_Extended.Events.NAVIGATION_EXTENDED_RESIZED, toolFrame:GetWidth(), toolFrame:GetHeight());
 

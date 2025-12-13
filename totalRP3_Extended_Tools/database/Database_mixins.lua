@@ -108,17 +108,17 @@ function TRP3_Tools_CreationsListElementMixin:OnClick(button)
 			end
 			
 			local copyOption = contextMenu:CreateButton("Create a copy", function()
-				addon.copyCreation(self.data.creationId);
+				addon.database.copyCreation(self.data.creationId);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(copyOption, "Inserts a copy of the object into the database");
 			
 			local exportOption = contextMenu:CreateButton(loc.DB_EXPORT, function()
-				addon.serializeCreation(self.data.creationId);
+				addon.database.serializeCreation(self.data.creationId);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(exportOption, loc.DB_EXPORT_TT_2);
 			
 			local fullExportOption = contextMenu:CreateButton(loc.DB_FULL_EXPORT, function() 
-				addon.exportCreation(self.data.creationId);
+				addon.database.exportCreation(self.data.creationId);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(fullExportOption, loc.DB_FULL_EXPORT_TT);
 			
@@ -127,7 +127,7 @@ function TRP3_Tools_CreationsListElementMixin:OnClick(button)
 				local deleteOption = contextMenu:CreateButton(DELETE, function()
 					local _, name = TRP3_API.extended.tools.getClassDataSafeByType(TRP3_API.extended.getClass(self.data.creationId));
 					TRP3_API.popup.showConfirmPopup(loc.DB_REMOVE_OBJECT_POPUP:format(self.data.creationId, name or UNKNOWN), function()
-						addon.removeCreation(self.data.creationId);
+						addon.database.removeCreation(self.data.creationId);
 					end);
 				end);
 				TRP3_MenuUtil.SetElementTooltip(deleteOption, loc.DB_DELETE_TT);
@@ -187,7 +187,7 @@ function TRP3_Tools_CreationsActionsMixin:Initialize()
 				local type = TRP3_API.extended.tools.getTypeLocale(data.TY);
 				TRP3_API.popup.showConfirmPopup(loc.DB_IMPORT_FULL_CONFIRM:format(type, link, by, objectVersion), function()
 					C_Timer.After(0.25, function()
-						addon.importCreation(version, ID, data, displayVersion);
+						addon.database.importCreation(version, ID, data, displayVersion);
 					end);
 				end);
 			else

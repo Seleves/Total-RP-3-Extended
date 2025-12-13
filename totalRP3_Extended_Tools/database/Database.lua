@@ -2,12 +2,14 @@
 -- SPDX-License-Identifier: Apache-2.0
 
 local _, addon = ...
+local loc = TRP3_API.loc;
 
 ---@type Ellyb;
 local LibDeflate = LibStub:GetLibrary("LibDeflate");
 
-local loc = TRP3_API.loc;
-local ToolFrame;
+addon.database = {};
+
+local databaseFrame;
 local creationsList;
 local creationsFilter;
 
@@ -21,7 +23,6 @@ local SUPPOSED_SERIAL_SIZE_LIMIT = 500000; -- We suppose the text field can only
 
 local color = "|cffffff00";
 local fieldFormat = "%s: " .. color .. "%s|r";
-
 
 local function getMetadataTooltipText(rootID, rootClass, isRoot, innerID, type)
 	local metadata = rootClass.MD or TRP3_API.globals.empty;
@@ -85,40 +86,18 @@ end
 -- INIT
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-function TRP3_API.extended.tools.initList(toolFrame)
-	ToolFrame = toolFrame;
+function addon.database.initialize(frame)
+	databaseFrame = frame;
 	
-	creationsList   = TRP3_ToolFrameDatabaseCreationsList; -- toolFrame.database.split.creations.listWrapper.list
-	creationsFilter = TRP3_ToolFrameDatabaseCreationsFilter; -- toolFrame.database.split.creations.filter
+	creationsList   = databaseFrame.split.creations.listWrapper.list;
+	creationsFilter = databaseFrame.split.creations.filter;
 	
 	creationsFilter:SetTitleText(loc.DB_FILTERS);
 	creationsFilter:SetTitleWidth(150);
 
-	-- Button on toolbar
-	TRP3_API.RegisterCallback(TRP3_Addon, TRP3_Addon.Events.WORKFLOW_ON_LOADED, function()
-		if TRP3_API.toolbar then
-			local toolbarButton = {
-				id = "bb_extended_tools",
-				icon = "Inv_engineering_90_toolbox_blue",
-				configText = loc.TB_TOOLS,
-				tooltip = loc.TB_TOOLS,
-				tooltipSub = TRP3_API.FormatShortcutWithInstruction("CLICK", loc.TB_TOOLS_TT),
-				onClick = function()
-					if TRP3_ToolFrame:IsVisible() then
-						TRP3_ToolFrame:Hide();
-					else
-						TRP3_API.extended.tools.showFrame();
-					end
-				end,
-				visible = 1
-			};
-			TRP3_API.toolbar.toolbarAddButton(toolbarButton);
-		end
-	end);
-
 	-- Events
 	TRP3_API.RegisterCallback(TRP3_Extended, TRP3_Extended.Events.ON_OBJECT_UPDATED, function(_, objectID, objectType) -- luacheck: ignore 212
-		addon.refreshCreationsList();
+		addon.database.refreshCreationsList();
 	end);
 	
 	creationsList.model:SetSortComparator(function(a, b) 
@@ -126,9 +105,9 @@ function TRP3_API.extended.tools.initList(toolFrame)
 	end, true);
 
 	-- Filters
-	creationsFilter.name:SetScript("OnEnterPressed", addon.refreshCreationsList);
-	creationsFilter.id:SetScript("OnEnterPressed", addon.refreshCreationsList);
-	creationsFilter.owner:SetScript("OnEnterPressed", addon.refreshCreationsList);
+	creationsFilter.name:SetScript("OnEnterPressed", addon.database.refreshCreationsList);
+	creationsFilter.id:SetScript("OnEnterPressed", addon.database.refreshCreationsList);
+	creationsFilter.owner:SetScript("OnEnterPressed", addon.database.refreshCreationsList);
 	TRP3_API.ui.frame.setupEditBoxesNavigation({
 		creationsFilter.owner,
 		creationsFilter.name,
@@ -139,7 +118,7 @@ function TRP3_API.extended.tools.initList(toolFrame)
 		{loc.TYPE_CAMPAIGN, TRP3_DB.types.CAMPAIGN},
 		{loc.TYPE_ITEM, TRP3_DB.types.ITEM}
 	}
-	TRP3_API.ui.listbox.setupListBox(creationsFilter.type, types, addon.refreshCreationsList);
+	TRP3_API.ui.listbox.setupListBox(creationsFilter.type, types, addon.database.refreshCreationsList);
 	
 	local template = "|T%s:11:16|t";
 	local locales = {
@@ -149,46 +128,44 @@ function TRP3_API.extended.tools.initList(toolFrame)
 		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("es")), "es"},
 		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("de")), "de"},
 	}
-	TRP3_API.ui.listbox.setupListBox(creationsFilter.locale, locales, addon.refreshCreationsList);
+	TRP3_API.ui.listbox.setupListBox(creationsFilter.locale, locales, addon.database.refreshCreationsList);
 	creationsFilter.locale:SetSelectedValue("");
 	creationsFilter.type:SetSelectedValue("");
-	creationsFilter.search:SetScript("OnClick", addon.refreshCreationsList);
+	creationsFilter.search:SetScript("OnClick", addon.database.refreshCreationsList);
 	creationsFilter.clear:SetScript("OnClick", function()
 		creationsFilter.type:SetSelectedValue("");
 		creationsFilter.locale:SetSelectedValue("");
 		creationsFilter.name:SetText("");
 		creationsFilter.id:SetText("");
 		creationsFilter.owner:SetText("");
-		addon.refreshCreationsList();
+		addon.database.refreshCreationsList();
 	end);
 
 	-- Export
 	do
-		ToolFrame.database.export.title:SetText(loc.DB_EXPORT);
+		databaseFrame.export.title:SetText(loc.DB_EXPORT);
 
 		---@type SimpleHTML
-		local wagoInfo = ToolFrame.database.export.wagoInfo;
+		local wagoInfo = databaseFrame.export.wagoInfo;
 		wagoInfo:SetText(HTML_START .. loc.DB_WAGO_INFO .. HTML_END);
 		wagoInfo:SetScript("OnHyperlinkClick", function(self, url)
 			TRP3_API.popup.showTextInputPopup(loc.UI_LINK_WARNING, nil, nil, url);
 		end);
 	end
 
-	
-
 	---@type SimpleHTML
-	local wagoInfo = ToolFrame.database.import.wagoInfo;
+	local wagoInfo = databaseFrame.import.wagoInfo;
 	wagoInfo:SetText(HTML_START .. loc.DB_IMPORT_TT_WAGO .. HTML_END);
 	wagoInfo:SetScript("OnHyperlinkClick", function(self, url)
 		TRP3_API.popup.showTextInputPopup(loc.UI_LINK_WARNING, nil, nil, url);
 	end);
 
-	ToolFrame.database.import.title:SetText(loc.DB_IMPORT);
-	ToolFrame.database.import.content.title:SetText(loc.DB_IMPORT_TT);
+	databaseFrame.import.title:SetText(loc.DB_IMPORT);
+	databaseFrame.import.content.title:SetText(loc.DB_IMPORT_TT);
 
-	ToolFrame.database.import.save:SetText(loc.DB_IMPORT_WORD);
-	ToolFrame.database.import.save:SetScript("OnClick", function()
-		local code = ToolFrame.database.import.content.scroll.text:GetText();
+	databaseFrame.import.save:SetText(loc.DB_IMPORT_WORD);
+	databaseFrame.import.save:SetScript("OnClick", function()
+		local code = databaseFrame.import.content.scroll.text:GetText();
 		local encoded, usesLibDeflate = code:gsub("^%!", "");
 		if usesLibDeflate == 1 then
 			code = LibDeflate:DecodeForPrint(encoded);
@@ -208,7 +185,7 @@ function TRP3_API.extended.tools.initList(toolFrame)
 			TRP3_API.popup.showConfirmPopup(loc.DB_IMPORT_FULL_CONFIRM:format(type, link, by, objectVersion), function()
 				C_Timer.After(0.25, function()
 					importFunction(version, ID, data, displayVersion);
-					addon.refreshCreationsList(); -- After importing go to full database, so we see what we have imported
+					addon.database.refreshCreationsList(); -- After importing go to full database, so we see what we have imported
 					-- TODO make sure the imported object is visible
 				end);
 			end);
@@ -230,8 +207,10 @@ function TRP3_API.extended.tools.initList(toolFrame)
 	end
 	
 end
+TRP3_API.extended.tools.initList = addon.database.initialize; -- TODO consider removing this from the API
 
-function addon.refreshCreationsList()
+
+function addon.database.refreshCreationsList()
 
 	local typeFilter    = creationsFilter.type:GetSelectedValue();
 	local localeFilter  = creationsFilter.locale:GetSelectedValue();
@@ -297,28 +276,28 @@ function addon.refreshCreationsList()
 	creationsList.widget:SetScrollPercentage(scrollPct);
 end
 
-function addon.removeCreation(creationId)
+function addon.database.removeCreation(creationId)
 	addon.closeAllDrafts(creationId);
 	TRP3_API.extended.removeObject(creationId);
-	addon.refreshCreationsList();
+	addon.database.refreshCreationsList();
 end
 
-function addon.serializeCreation(creationId)
+function addon.database.serializeCreation(creationId)
 	local class = TRP3_API.extended.getClass(creationId);
 	local serial = TRP3_API.utils.serial.serialize({TRP3_API.globals.extended_version, creationId, class, TRP3_API.utils.str.sanitizeVersion(TRP3_API.globals.extended_display_version)});
 	serial = serial:gsub("|", "||");
 	serial = AddOn_TotalRP3.Compression.compress(serial, false);
 	serial = "!" .. LibDeflate:EncodeForPrint(serial);
 	if serial:len() < SUPPOSED_SERIAL_SIZE_LIMIT then
-		ToolFrame.database.export.content.scroll.text:SetText(serial);
-		ToolFrame.database.export.content.title:SetText(loc.DB_EXPORT_HELP:format(TRP3_API.inventory.getItemLink(class), serial:len() / 1024));
-		ToolFrame.database.export:Show();
+		databaseFrame.export.content.scroll.text:SetText(serial);
+		databaseFrame.export.content.title:SetText(loc.DB_EXPORT_HELP:format(TRP3_API.inventory.getItemLink(class), serial:len() / 1024));
+		databaseFrame.export:Show();
 	else
 		TRP3_API.utils.message.displayMessage(loc.DB_EXPORT_TOO_LARGE:format(serial:len() / 1024), 2);
 	end
 end
 
-function addon.exportCreation(creationId)
+function addon.database.exportCreation(creationId)
 	if hasImportExportModule then
 		wipe(TRP3_Extended_ImpExport);
 		TRP3_Extended_ImpExport.id = creationId;
@@ -334,7 +313,7 @@ function addon.exportCreation(creationId)
 	end
 end
 
-function addon.copyCreation(creationId)
+function addon.database.copyCreation(creationId)
 	local fromClass = TRP3_API.extended.getClass(creationId);
 	local copiedData = {};
 	local generatedId = TRP3_API.utils.str.id();
@@ -349,11 +328,11 @@ function addon.copyCreation(creationId)
 	};
 	addon.utils.replaceId(copiedData, creationId, generatedId);
 	local copyId, _ = TRP3_API.extended.tools.createItem(copiedData, generatedId);
-	addon.refreshCreationsList();
+	addon.database.refreshCreationsList();
 	addon.openDraft(copyId);
 end
 
-function addon.importCreation(version, ID, data, displayVersion)
+function addon.database.importCreation(version, ID, data, displayVersion)
 	local type = data.TY;
 	local objectVersion = data.MD.V or 0;
 	local author = data.MD.CB;
@@ -376,14 +355,14 @@ function addon.importCreation(version, ID, data, displayVersion)
 		TRP3_API.utils.table.copy(DB[ID], data);
 		TRP3_API.extended.registerObject(ID, DB[ID], 0);
 		TRP3_API.security.registerSender(ID, author);
-		ToolFrame.database.import:Hide();
-		addon.refreshCreationsList();
+		databaseFrame.import:Hide();
+		addon.database.refreshCreationsList();
 		TRP3_API.utils.message.displayMessage(loc.DB_IMPORT_DONE, 3);
 		TRP3_Extended:TriggerEvent(TRP3_Extended.Events.REFRESH_BAG);
 		TRP3_Extended:TriggerEvent(TRP3_Extended.Events.REFRESH_CAMPAIGN);
 
 		if DB[ID].securityLevel ~= 3 then
-			TRP3_API.security.showSecurityDetailFrame(ID, ToolFrame);
+			TRP3_API.security.showSecurityDetailFrame(ID, databaseFrame:GetParent());
 		end
 	end
 
