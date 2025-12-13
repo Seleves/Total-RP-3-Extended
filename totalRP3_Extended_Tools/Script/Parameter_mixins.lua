@@ -73,10 +73,10 @@ function TRP3_Tools_ScriptParameterObjectiveMixin:SetQuestContext(questId)
 	if self.questId then
 		self.objectiveId:SetupSuggestions("Objective", function(menu, onAccept) 
 			local OB;
-			if addon.getCurrentDraftCreationId() == self.questId then
+			if addon.editor.getCurrentObjectAbsoluteId() == self.questId then
 				OB = addon.editor.getCurrentPropertiesEditor():ListObjectives();
-			elseif addon.getCurrentDraftClass(self.questId) then
-				local questClass = addon.getCurrentDraftClass(self.questId);
+			elseif addon.editor.getCurrentDraftClass(self.questId) then
+				local questClass = addon.editor.getCurrentDraftClass(self.questId);
 				if questClass.TY == TRP3_DB.types.QUEST then
 					OB = questClass.OB;
 				end
@@ -457,8 +457,8 @@ function TRP3_Tools_ScriptParameterLootMixin:Setup(widgetContext, parameter)
 	self.bag.editor.save:SetScript("OnClick", function()
 		local classID = strtrim(self.bag.editor.id:GetText());
 		local class;
-		if addon.getCurrentDraftCreationId() == addon.utils.getCreationId(classID) then
-			class = addon.getCurrentDraftClass(classID);
+		if addon.editor.getCurrentDraftCreationId() == addon.utils.getCreationId(classID) then
+			class = addon.editor.getCurrentDraftClass(classID);
 		else
 			class = TRP3_API.extended.getClass(classID);
 			if class.missing then
@@ -491,8 +491,8 @@ function TRP3_Tools_ScriptParameterLootMixin:SetValue(slotData)
 				classID = slotData[index].classID,
 				count = tonumber(slotData[index].count or 1) or 1,
 			};
-			if addon.getCurrentDraftCreationId() == addon.utils.getCreationId(slot.info.classID) then
-				slot.class = addon.getCurrentDraftClass(slot.info.classID);
+			if addon.editor.getCurrentDraftCreationId() == addon.utils.getCreationId(slot.info.classID) then
+				slot.class = addon.editor.getCurrentDraftClass(slot.info.classID);
 			else
 				slot.class = TRP3_API.extended.getClass(slot.info.classID);
 			end

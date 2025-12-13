@@ -163,8 +163,8 @@ function TRP3_Tools_EditorObjectRibbonMixin:Initialize()
 
 	self.actionsPanel.addItem:SetScript("OnClick", function()
 		if TRP3_API.extended.classExists(addon.editor.getCurrentObjectAbsoluteId()) then
-			local creationClass = TRP3_API.extended.getClass(addon.getCurrentDraftCreationId());
-			local _ , link = addon.utils.getObjectIconAndLink(addon.getCurrentDraftClass());
+			local creationClass = TRP3_API.extended.getClass(addon.editor.getCurrentDraftCreationId());
+			local _ , link = addon.utils.getObjectIconAndLink(addon.editor.getCurrentDraftClass());
 			TRP3_API.popup.showNumberInputPopup(loc.DB_ADD_COUNT:format(link), function(inputValue)
 				TRP3_API.inventory.addItem(nil, addon.editor.getCurrentObjectAbsoluteId(), {count = inputValue or 1, madeBy = creationClass.BA and creationClass.BA.CR});
 			end, nil, 1);		
@@ -173,17 +173,17 @@ function TRP3_Tools_EditorObjectRibbonMixin:Initialize()
 		end
 	end);
 	self.actionsPanel.showVariables:SetScript("OnClick", function()
-		addon.modal:ShowModal(TRP3_API.popup.VARIABLE_INSPECTOR, {addon.editor.getCurrentObjectAbsoluteId(), addon.getCurrentDraftClass().TY});
+		addon.modal:ShowModal(TRP3_API.popup.VARIABLE_INSPECTOR, {addon.editor.getCurrentObjectAbsoluteId(), addon.editor.getCurrentDraftClass().TY});
 	end);
 	self.actionsPanel.startQuest:SetScript("OnClick", function()
 		if TRP3_API.extended.classExists(addon.editor.getCurrentObjectAbsoluteId()) then
-			TRP3_API.quest.startQuest(addon.getCurrentDraftCreationId(), addon.editor.getCurrentObjectRelativeId());
+			TRP3_API.quest.startQuest(addon.editor.getCurrentDraftCreationId(), addon.editor.getCurrentObjectRelativeId());
 		else
 			TRP3_API.utils.message.displayMessage("The quest cannot be started because it hasn't been saved.", 4);
 		end
 	end);
 	self.actionsPanel.unrevealQuest:SetScript("OnClick", function()
-		local campaignId = addon.getCurrentDraftCreationId();
+		local campaignId = addon.editor.getCurrentDraftCreationId();
 		local questLog   = TRP3_API.quest.getQuestLog()[campaignId];
 		local questId    = addon.editor.getCurrentObjectRelativeId();
 		if questLog and questLog.QUEST then
@@ -233,7 +233,7 @@ function TRP3_Tools_EditorObjectRibbonMixin:ClassToInterface(class)
 	self.itemPreview:SetShown(class.TY == TRP3_DB.types.ITEM);
 	self:SetNote(class.NT);
 
-	if TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()) then
+	if TRP3_API.extended.isObjectMine(addon.editor.getCurrentDraftCreationId()) then
 		self.actionsPanel.showVariables:SetShown(class.TY == TRP3_DB.types.CAMPAIGN or class.TY == TRP3_DB.types.AURA or class.TY == TRP3_DB.types.ITEM);
 		self.actionsPanel.startQuest:SetShown(class.TY == TRP3_DB.types.QUEST);
 		self.actionsPanel.unrevealQuest:SetShown(class.TY == TRP3_DB.types.QUEST);

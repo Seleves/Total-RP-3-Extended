@@ -31,7 +31,7 @@ function TRP3_Tools_CreationTreeNodeMixin:Refresh()
 
 	local tooltipText = 
 		"Inner id: " .. self.node.data.relativeId .. "|n" ..
-		"Type: " .. TRP3_API.extended.tools.getTypeLocale((addon.getCurrentDraftClass(self.node.data.absoluteId) or TRP3_API.globals.empty).TY or "") .. "|n|n" ..
+		"Type: " .. TRP3_API.extended.tools.getTypeLocale((addon.editor.getCurrentDraftClass(self.node.data.absoluteId) or TRP3_API.globals.empty).TY or "") .. "|n|n" ..
 		TRP3_API.FormatShortcutWithInstruction("LCLICK", "edit object") .. "|n" ..
 		TRP3_API.FormatShortcutWithInstruction("RCLICK", "more options") .. "|n" ..
 		TRP3_API.FormatShortcutWithInstruction("SHIFT-CLICK", "select range") .. "|n" ..
@@ -107,30 +107,30 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 			end
 			addon.editor.refreshObjectTree();
 		elseif not self.node.data.active then
-			addon.updateCurrentObjectDraft();
-			addon.displayObject(self.node.data.absoluteId);
+			addon.editor.updateCurrentObjectDraft();
+			addon.editor.displayObject(self.node.data.absoluteId);
 			addon.editor.refreshObjectTree();
 		end
 	elseif button == "RightButton" then
 		TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
 			contextMenu:CreateTitle(("|T%s:16:16|t %s"):format(self.node.data.icon, self.node.data.link));
 
-			local class = addon.getCurrentDraftClass(self.node.data.absoluteId);
+			local class = addon.editor.getCurrentDraftClass(self.node.data.absoluteId);
 
 			local openOption = contextMenu:CreateButton("Open", function()
-				addon.updateCurrentObjectDraft();
-				addon.displayObject(self.node.data.absoluteId);
+				addon.editor.updateCurrentObjectDraft();
+				addon.editor.displayObject(self.node.data.absoluteId);
 				addon.editor.refreshObjectTree();
 			end);
 			TRP3_MenuUtil.SetElementTooltip(openOption, "Open element...");
 
 			local openNewOption = contextMenu:CreateButton("Open in new tab", function()
-				addon.updateCurrentObjectDraft();
-				addon.saveEditor();
+				addon.editor.updateCurrentObjectDraft();
+				addon.editor.save();
 				local clonedCursor = {};
-				TRP3_API.utils.table.copy(clonedCursor, addon.getCurrentDraftCursor());
+				TRP3_API.utils.table.copy(clonedCursor, addon.editor.getCurrentDraftCursor());
 				clonedCursor.objectId = self.node.data.absoluteId;
-				addon.openDraft(addon.getCurrentDraftCreationId(), true, clonedCursor);
+				addon.openDraft(addon.editor.getCurrentDraftCreationId(), true, clonedCursor);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(openNewOption, "Open element in new tab...");
 
@@ -146,7 +146,7 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 				if not isStored then
 					addItemOption:SetEnabled(false);
 					TRP3_MenuUtil.SetElementTooltip(addItemOption, "Can't add an unsaved item.");
-				elseif not TRP3_API.extended.isObjectMine(addon.getCurrentDraftCreationId()) and storedClass.BA and storedClass.BA.PA then
+				elseif not TRP3_API.extended.isObjectMine(addon.editor.getCurrentDraftCreationId()) and storedClass.BA and storedClass.BA.PA then
 					addItemOption:SetEnabled(false);
 					TRP3_MenuUtil.SetElementTooltip(addItemOption, "The creator doesn't want you to add this item manually.");
 				else
@@ -191,7 +191,7 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 						elseif newId:find(" ") then
 							TRP3_API.popup.showAlertPopup(loc.IN_INNER_ENTER_ID_NO_SPACE);
 						else
-							local success, message = addon.changeRelativeId(self.node.data.absoluteId, newId);
+							local success, message = addon.editor.changeRelativeId(self.node.data.absoluteId, newId);
 							if not success then
 								TRP3_API.utils.message.displayMessage(message, 4);
 							end
@@ -207,7 +207,7 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 			TRP3_MenuUtil.SetElementTooltip(copyIdOption, loc.DB_COPY_ID_TT);
 
 			local copyOption = contextMenu:CreateButton("Copy", function() 
-				addon.updateCurrentObjectDraft();
+				addon.editor.updateCurrentObjectDraft();
 				addon.clipboard.clear();
 				addon.clipboard.append(class, class.TY, self.node.data.absoluteId, self.node.data.relativeId);
 			end);
@@ -216,14 +216,14 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 			if self.node.data.selected then
 				local copySelectionOption = contextMenu:CreateButton("Copy selected", function() 
 					addon.clipboard.clear();
-					addon.copySelectedTreeObjects();
+					addon.editor.copySelectedTreeObjects();
 				end);
 			end
 			
 			if addon.clipboard.isReplaceCompatible(class.TY) then
 				local pasteOption = contextMenu:CreateButton("Paste here", function() 
 					TRP3_API.popup.showConfirmPopup(loc.IN_INNER_PASTE_CONFIRM, function()
-						addon.replaceCurrentDraftClass(self.node.data.absoluteId, addon.clipboard.retrieveShallow(), addon.clipboard.retrieveId());
+						addon.editor.replaceCurrentDraftClass(self.node.data.absoluteId, addon.clipboard.retrieveShallow(), addon.clipboard.retrieveId());
 					end);
 				end);
 				TRP3_MenuUtil.SetElementTooltip(pasteOption, "Paste copied content.|nThis will replace any data in here!");
@@ -231,7 +231,7 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 
 			if addon.clipboard.isInnerCompatible(class.TY) then
 				local pasteInnerOption = contextMenu:CreateButton("Paste as inner objects", function() 
-					local success, message = addon.pasteClipboardAsInnerObjects(self.node.data.absoluteId);
+					local success, message = addon.editor.pasteClipboardAsInnerObjects(self.node.data.absoluteId);
 					if not success then
 						TRP3_API.utils.message.displayMessage(message, 4);
 					end
@@ -242,13 +242,13 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 			if self.node:GetDepth() > 1 then
 				contextMenu:CreateDivider();
 				local deleteOption = contextMenu:CreateButton(DELETE, function()
-					addon.deleteInnerObjectsById(self.node.data.absoluteId);
+					addon.editor.deleteInnerObjectsById(self.node.data.absoluteId);
 				end);
 				TRP3_MenuUtil.SetElementTooltip(deleteOption, loc.DB_DELETE_TT);
 
 				if self.node.data.selected then
 					local deleteSelectionOption = contextMenu:CreateButton("Delete selected", function() 
-						addon.deleteSelectedTreeObjects();
+						addon.editor.deleteSelectedTreeObjects();
 					end);
 				end
 			end

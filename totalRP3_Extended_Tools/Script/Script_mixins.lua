@@ -21,7 +21,7 @@ local function sortTriggers(triggers)
 	local eventSortIndex = 0;
 	for index, trigger in ipairs(triggers) do
 		if trigger.type == addon.script.triggerType.OBJECT then
-			_, trigger.sortIndex = addon.script.getObjectTrigger(addon.getCurrentDraftClass().TY, trigger.id);
+			_, trigger.sortIndex = addon.script.getObjectTrigger(addon.editor.getCurrentDraftClass().TY, trigger.id);
 		elseif trigger.type == addon.script.triggerType.ACTION then
 			actionSortIndex = actionSortIndex + 1;
 			trigger.sortIndex = actionSortIndex;
@@ -403,7 +403,7 @@ end
 
 function TRP3_Tools_EditorScriptMixin:UpdateTriggerList()
 	local triggerList = {};
-	local class = addon.getCurrentDraftClass();
+	local class = addon.editor.getCurrentDraftClass();
 	local usedObjectTriggerCount = 0;
 	for index, trigger in ipairs(self.triggers) do
 		if trigger.type == addon.script.triggerType.OBJECT then

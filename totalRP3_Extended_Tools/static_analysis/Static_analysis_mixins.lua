@@ -46,7 +46,7 @@ function TRP3_Tools_StaticAnalysisListElementMixin:OnLeave()
 end
 
 function TRP3_Tools_StaticAnalysisListElementMixin:OnClick()
-	addon.displayObject(self.data.location);
+	addon.editor.displayObject(self.data.location);
 	addon.editor.refreshObjectTree();
 	TRP3_Tools_StaticAnalysis:Close();
 end

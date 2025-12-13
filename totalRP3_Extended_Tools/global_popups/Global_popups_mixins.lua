@@ -90,7 +90,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Initialize()
 			self.filter.box:SetText("");
 			self.filter.box:SetFocus();
 			if not self.inventoryMode then
-				addon.updateCurrentObjectDraft(); -- make sure any name/quality changes are reflected properly when opening the browser
+				addon.editor.updateCurrentObjectDraft(); -- make sure any name/quality changes are reflected properly when opening the browser
 			end
 			self.filter.restrictToCreation:SetShown(not self.inventoryMode);
 			self:Filter();
@@ -183,7 +183,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Filter()
 	local model = {};
 	local total, count = 0, 0;
 
-	local currentCreationId = (not self.inventoryMode and addon.getCurrentDraftCreationId()) or nil;
+	local currentCreationId = (not self.inventoryMode and addon.editor.getCurrentDraftCreationId()) or nil;
 
 	if self.inventoryMode or not self.filter.restrictToCreation:GetChecked() then
 		for absoluteId, class in pairs(TRP3_DB.global) do
@@ -210,7 +210,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Filter()
 			if class.TY == self.objectType then
 				local _, name = TRP3_API.extended.tools.getClassDataSafeByType(class);
 				if filter(absoluteId) or filter(name) then
-					table.insert(model, generateObjectsBrowserLineData(absoluteId, addon.getCurrentDraftClass, addon.currentDraftClassExists));
+					table.insert(model, generateObjectsBrowserLineData(absoluteId, addon.editor.getCurrentDraftClass, addon.editor.currentDraftClassExists));
 					count = count + 1;
 				end
 				total = total + 1;

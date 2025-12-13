@@ -175,36 +175,36 @@ function addon.static_analysis.run()
 	end);
 
 	for absoluteId, relativeId in pairs(inaccessibleQuests) do
-		push(absoluteId, relativeId, addon.getCurrentDraftClass(absoluteId), "Unused quest", "This quest appears to be never revealed.|nConsider using the \"reveal quest\" effect or change the quest to be auto-reveal.");
+		push(absoluteId, relativeId, addon.editor.getCurrentDraftClass(absoluteId), "Unused quest", "This quest appears to be never revealed.|nConsider using the \"reveal quest\" effect or change the quest to be auto-reveal.");
 	end
 
 	for absoluteId, relativeId in pairs(inaccessibleQuestSteps) do
-		push(absoluteId, relativeId, addon.getCurrentDraftClass(absoluteId), "Unreachable quest step", "This quest step appears to be unreachable.|nConsider using the \"change quest step\" effect or make this step the initial step.");
+		push(absoluteId, relativeId, addon.editor.getCurrentDraftClass(absoluteId), "Unreachable quest step", "This quest step appears to be unreachable.|nConsider using the \"change quest step\" effect or make this step the initial step.");
 	end
 
 	for absoluteId, objective in pairs(inaccessibleObjectives) do
 		for objectiveId, relativeId in pairs(objective) do
-			push(absoluteId, relativeId, addon.getCurrentDraftClass(absoluteId), "Unused objective", ("The quest objective %s appears nowhere to be revealed.|nConsider using the \"reveal objective\" effect or change it to be auto-reveal."):format(addon.script.formatters.constant(objectiveId)));
+			push(absoluteId, relativeId, addon.editor.getCurrentDraftClass(absoluteId), "Unused objective", ("The quest objective %s appears nowhere to be revealed.|nConsider using the \"reveal objective\" effect or change it to be auto-reveal."):format(addon.script.formatters.constant(objectiveId)));
 		end
 	end
 
 	for absoluteId, relativeId in pairs(inaccessibleAuras) do
-		push(absoluteId, relativeId, addon.getCurrentDraftClass(absoluteId), "Unused aura", "This aura appears not to be applied anywhere.|nConsider using the \"apply aura\" effect.");
+		push(absoluteId, relativeId, addon.editor.getCurrentDraftClass(absoluteId), "Unused aura", "This aura appears not to be applied anywhere.|nConsider using the \"apply aura\" effect.");
 	end
 
 	for absoluteId, relativeId in pairs(nastyAuras) do
-		push(absoluteId, relativeId, addon.getCurrentDraftClass(absoluteId), "Nasty aura", "It appears that you're creating a non-cancellable aura that lasts indefinitely.|nMake sure the player can eventually remove it or use the \"remove aura\" or \"set aura duration\" effect.");
+		push(absoluteId, relativeId, addon.editor.getCurrentDraftClass(absoluteId), "Nasty aura", "It appears that you're creating a non-cancellable aura that lasts indefinitely.|nMake sure the player can eventually remove it or use the \"remove aura\" or \"set aura duration\" effect.");
 	end
 
 	for absoluteId, relativeId in pairs(inaccessibleCutscenes) do
-		push(absoluteId, relativeId, addon.getCurrentDraftClass(absoluteId), "Unused cutscene", "This cutscene appears not to be started anywhere.|nConsider using the \"start cutscene\" effect.");
+		push(absoluteId, relativeId, addon.editor.getCurrentDraftClass(absoluteId), "Unused cutscene", "This cutscene appears not to be started anywhere.|nConsider using the \"start cutscene\" effect.");
 	end
 
 	for absoluteId, relativeId in pairs(inaccessibleDocuments) do
-		push(absoluteId, relativeId, addon.getCurrentDraftClass(absoluteId), "Unused document", "This document appears not to be shown anywhere.|nConsider using the \"show document\" effect.");
+		push(absoluteId, relativeId, addon.editor.getCurrentDraftClass(absoluteId), "Unused document", "This document appears not to be shown anywhere.|nConsider using the \"show document\" effect.");
 	end
 
-	local creationId = addon.getCurrentDraftCreationId();
+	local creationId = addon.editor.getCurrentDraftCreationId();
 
 	addon.editor.forEachObjectInCurrentDraft(function(absoluteId, relativeId, class)
 		for scriptId, script in pairs(class.SC or TRP3_API.globals.empty) do

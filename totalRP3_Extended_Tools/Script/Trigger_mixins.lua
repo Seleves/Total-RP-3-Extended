@@ -60,7 +60,7 @@ end
 function TRP3_Tools_EditorTriggerMixin:OnScriptSelected(scriptId)
 	self.script.name:SetShown(scriptId == SURROGATE_SCRIPT_ID_NEW);
 	if scriptId == SURROGATE_SCRIPT_ID_NEW and strtrim(self.script.name:GetText()) == "" then
-		local proposal = addon.script.suggestScriptName(addon.getCurrentDraftClass().TY, self.triggerData);
+		local proposal = addon.script.suggestScriptName(addon.editor.getCurrentDraftClass().TY, self.triggerData);
 		local scriptName = proposal;
 		local n = 1;
 		while self.usedScriptNames[scriptName] do
@@ -72,7 +72,7 @@ function TRP3_Tools_EditorTriggerMixin:OnScriptSelected(scriptId)
 end
 
 function TRP3_Tools_EditorTriggerMixin:SetTrigger(triggerId, triggerType)
-	local icon, whenText = addon.script.getTriggerPreview(addon.getCurrentDraftClass().TY, triggerId, triggerType);
+	local icon, whenText = addon.script.getTriggerPreview(addon.editor.getCurrentDraftClass().TY, triggerId, triggerType);
 	self.trigger.whenText:SetText(whenText);
 	self.trigger.icon.Icon:SetTexture(icon);
 	self.triggerData.id = triggerId;
@@ -132,7 +132,7 @@ function TRP3_Tools_EditorTriggerMixin:OpenForTrigger(triggerData)
 	self.triggerData = self.triggerData or {};
 	self.usedScriptNames = self.usedScriptNames or {};
 	self.usedObjectTriggers = self.usedObjectTriggers or {};
-	self.objectType = addon.getCurrentDraftClass().TY;
+	self.objectType = addon.editor.getCurrentDraftClass().TY;
 
 	wipe(self.triggerData);
 	wipe(self.usedScriptNames);

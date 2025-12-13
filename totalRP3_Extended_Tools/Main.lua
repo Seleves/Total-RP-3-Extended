@@ -150,7 +150,7 @@ function TRP3_ToolFrameTabsMixin:CloseRequest(tabButton, data)
 				openTabCount = openTabCount + 1;
 			end
 		end
-		addon.updateCurrentObjectDraft();
+		addon.editor.updateCurrentObjectDraft();
 		if openTabCount <= 1 then
 			if TRP3_API.extended.isObjectMine(data.creationId) and not addon.utils.deepCompare(drafts[data.creationId].class, TRP3_API.extended.getClass(data.creationId)) then
 				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].text = "Your creation " .. data.label .. " has unsaved changes.|nDo you want to save them?";
@@ -183,8 +183,8 @@ end
 function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
 	addon.currentEditor = data;
 	
-	addon.saveEditor();
-	addon.resetEditor();
+	addon.editor.save();
+	addon.editor.reset();
 
 	toolFrame.database:Hide();
 	toolFrame.editor:Hide();
@@ -196,7 +196,7 @@ function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
 		toolFrame.database:Show();
 		addon.refreshCreationsList();
 	elseif data.type == TAB_TYPE.CREATION then
-		addon.showEditor(data);
+		addon.editor.show(data);
 		toolFrame.editor:Show();
 	elseif data.type == TAB_TYPE.CREDITS then
 		setBackground(1);
@@ -247,7 +247,7 @@ end
 
 function addon.openDraft(creationId, forceNewEditor, cursor)
 	if not drafts[creationId] then
-		drafts[creationId] = addon.createDraft(creationId);
+		drafts[creationId] = addon.editor.createDraft(creationId);
 	end
 	local existingEditor = not forceNewEditor and addon.findDraft(creationId);
 	if forceNewEditor or not existingEditor then
@@ -459,7 +459,7 @@ local function onStart()
 	-- TODO check if the voodoo is really needed
 
 	TRP3_API.extended.tools.initList(toolFrame);
-	TRP3_API.extended.tools.initEditor(toolFrame);
+	addon.editor.initialize(toolFrame.editor);
 	TRP3_API.extended.tools.initItemQuickEditor(toolFrame);
 
 	addon.global_popups.initialize();
@@ -487,7 +487,6 @@ end
 
 local function onInit()
 	toolFrame = TRP3_ToolFrame;
-	toolFrame.warnings = {};
 	
 	tabBar = TRP3_ToolFrameTabs;
 
@@ -503,13 +502,13 @@ local function onInit()
 end
 
 local MODULE_STRUCTURE = {
-	["name"] = "Extended Tools",
-	["description"] = "Total RP 3 extended tools: item, document and campaign creation.",
-	["version"] = TRP3_API.globals.extended_version,
-	["id"] = "trp3_extended_tools",
-	["onStart"] = onStart,
-	["onInit"] = onInit,
-	["minVersion"] = TRP3_API.globals.required_trp3_build,
+	["name"]         = "Extended Tools",
+	["description"]  = "Total RP 3 extended tools: item, document and campaign creation.",
+	["version"]      = TRP3_API.globals.extended_version,
+	["id"]           = "trp3_extended_tools",
+	["onStart"]      = onStart,
+	["onInit"]       = onInit,
+	["minVersion"]   = TRP3_API.globals.required_trp3_build,
 	["requiredDeps"] = {
 		{"trp3_extended", TRP3_API.globals.extended_version},
 	}

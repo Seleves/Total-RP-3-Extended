@@ -4,11 +4,12 @@ local loc = TRP3_API.loc;
 
 addon.editor = {};
 
+local editorFrame;
 local statusBar;
 local objectTree;
 local objectEditor;
 local objectRibbon;
-local editorsByType = {};
+local PROPERTY_EDITORS = {};
 
 local currentEditor;
 local currentDraft;
@@ -47,7 +48,7 @@ local function updateTabBar()
 	addon.refreshTabs();
 end
 
-function isRelativeIdAvailable(class, relativeId)
+local function isRelativeIdAvailable(class, relativeId)
 	return 
 		(not class.QE or not class.QE[relativeId])
 	and (not class.ST or not class.ST[relativeId])
@@ -100,7 +101,7 @@ local function buildObjectTree(creationId, creationClass)
 	return model, index;
 end
 
-function rebuildTreeAndShow(absoluteId)
+local function rebuildTreeAndShow(absoluteId)
 
 	currentEditor.cursor.objects = currentEditor.cursor.objects or {};
 	for id, object in pairs(currentDraft.index or TRP3_API.globals.empty) do
@@ -128,15 +129,15 @@ function rebuildTreeAndShow(absoluteId)
 	objectTree.widget:SetDataProvider(currentDraft.model);
 	objectTree.widget:SetScrollPercentage(treeScroll);
 
-	addon.displayObject(absoluteId);
+	addon.editor.displayObject(absoluteId);
 	addon.editor.refreshObjectTree();
 end
 
-function addon.currentDraftClassExists(absoluteId)
+function addon.editor.currentDraftClassExists(absoluteId)
 	return absoluteId and currentDraft and currentDraft.index and currentDraft.index[absoluteId] ~= nil;
 end
 
-function addon.getCurrentDraftClass(absoluteId)
+function addon.editor.getCurrentDraftClass(absoluteId)
 	if absoluteId then
 		return currentDraft and currentDraft.index and currentDraft.index[absoluteId] and currentDraft.index[absoluteId].class or nil;
 	else
@@ -144,11 +145,11 @@ function addon.getCurrentDraftClass(absoluteId)
 	end
 end
 
-function addon.getCurrentDraftCreationId()
+function addon.editor.getCurrentDraftCreationId()
 	return currentEditor and currentEditor.creationId;
 end
 
-function addon.getCurrentDraftCursor()
+function addon.editor.getCurrentDraftCursor()
 	return currentEditor.cursor;
 end
 
@@ -174,8 +175,8 @@ end
 -- Tree manipulation --
 -----------------------
 
-function addon.copySelectedTreeObjects()
-	addon.updateCurrentObjectDraft();
+function addon.editor.copySelectedTreeObjects()
+	addon.editor.updateCurrentObjectDraft();
 	for absoluteId, object in pairs(currentDraft.index) do
 		if object.node.data.selected then
 			addon.clipboard.append(object.class, object.class.TY, absoluteId, object.node.data.relativeId);
@@ -183,7 +184,7 @@ function addon.copySelectedTreeObjects()
 	end
 end
 
-function addon.pasteClipboardAsInnerObjects(absoluteId)
+function addon.editor.pasteClipboardAsInnerObjects(absoluteId)
 	local object = currentDraft.index[absoluteId];
 	if addon.clipboard.isInnerCompatible(object.class.TY) then
 		local newRelativeIds = {};
@@ -232,7 +233,7 @@ function addon.editor.requestInnerObject(absoluteId, type)
 		elseif relativeId:find(" ") then
 			TRP3_API.popup.showAlertPopup(loc.IN_INNER_ENTER_ID_NO_SPACE);
 		else
-			local success, message = addon.appendInnerObject(absoluteId, relativeId, type);
+			local success, message = addon.editor.appendInnerObject(absoluteId, relativeId, type);
 			if not success then
 				TRP3_API.utils.message.displayMessage(message, 4);
 			end
@@ -240,10 +241,10 @@ function addon.editor.requestInnerObject(absoluteId, type)
 	end, nil, "");
 end
 
-function addon.appendInnerObject(absoluteId, relativeId, type)
+function addon.editor.appendInnerObject(absoluteId, relativeId, type)
 	local object = currentDraft.index[absoluteId];
 	if isRelativeIdAvailable(object.class, relativeId) then
-		addon.updateCurrentObjectDraft();
+		addon.editor.updateCurrentObjectDraft();
 		local innerClass, field = addon.utils.createEmptyClass(type);
 		object.class[field] = object.class[field] or {};
 		object.class[field][relativeId] = innerClass;
@@ -261,8 +262,8 @@ function addon.appendInnerObject(absoluteId, relativeId, type)
 	end
 end
 
-function addon.replaceCurrentDraftClass(absoluteId, newClassShallow, originalAbsoluteId)
-	addon.updateCurrentObjectDraft();
+function addon.editor.replaceCurrentDraftClass(absoluteId, newClassShallow, originalAbsoluteId)
+	addon.editor.updateCurrentObjectDraft();
 	local class = currentDraft.index[absoluteId].class;
 	local MD = class.MD;
 	wipe(class);
@@ -272,17 +273,17 @@ function addon.replaceCurrentDraftClass(absoluteId, newClassShallow, originalAbs
 	rebuildTreeAndShow(absoluteId);
 end
 
-function addon.deleteSelectedTreeObjects()
+function addon.editor.deleteSelectedTreeObjects()
 	local toDelete = {};
 	for absoluteId, object in pairs(currentDraft.index) do
 		if object.node.data.selected then
 			table.insert(toDelete, absoluteId);
 		end
 	end
-	addon.deleteInnerObjectsById(unpack(toDelete));
+	addon.editor.deleteInnerObjectsById(unpack(toDelete));
 end
 
-function addon.deleteInnerObjectsById(...)
+function addon.editor.deleteInnerObjectsById(...)
 	local toDelete = {};
 	for _, absoluteId in ipairs({...}) do
 		if currentDraft.index[absoluteId] and absoluteId ~= currentEditor.creationId then
@@ -325,12 +326,12 @@ function addon.deleteInnerObjectsById(...)
 	rebuildTreeAndShow(select(2, next(ancestors)));
 end
 
-function addon.changeRelativeId(absoluteId, newRelativeId)
+function addon.editor.changeRelativeId(absoluteId, newRelativeId)
 	local parentId = currentDraft.index[absoluteId].node:GetParent().data.absoluteId;
 	local parent = currentDraft.index[parentId];
 	local newAbsoluteId = parentId .. TRP3_API.extended.ID_SEPARATOR .. newRelativeId;
 	if isRelativeIdAvailable(parent.class, newRelativeId) and not currentDraft.index[newAbsoluteId] then
-		addon.updateCurrentObjectDraft();
+		addon.editor.updateCurrentObjectDraft();
 		local object = currentDraft.index[absoluteId];
 		local oldRelativeId = object.node.data.relativeId;
 		if object.class.TY == TRP3_DB.types.QUEST then
@@ -367,7 +368,7 @@ function addon.changeRelativeId(absoluteId, newRelativeId)
 end
 
 -- 
-function addon.updateCurrentObjectDraft()
+function addon.editor.updateCurrentObjectDraft()
 	if not currentObject then
 		return
 	end
@@ -375,9 +376,9 @@ function addon.updateCurrentObjectDraft()
 	currentEditor.cursor.objects[currentEditor.cursor.objectId] = currentEditor.cursor.objects[currentEditor.cursor.objectId] or {};
 	local objectCursor = currentEditor.cursor.objects[currentEditor.cursor.objectId];
 
-	if currentObject.class.TY and editorsByType[currentObject.class.TY] then
+	if currentObject.class.TY and PROPERTY_EDITORS[currentObject.class.TY] then
 		objectCursor.objectRatio = objectEditor.split:GetRatio();
-		editorsByType[currentObject.class.TY]:InterfaceToClass(currentObject.class, objectCursor);
+		PROPERTY_EDITORS[currentObject.class.TY]:InterfaceToClass(currentObject.class, objectCursor);
 		currentObject.node.data.icon, currentObject.node.data.link = addon.utils.getObjectIconAndLink(currentObject.class);
 		addon.editor.refreshObjectTree();
 		updateTabBar();
@@ -390,11 +391,11 @@ function addon.updateCurrentObjectDraft()
 	addon.editor.script:InterfaceToClass(currentObject.class, objectCursor);
 end
 
-function addon.saveEditor()
+function addon.editor.save()
 	if not currentEditor or not currentDraft then
 		return
 	end
-	currentEditor.cursor.treeRatio = TRP3_ToolFrameEditor.split:GetRatio();
+	currentEditor.cursor.treeRatio = editorFrame.split:GetRatio();
 	currentEditor.cursor.treeScroll = objectTree.widget:GetScrollPercentage();
 
 	currentEditor.cursor.objects = currentEditor.cursor.objects or {};
@@ -404,14 +405,14 @@ function addon.saveEditor()
 	end
 end
 
-function addon.resetEditor()
-	addon.updateCurrentObjectDraft();
+function addon.editor.reset()
+	addon.editor.updateCurrentObjectDraft();
 	currentEditor = nil;
 	currentDraft = nil;
 	currentObject = nil;
 end
 
-function addon.displayObject(objectId)
+function addon.editor.displayObject(objectId)
 	if not currentEditor then
 		return
 	end
@@ -427,10 +428,8 @@ function addon.displayObject(objectId)
 	
 	updateTabBar();
 	
-	for _, typeEditor in pairs(editorsByType) do
-		if typeEditor then
-			typeEditor:Hide();
-		end
+	for type, editor in pairs(PROPERTY_EDITORS) do
+		editor:SetShown(type == currentObject.class.TY);
 	end
 
 	currentEditor.cursor.objects[objectId] = currentEditor.cursor.objects[objectId] or {};
@@ -438,10 +437,9 @@ function addon.displayObject(objectId)
 
 	objectRibbon:ClassToInterface(currentObject.class);
 
-	if currentObject.class.TY and editorsByType[currentObject.class.TY] then
+	if currentObject.class.TY and PROPERTY_EDITORS[currentObject.class.TY] then
 		objectEditor.split:SetRatio(objectCursor.objectRatio or 1);
-		editorsByType[currentObject.class.TY]:Show();
-		editorsByType[currentObject.class.TY]:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
+		PROPERTY_EDITORS[currentObject.class.TY]:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
 		addon.setTypeBackground(currentObject.class.TY);
 	end
 	
@@ -451,7 +449,7 @@ end
 
 function addon.editor.getCurrentPropertiesEditor()
 	if currentObject then
-		return editorsByType[currentObject.class.TY];
+		return PROPERTY_EDITORS[currentObject.class.TY];
 	end
 end
 
@@ -637,7 +635,7 @@ function addon.editor.populateObjectTagMenu(menu, onAccept, scriptContext, event
 	
 end
 
-function addon.createDraft(creationId)
+function addon.editor.createDraft(creationId)
 	local draftClass = {};
 	TRP3_API.utils.table.copy(draftClass, TRP3_API.extended.getClass(creationId));
 	local model, index = buildObjectTree(creationId, draftClass);
@@ -663,7 +661,7 @@ local function displayRootInfo()
 	statusBar.save:SetEnabled(TRP3_Tools_DB[currentEditor.creationId] ~= nil);
 end
 
-function addon.showEditor(editor)
+function addon.editor.show(editor)
 	currentEditor = editor;
 	currentDraft  = addon.getDraft(currentEditor.creationId);
 	
@@ -683,7 +681,7 @@ function addon.showEditor(editor)
 			currentEditor.cursor.treeRatio = 0;
 		end
 	end
-	TRP3_ToolFrameEditor.split:SetRatio(currentEditor.cursor.treeRatio);
+	editorFrame.split:SetRatio(currentEditor.cursor.treeRatio);
 	
 	objectTree.widget:SetDataProvider(DUMMY_TREE_MODEL);
 	if currentEditor.cursor.objects then
@@ -709,72 +707,49 @@ function addon.showEditor(editor)
 	objectTree.widget:SetDataProvider(currentDraft.model);
 	objectTree.widget:SetScrollPercentage(currentEditor.cursor.treeScroll or 0);
 	
-	addon.displayObject(currentEditor.cursor.objectId);
+	addon.editor.displayObject(currentEditor.cursor.objectId);
 end
 
 function addon.editor.refreshObjectTree()
 	objectTree:Refresh();
 end
 
--- local function checkCreation(classID, data)
-	-- local warnings = {};
-	-- TRP3_API.extended.iterateObject(classID, data, function(childClassID, childClass)
-		-- local frame = toolFrame[PAGE_BY_TYPE[childClass.TY].frame or ""];
-		-- if frame and frame.validator then
-			-- frame.validator(childClassID, childClass, warnings);
-		-- end
-	-- end);
-	-- return warnings;
--- end
-
 local function onSave()
-	addon.updateCurrentObjectDraft();
+	addon.editor.updateCurrentObjectDraft();
 	
 	if not TRP3_Tools_DB[currentEditor.creationId] then
 		return
 	end
 	
-	-- local warnings = checkCreation(toolFrame.rootClassID, toolFrame.rootDraft);
-	-- if #warnings > 0 then
-		-- local joinedString = strjoin("\n\n", unpack(warnings));
-		-- TRP3_API.popup.showConfirmPopup(loc.EDITOR_WARNINGS:format(#warnings, joinedString), function()
-			-- doSave();
-		-- end);
-	-- else
-		-- doSave();
-	-- end
-	-- TODO make the checkCreation do something
+	-- TODO should we run static analysis by default when saving?
+	-- The system previously in place was the "validator"
+	
 	addon.saveDraft(currentEditor.creationId);
 	displayRootInfo();
 end
 
-function TRP3_API.extended.tools.initEditor(toolFrame)
-	statusBar    = TRP3_ToolFrameEditor.statusBar;
-	objectTree   = TRP3_ToolFrameEditor.split.tree; -- = TRP3_ToolFrameEditorTree
-	objectEditor = TRP3_ToolFrameEditor.split.object;
-	objectRibbon = TRP3_ToolFrameEditor.split.object.objectRibbon;
+function addon.editor.initialize(frame)
+
+	editorFrame  = frame;
+	statusBar    = editorFrame.statusBar;
+	objectTree   = editorFrame.split.tree; -- = TRP3_ToolFrameEditorTree
+	objectEditor = editorFrame.split.object;
+	objectRibbon = editorFrame.split.object.objectRibbon;
 
 	addon.editor.object  = objectRibbon;
 	addon.editor.script  = objectEditor.split.script;
-
-	-- statusBar.id:SetText(loc.EDITOR_ID_COPY);
-	-- statusBar.id:SetScript("OnClick", function()
-		-- TRP3_API.popup.showTextInputPopup(loc.EDITOR_ID_COPY_POPUP, nil, nil, currentEditor.creationId);
-	-- end); -- TODO copy id feature
 	
-	editorsByType[TRP3_DB.types.CAMPAIGN]   = objectEditor.split.properties.campaign;
-	editorsByType[TRP3_DB.types.QUEST]      = objectEditor.split.properties.quest;
-	editorsByType[TRP3_DB.types.QUEST_STEP] = objectEditor.split.properties.questStep;
-	editorsByType[TRP3_DB.types.ITEM]       = objectEditor.split.properties.item;
-	editorsByType[TRP3_DB.types.DOCUMENT]   = objectEditor.split.properties.document;
-	editorsByType[TRP3_DB.types.DIALOG]     = objectEditor.split.properties.cutscene;
-	editorsByType[TRP3_DB.types.AURA]       = objectEditor.split.properties.aura;
+	PROPERTY_EDITORS[TRP3_DB.types.CAMPAIGN]   = objectEditor.split.properties.campaign;
+	PROPERTY_EDITORS[TRP3_DB.types.QUEST]      = objectEditor.split.properties.quest;
+	PROPERTY_EDITORS[TRP3_DB.types.QUEST_STEP] = objectEditor.split.properties.questStep;
+	PROPERTY_EDITORS[TRP3_DB.types.ITEM]       = objectEditor.split.properties.item;
+	PROPERTY_EDITORS[TRP3_DB.types.DOCUMENT]   = objectEditor.split.properties.document;
+	PROPERTY_EDITORS[TRP3_DB.types.DIALOG]     = objectEditor.split.properties.cutscene;
+	PROPERTY_EDITORS[TRP3_DB.types.AURA]       = objectEditor.split.properties.aura;
 	
 	objectRibbon:Initialize();
-	for _, editor in pairs(editorsByType) do
-		if editor then
-			editor:Initialize();
-		end
+	for _, editor in pairs(PROPERTY_EDITORS) do
+		editor:Initialize();
 	end
 	
 	addon.editor.script:Initialize();
@@ -800,10 +775,11 @@ function TRP3_API.extended.tools.initEditor(toolFrame)
 		TRP3_MainTooltip:Hide();
 	end);
 	statusBar.static_analysis:SetScript("OnClick", function(self)
-		addon.updateCurrentObjectDraft();
+		addon.editor.updateCurrentObjectDraft();
 		addon.static_analysis.run();
 	end);
 
 	statusBar.save:SetScript("OnClick", onSave);
 	
 end
+TRP3_API.extended.tools.initEditor = addon.editor.initialize; -- TODO this shouldn't be in the API
