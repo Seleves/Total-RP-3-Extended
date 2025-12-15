@@ -31,7 +31,7 @@ local drafts = {};
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 TRP3_API.extended.tools = {};
-
+addon.main = {};
 
 local BACKGROUNDS = {
 	"Interface\\ENCOUNTERJOURNAL\\UI-EJ-Classic",
@@ -74,7 +74,7 @@ local PAGE_BY_TYPE = {
 	},
 };
 
-function addon.setTypeBackground(type)
+function addon.main.setTypeBackground(type)
 	setBackground(PAGE_BY_TYPE[type] and PAGE_BY_TYPE[type].background or 1);
 end
 
@@ -155,12 +155,12 @@ function TRP3_ToolFrameTabsMixin:CloseRequest(tabButton, data)
 			if TRP3_API.extended.isObjectMine(data.creationId) and not addon.utils.deepCompare(drafts[data.creationId].class, TRP3_API.extended.getClass(data.creationId)) then
 				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].text = "Your creation " .. data.label .. " has unsaved changes.|nDo you want to save them?";
 				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].OnAccept = function()
-					addon.saveDraft(data.creationId);
-					addon.deleteDraft(data.creationId);
+					addon.main.saveDraft(data.creationId);
+					addon.main.deleteDraft(data.creationId);
 					tabBar:Close(tabButton);
 				end;
 				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].OnCancel = function()
-					addon.deleteDraft(data.creationId);
+					addon.main.deleteDraft(data.creationId);
 					tabBar:Close(tabButton);
 				end;
 				local dialog = StaticPopup_Show("TRP3_SAVE_DISCARD_CANCEL");
@@ -169,7 +169,7 @@ function TRP3_ToolFrameTabsMixin:CloseRequest(tabButton, data)
 					dialog:SetPoint("CENTER", UIParent, "CENTER");
 				end
 			else
-				addon.deleteDraft(data.creationId);
+				addon.main.deleteDraft(data.creationId);
 				self:Close(tabButton);
 			end
 		else
@@ -181,7 +181,6 @@ function TRP3_ToolFrameTabsMixin:CloseRequest(tabButton, data)
 end
 
 function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
-	addon.currentEditor = data;
 	
 	addon.editor.save();
 	addon.editor.reset();
@@ -236,7 +235,7 @@ function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
 		toolFrame.disclaimer.html.ok:SetScript("OnClick", function()
 			TRP3_Tools_Flags.has_seen_disclaimer = true;
 			tabBar:Close(tabBar:FindTab(function(data) return data.type == TAB_TYPE.DISCLAIMER; end));
-			addon.openDatabase();
+			addon.main.openDatabase();
 		end);
 		toolFrame.disclaimer.html:SetScript("OnHyperlinkClick", function(_, link)
 			TRP3_API.popup.showTextInputPopup(loc.UI_LINK_WARNING, nil, nil, link);
@@ -245,11 +244,11 @@ function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
 	end
 end
 
-function addon.openDraft(creationId, forceNewEditor, cursor)
+function addon.main.openDraft(creationId, forceNewEditor, cursor)
 	if not drafts[creationId] then
 		drafts[creationId] = addon.editor.createDraft(creationId);
 	end
-	local existingEditor = not forceNewEditor and addon.findDraft(creationId);
+	local existingEditor = not forceNewEditor and addon.main.findDraft(creationId);
 	if forceNewEditor or not existingEditor then
 		local class = TRP3_API.extended.getClass(creationId);
 		local link = TRP3_API.inventory.getItemLink(class, creationId);
@@ -268,21 +267,21 @@ function addon.openDraft(creationId, forceNewEditor, cursor)
 	end
 end
 
-function addon.getDraft(creationId)
+function addon.main.getDraft(creationId)
 	return drafts[creationId];
 end
 
-function addon.findDraft(creationId)
+function addon.main.findDraft(creationId)
 	return tabBar:FindTab(function(data) return data.creationId == creationId; end);
 end
 
-function addon.deleteDraft(creationId)
+function addon.main.deleteDraft(creationId)
 	wipe(drafts[creationId].class);
 	wipe(drafts[creationId]);
 	drafts[creationId] = nil;
 end
 
-function addon.saveDraft(creationId)
+function addon.main.saveDraft(creationId)
 	local draftClass = drafts[creationId].class;
 	draftClass.MD.V = draftClass.MD.V + 1;
 	draftClass.MD.SD = date("%d/%m/%y %H:%M:%S");
@@ -312,7 +311,7 @@ function addon.saveDraft(creationId)
 	TRP3_Extended:TriggerEvent(TRP3_Extended.Events.REFRESH_CAMPAIGN, creationId);
 end
 
-function addon.closeAllDrafts(creationId)
+function addon.main.closeAllDrafts(creationId)
 	local tabsToClose = {};
 	for _, tab in ipairs(tabBar.tabs) do
 		if tab.data.type == TAB_TYPE.CREATION and tab.data.creationId == creationId then
@@ -324,7 +323,7 @@ function addon.closeAllDrafts(creationId)
 	end
 end
 
-function addon.openDatabase()
+function addon.main.openDatabase()
 	local databaseTab = tabBar:FindTab(function(data) return data.type == TAB_TYPE.DATABASE; end);
 	if not databaseTab then
 		tabBar:AddTabAndActivate({
@@ -337,7 +336,7 @@ function addon.openDatabase()
 	end
 end
 
-function addon.openDisclaimer()
+function addon.main.openDisclaimer()
 	local disclaimerTab = tabBar:FindTab(function(data) return data.type == TAB_TYPE.DISCLAIMER; end);
 	if not disclaimerTab then
 		tabBar:AddTabAndActivate({
@@ -350,7 +349,7 @@ function addon.openDisclaimer()
 	end
 end
 
-function addon.openCredits()
+function addon.main.openCredits()
 	local creditsTab = tabBar:FindTab(function(data) return data.type == TAB_TYPE.CREDITS; end);
 	if not creditsTab then
 		tabBar:AddTabAndActivate({
@@ -363,25 +362,25 @@ function addon.openCredits()
 	end
 end
 
-function addon.refreshTabs()
+function addon.main.refreshTabs()
 	tabBar:Refresh();
 end
 
-function addon.forEachTab(tabFun)
+function addon.main.forEachTab(tabFun)
 	for _, tab in pairs(tabBar.tabs) do
 		tabFun(tab.data);
 	end
 end
 
-TRP3_API.extended.tools.goToListPage = addon.openDatabase;
+TRP3_API.extended.tools.goToListPage = addon.main.openDatabase;
 
 -- this API must stay, it is used by the Extended main addon
 TRP3_API.extended.tools.goToPage = function(absoluteId)
-	addon.openDraft(addon.utils.getCreationId(absoluteId), false, {objectId = absoluteId});
+	addon.main.openDraft(addon.utils.getCreationId(absoluteId), false, {objectId = absoluteId});
 end
 
 -- this call was previously exposed to the API
-TRP3_API.extended.tools.toList = addon.openDatabase;
+TRP3_API.extended.tools.toList = addon.main.openDatabase;
 
 -- interface for object editors
 TRP3_Tools_EditorObjectMixin = {
@@ -438,7 +437,7 @@ localize = function(frame)
 		localize(child);
 	end
 end
-addon.localize = localize;
+addon.main.localize = localize;
 
 local function onStart()
 
@@ -496,10 +495,10 @@ local function onStart()
 
 	TRP3_API.RegisterCallback(TRP3_Addon, TRP3_Addon.Events.WORKFLOW_ON_FINISH, function()
 		if TRP3_Tools_Flags.has_seen_disclaimer then
-			--addon.openDisclaimer(); -- TODO remove
-			addon.openDatabase(); -- TODO uncomment
+			--addon.main.openDisclaimer(); -- TODO remove
+			addon.main.openDatabase(); -- TODO uncomment
 		else
-			addon.openDisclaimer();
+			addon.main.openDisclaimer();
 		end
 		
 	end);

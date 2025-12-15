@@ -14,7 +14,7 @@ function TRP3_Tools_StaticAnalysisMixin:Initialize()
 			self.content.list.model:InsertTable(issueList);
 		end,
 	};
-	addon.localize(self);
+	addon.main.localize(self);
 end
 
 function TRP3_Tools_StaticAnalysisMixin:Close()

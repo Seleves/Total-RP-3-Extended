@@ -24,7 +24,7 @@ TRP3_Tools_ScriptParameterEditBoxMixin = CreateFromMixins(TRP3_Tools_ScriptParam
 function TRP3_Tools_ScriptParameterEditBoxMixin:Setup(widgetContext, parameter)
 	self.editBox.titleText = parameter.title;
 	self.editBox.helpText = parameter.description;
-	addon.localize(self.editBox);
+	addon.main.localize(self.editBox);
 	if parameter.onChange then
 		self.editBox:SetScript("OnTextChanged", function()
 			parameter.onChange(self, widgetContext);
@@ -54,7 +54,7 @@ TRP3_Tools_ScriptParameterObjectiveMixin = CreateFromMixins(TRP3_Tools_ScriptPar
 function TRP3_Tools_ScriptParameterObjectiveMixin:Setup(widgetContext, parameter)
 	self.objectiveId.titleText = parameter.title;
 	self.objectiveId.helpText = parameter.description;
-	addon.localize(self.objectiveId);
+	addon.main.localize(self.objectiveId);
 	if parameter.onChange then
 		self.objectiveId:SetScript("OnTextChanged", function()
 			parameter.onChange(self, widgetContext);
@@ -120,7 +120,7 @@ TRP3_Tools_ScriptParameterDropdownMixin = CreateFromMixins(TRP3_Tools_ScriptPara
 function TRP3_Tools_ScriptParameterDropdownMixin:Setup(widgetContext, parameter)
 	self.dropdown.titleText = parameter.title;
 	self.dropdown.helpText = parameter.description;
-	addon.localize(self.dropdown);
+	addon.main.localize(self.dropdown);
 	local onChangeCallback;
 	if parameter.onChange then
 		onChangeCallback = function()
@@ -143,7 +143,7 @@ TRP3_Tools_ScriptParameterVariableMixin = CreateFromMixins(TRP3_Tools_ScriptPara
 function TRP3_Tools_ScriptParameterVariableMixin:Setup(widgetContext, nameParameter, scopeParameter)
 	self.name.titleText = nameParameter.title;
 	self.name.helpText = nameParameter.description;
-	addon.localize(self.name);
+	addon.main.localize(self.name);
 	self.name:SetupSuggestions("Variable", function(menu, onAccept) 
 		local variables = addon.editor.gatherVariables(select(1, self:GetScriptContext()), nameParameter.scope or self.scope:GetSelectedValue());
 		if variables and TableHasAnyEntries(variables) then
@@ -164,7 +164,7 @@ function TRP3_Tools_ScriptParameterVariableMixin:Setup(widgetContext, nameParame
 	if scopeParameter then
 		self.scope.titleText = scopeParameter.title;
 		self.scope.helpText = scopeParameter.description;
-		addon.localize(self.scope);
+		addon.main.localize(self.scope);
 		self.scope:Show();
 		self.name:SetPoint("LEFT", self, "CENTER", 5, 0);
 		local onChangeCallback;
@@ -195,12 +195,12 @@ TRP3_Tools_ScriptParameterCoordinateMixin = CreateFromMixins(TRP3_Tools_ScriptPa
 function TRP3_Tools_ScriptParameterCoordinateMixin:Setup(widgetContext, parameterX, parameterY)
 	self.x.titleText = parameterX.title;
 	self.x.helpText = parameterX.description;
-	addon.localize(self.x);
+	addon.main.localize(self.x);
 	self.y.titleText = parameterY.title;
 	self.y.helpText = parameterY.description;
-	addon.localize(self.y);
+	addon.main.localize(self.y);
 	self.here.titleText = loc.OP_OP_DISTANCE_CURRENT;
-	addon.localize(self.here);
+	addon.main.localize(self.here);
 end
 
 function TRP3_Tools_ScriptParameterCoordinateMixin:SetValue(x, y)
@@ -230,7 +230,7 @@ TRP3_Tools_ScriptParameterObjectMixin = CreateFromMixins(TRP3_Tools_ScriptParame
 function TRP3_Tools_ScriptParameterObjectMixin:Setup(widgetContext, parameter)
 	self.id.titleText = parameter.title;
 	self.id.helpText = parameter.description;
-	addon.localize(self.id);
+	addon.main.localize(self.id);
 	local s = self;
 	self.browse:SetScript("OnClick", function()
 		addon.modal:ShowModal(TRP3_API.popup.OBJECTS, {function(id)
@@ -266,11 +266,11 @@ TRP3_Tools_ScriptParameterSoundMixin = CreateFromMixins(TRP3_Tools_ScriptParamet
 function TRP3_Tools_ScriptParameterSoundMixin:Setup(widgetContext, soundParameter, soundFileParameter)
 	self.id.titleText = soundParameter.title;
 	self.id.helpText = soundParameter.description;
-	addon.localize(self.id);
+	addon.main.localize(self.id);
 	if soundFileParameter then
 		self.soundFileId.titleText = soundFileParameter.title;
 		self.soundFileId.helpText = soundFileParameter.description;
-		addon.localize(self.soundFileId);
+		addon.main.localize(self.soundFileId);
 		self.soundFileId:Show();
 	else
 		self.soundFileId:Hide();
@@ -302,7 +302,7 @@ TRP3_Tools_ScriptParameterBooleanMixin = CreateFromMixins(TRP3_Tools_ScriptParam
 function TRP3_Tools_ScriptParameterBooleanMixin:Setup(widgetContext, parameter)
 	self.value.titleText = parameter.title;
 	self.value.helpText = parameter.description;
-	addon.localize(self.value);
+	addon.main.localize(self.value);
 end
 
 function TRP3_Tools_ScriptParameterBooleanMixin:SetValue(value)
@@ -318,7 +318,7 @@ TRP3_Tools_ScriptParameterMultilineMixin = CreateFromMixins(TRP3_Tools_ScriptPar
 function TRP3_Tools_ScriptParameterMultilineMixin:Setup(widgetContext, parameter)
 	self.text.titleText = parameter.title;
 	self.text.helpText = parameter.description;
-	addon.localize(self.text);
+	addon.main.localize(self.text);
 	if parameter.taggable then
 		self.text:SetupSuggestions("Tag", function(menu, onAccept) 
 			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());
@@ -345,7 +345,7 @@ TRP3_Tools_ScriptParameterMusicMixin = CreateFromMixins(TRP3_Tools_ScriptParamet
 function TRP3_Tools_ScriptParameterMusicMixin:Setup(widgetContext, parameter)
 	self.id.titleText = parameter.title;
 	self.id.helpText = parameter.description;
-	addon.localize(self.id);
+	addon.main.localize(self.id);
 	self.browse:SetScript("OnClick", function()
 		addon.modal:ShowModal(TRP3_API.popup.MUSICS, {function(id) self.id:SetText(id); end});
 	end);
@@ -368,7 +368,7 @@ TRP3_Tools_ScriptParameterEmoteMixin = CreateFromMixins(TRP3_Tools_ScriptParamet
 function TRP3_Tools_ScriptParameterEmoteMixin:Setup(widgetContext, parameter)
 	self.id.titleText = parameter.title;
 	self.id.helpText = parameter.description;
-	addon.localize(self.id);
+	addon.main.localize(self.id);
 	self.browse:SetScript("OnClick", function()
 		addon.modal:ShowModal(TRP3_API.popup.EMOTES, {function(id) self.id:SetText(id); end});
 	end);
@@ -476,8 +476,8 @@ function TRP3_Tools_ScriptParameterLootMixin:Setup(widgetContext, parameter)
 			TRP3_API.utils.message.displayMessage("Unknown item", 4);
 		end
 	end);
-	addon.localize(self.bag.editor.id);
-	addon.localize(self.bag.editor.count);
+	addon.main.localize(self.bag.editor.id);
+	addon.main.localize(self.bag.editor.count);
 end
 
 function TRP3_Tools_ScriptParameterLootMixin:SetValue(slotData)
@@ -522,7 +522,7 @@ TRP3_Tools_ScriptParameterOperandMixin = CreateFromMixins(TRP3_Tools_ScriptParam
 function TRP3_Tools_ScriptParameterOperandMixin:Setup(widgetContext, operandParameter, argumentsParameter)
 	self.operandId.titleText = operandParameter.title;
 	self.operandId.helpText = operandParameter.description;
-	addon.localize(self.operandId);
+	addon.main.localize(self.operandId);
 	self.parameterWidgets = self.parameterWidgets or {};
 	self.operandArguments = nil;
 	local onChangeCallback = function(operandId)
@@ -630,7 +630,7 @@ end
 function TRP3_Tools_ScriptParameterScriptMixin:Setup(widgetContext, parameter)
 	self.script.titleText = parameter.title;
 	self.script.helpText = parameter.description;
-	addon.localize(self.script);
+	addon.main.localize(self.script);
 	self.effect:SetText(loc.EFFECT_SCRIPT_I_EFFECT);
 	self.effect:SetScript("OnClick", function() 
 		populateEffectContextMenu(self.effect, function(effectId) 
@@ -695,7 +695,7 @@ TRP3_Tools_ScriptParameterMacroMixin = CreateFromMixins(TRP3_Tools_ScriptParamet
 function TRP3_Tools_ScriptParameterMacroMixin:Setup(widgetContext, parameter)
 	self.macro.titleText = parameter.title;
 	self.macro.helpText = parameter.description;
-	addon.localize(self.macro);
+	addon.main.localize(self.macro);
 	if parameter.taggable then
 		self.macro:SetupSuggestions("Tag", function(menu, onAccept) 
 			addon.editor.populateObjectTagMenu(menu, onAccept, self.GetScriptContext());

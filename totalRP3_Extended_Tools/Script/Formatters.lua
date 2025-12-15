@@ -116,6 +116,7 @@ function addon.script.formatParameter(parameter, value, ...)
 		return addon.script.formatters.constant(paramText);
 	end
 end
+TRP3_API.extended.tools.formatParameter = addon.script.formatParameter;
 
 function addon.script.formatters.formatType(value)
 	if type(value) == "nil" then

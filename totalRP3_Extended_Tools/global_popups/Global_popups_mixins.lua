@@ -102,7 +102,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Initialize()
 	self.filter.restrictToCreation:SetScript("OnClick", function() 
 		self:Filter();
 	end);
-	addon.localize(self.filter.restrictToCreation);
+	addon.main.localize(self.filter.restrictToCreation);
 end
 
 function TRP3_Tools_ObjectsBrowserMixin:Select(token)
@@ -496,7 +496,7 @@ function TRP3_Tools_VariableInspectorMixin:Initialize()
 		self.content:Show();
 	end);
 
-	addon.localize(self);
+	addon.main.localize(self);
 end
 
 function TRP3_Tools_VariableInspectorMixin:ShowObject(absoluteId, objectType)
@@ -755,7 +755,7 @@ end
 TRP3_Tools_NoteEditorMixin = {};
 
 function TRP3_Tools_NoteEditorMixin:Initialize()
-	addon.localize(self);
+	addon.main.localize(self);
 	TRP3_API.popup.NOTE_EDITOR = "note_editor";
 	TRP3_API.popup.POPUPS[TRP3_API.popup.NOTE_EDITOR] = {
 		frame = self,

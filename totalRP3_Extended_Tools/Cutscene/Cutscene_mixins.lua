@@ -599,7 +599,7 @@ function TRP3_Tools_EditorCutsceneChoiceMixin:Initialize()
 		self:Hide();
 		self.callback(choices);
 	end);
-	addon.localize(self);
+	addon.main.localize(self);
 	TRP3_API.popup.CUTSCENE_CHOICE = "cutscene_choice";
 	TRP3_API.popup.POPUPS[TRP3_API.popup.CUTSCENE_CHOICE] = {
 		frame = self,

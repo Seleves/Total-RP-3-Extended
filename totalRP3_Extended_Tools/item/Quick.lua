@@ -59,7 +59,7 @@ local function onSave(toMode)
 end
 
 local function onConvert()
-	addon.openDraft(onSave(TRP3_DB.modes.NORMAL));
+	addon.main.openDraft(onSave(TRP3_DB.modes.NORMAL));
 end
 
 local function onIconSelected(icon)

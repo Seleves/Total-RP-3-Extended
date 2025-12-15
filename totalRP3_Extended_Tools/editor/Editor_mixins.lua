@@ -130,7 +130,7 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 				local clonedCursor = {};
 				TRP3_API.utils.table.copy(clonedCursor, addon.editor.getCurrentDraftCursor());
 				clonedCursor.objectId = self.node.data.absoluteId;
-				addon.openDraft(addon.editor.getCurrentDraftCreationId(), true, clonedCursor);
+				addon.main.openDraft(addon.editor.getCurrentDraftCreationId(), true, clonedCursor);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(openNewOption, "Open element in new tab...");
 

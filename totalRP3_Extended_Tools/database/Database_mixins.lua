@@ -41,19 +41,19 @@ end
 
 function TRP3_Tools_CreationsListElementMixin:OnClick(button)
 	if button == "LeftButton" then
-		addon.openDraft(self.data.creationId);
+		addon.main.openDraft(self.data.creationId);
 	elseif button == "RightButton" then
 		TRP3_MenuUtil.CreateContextMenu(self, function(_, contextMenu)
 			contextMenu:CreateTitle(("|TInterface\\ICONS\\%s:16:16|t %s"):format(self.data.icon, self.data.link));
 
 			local openOption = contextMenu:CreateButton("Open", function()
-				addon.openDraft(self.data.creationId);
+				addon.main.openDraft(self.data.creationId);
 			end);
 			TRP3_MenuUtil.SetElementTooltip(openOption, "Open element...");
 
-			if addon.findDraft(self.data.creationId) then
+			if addon.main.findDraft(self.data.creationId) then
 				local openNewOption = contextMenu:CreateButton("Open in new tab", function()
-					addon.openDraft(self.data.creationId, true);
+					addon.main.openDraft(self.data.creationId, true);
 				end);
 				TRP3_MenuUtil.SetElementTooltip(openNewOption, "Open element in new tab...");
 			end
@@ -143,30 +143,30 @@ function TRP3_Tools_CreationsActionsMixin:Initialize()
 	
 	self.blankItem:SetScript("OnClick", function()
 		local itemID, _ = TRP3_API.extended.tools.createItem(TRP3_API.extended.tools.getBlankItemData(TRP3_DB.modes.EXPERT));
-		addon.openDraft(itemID);
+		addon.main.openDraft(itemID);
 	end);
 
 	self.containerItem:SetScript("OnClick", function()
 		local itemID, _ = TRP3_API.extended.tools.createItem(TRP3_API.extended.tools.getContainerItemData());
-		addon.openDraft(itemID);
+		addon.main.openDraft(itemID);
 	end);
 
 	self.documentItem:SetScript("OnClick", function()
 		local generatedID = TRP3_API.utils.str.id();
 		local itemID, _ = TRP3_API.extended.tools.createItem(TRP3_API.extended.tools.getDocumentItemData(generatedID), generatedID);
-		addon.openDraft(itemID);
+		addon.main.openDraft(itemID);
 	end);
 
 	self.auraItem:SetScript("OnClick", function()
 		local generatedID = TRP3_API.utils.str.id();
 		local itemID, _ = TRP3_API.extended.tools.createItem(TRP3_API.extended.tools.getAuraItemData(generatedID), generatedID);
-		addon.openDraft(itemID);
+		addon.main.openDraft(itemID);
 	end);
 
 	self.blankCampaign:SetScript("OnClick", function()
 		local generatedID = TRP3_API.utils.str.id();
 		local campaignID, _ = TRP3_API.extended.tools.createCampaign(TRP3_API.extended.tools.getCampaignData(generatedID), generatedID);
-		addon.openDraft(campaignID);
+		addon.main.openDraft(campaignID);
 	end);
 
 	self.import:SetScript("OnClick", function()
@@ -203,7 +203,7 @@ function TRP3_Tools_CreationsActionsMixin:Initialize()
 	end);
 
 	self.credits:SetScript("OnClick", function()
-		addon.openCredits();
+		addon.main.openCredits();
 	end);
 	
 end

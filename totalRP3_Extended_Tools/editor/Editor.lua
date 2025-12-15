@@ -18,7 +18,7 @@ local currentObject;
 local DUMMY_TREE_MODEL = CreateTreeDataProvider();
 
 local function updateTabBar()
-	addon.forEachTab(function(editor) 
+	addon.main.forEachTab(function(editor) 
 		if editor.creationId == currentEditor.creationId then
 			local body;
 			local absoluteId = "";
@@ -45,7 +45,7 @@ local function updateTabBar()
 			editor.tooltipBody = body;
 		end
 	end);
-	addon.refreshTabs();
+	addon.main.refreshTabs();
 end
 
 local function isRelativeIdAvailable(class, relativeId)
@@ -312,7 +312,7 @@ function addon.editor.deleteInnerObjectsById(...)
 		ancestors[absoluteId] = ancestor.data.absoluteId;
 	end
 
-	addon.forEachTab(function(editor) 
+	addon.main.forEachTab(function(editor) 
 		if editor.creationId == currentEditor.creationId then
 			for absoluteId, ancestorId in pairs(ancestors) do
 				if addon.utils.isInnerIdOrEqual(absoluteId, editor.cursor.objectId) then
@@ -354,7 +354,7 @@ function addon.editor.changeRelativeId(absoluteId, newRelativeId)
 
 		currentEditor.cursor.objects[newAbsoluteId] = currentEditor.cursor.objects[absoluteId] or {};
 
-		addon.forEachTab(function(editor) 
+		addon.main.forEachTab(function(editor) 
 			if editor.creationId == currentEditor.creationId and addon.utils.isInnerIdOrEqual(absoluteId, editor.cursor.objectId) then
 				editor.cursor.objectId = editor.cursor.objectId:gsub(absoluteId, newAbsoluteId);
 			end
@@ -440,7 +440,7 @@ function addon.editor.displayObject(objectId)
 	if currentObject.class.TY and PROPERTY_EDITORS[currentObject.class.TY] then
 		objectEditor.split:SetRatio(objectCursor.objectRatio or 1);
 		PROPERTY_EDITORS[currentObject.class.TY]:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
-		addon.setTypeBackground(currentObject.class.TY);
+		addon.main.setTypeBackground(currentObject.class.TY);
 	end
 	
 	addon.editor.script:ClassToInterface(currentObject.class, currentDraft.class, objectCursor);
@@ -663,7 +663,7 @@ end
 
 function addon.editor.show(editor)
 	currentEditor = editor;
-	currentDraft  = addon.getDraft(currentEditor.creationId);
+	currentDraft  = addon.main.getDraft(currentEditor.creationId);
 	
 	displayRootInfo();
 	
@@ -724,7 +724,7 @@ local function onSave()
 	-- TODO should we run static analysis by default when saving?
 	-- The system previously in place was the "validator"
 	
-	addon.saveDraft(currentEditor.creationId);
+	addon.main.saveDraft(currentEditor.creationId);
 	displayRootInfo();
 end
 

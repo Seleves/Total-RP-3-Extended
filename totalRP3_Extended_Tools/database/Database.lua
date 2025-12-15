@@ -277,7 +277,7 @@ function addon.database.refreshCreationsList()
 end
 
 function addon.database.removeCreation(creationId)
-	addon.closeAllDrafts(creationId);
+	addon.main.closeAllDrafts(creationId);
 	TRP3_API.extended.removeObject(creationId);
 	addon.database.refreshCreationsList();
 end
@@ -329,7 +329,7 @@ function addon.database.copyCreation(creationId)
 	addon.utils.replaceId(copiedData, creationId, generatedId);
 	local copyId, _ = TRP3_API.extended.tools.createItem(copiedData, generatedId);
 	addon.database.refreshCreationsList();
-	addon.openDraft(copyId);
+	addon.main.openDraft(copyId);
 end
 
 function addon.database.importCreation(version, ID, data, displayVersion)

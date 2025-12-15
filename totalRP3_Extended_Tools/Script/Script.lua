@@ -269,12 +269,12 @@ function addon.script.addStaticTagsToMenu(menu, onClick)
 	local playerTagMenu = menu:CreateButton("Player tags");
 	for _, tag in ipairs(STATIC_PLAYER_TAGS) do
 		local tagButton = playerTagMenu:CreateButton(tag[1], onClick, tag[2]);
-		TRP3_MenuUtil.SetElementTooltip(tagButton, tag[3]);
+		TRP3_MenuUtil.SetElementTooltip(tagButton, tag[3] .. "|n|n" .. TRP3_API.Colors.Orange(TRP3_API.script.parseArgs(tag[2])));
 	end
 	local targetTagMenu = menu:CreateButton("Target tags");
 	for _, tag in ipairs(STATIC_TARGET_TAGS) do
 		local tagButton = targetTagMenu:CreateButton(tag[1], onClick, tag[2]);
-		TRP3_MenuUtil.SetElementTooltip(tagButton, tag[3]);
+		TRP3_MenuUtil.SetElementTooltip(tagButton, tag[3] .. "|n|n" .. TRP3_API.Colors.Orange(TRP3_API.script.parseArgs(tag[2])));
 	end
 end
 
