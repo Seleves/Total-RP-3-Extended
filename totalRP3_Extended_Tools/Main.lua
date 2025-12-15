@@ -40,15 +40,16 @@ local BACKGROUNDS = {
 	"Interface\\ENCOUNTERJOURNAL\\UI-EJ-CATACLYSM",
 	"Interface\\ENCOUNTERJOURNAL\\UI-EJ-MistsofPandaria",
 	"Interface\\ENCOUNTERJOURNAL\\UI-EJ-WarlordsofDraenor",
-}
+};
 
-function TRP3_API.extended.tools.setBackground(backgroundIndex)
+
+function addon.main.setBackground(backgroundIndex)
 	assert(BACKGROUNDS[backgroundIndex], "Unknown background index:" .. tostring(backgroundIndex));
 	local texture = BACKGROUNDS[backgroundIndex];
 	toolFrame.BkgMain:SetTexture(texture);
 	toolFrame.BkgHeader:SetTexture(texture);
 end
-local setBackground = TRP3_API.extended.tools.setBackground;
+TRP3_API.extended.tools.setBackground = addon.main.setBackground; -- TODO remove it from the API
 
 local PAGE_BY_TYPE = {
 	[TRP3_DB.types.CAMPAIGN] = {
@@ -75,18 +76,18 @@ local PAGE_BY_TYPE = {
 };
 
 function addon.main.setTypeBackground(type)
-	setBackground(PAGE_BY_TYPE[type] and PAGE_BY_TYPE[type].background or 1);
+	addon.main.setBackground(PAGE_BY_TYPE[type] and PAGE_BY_TYPE[type].background or 1);
 end
 
-local function getTypeLocale(type)
+function addon.main.getTypeLocale(type)
 	if PAGE_BY_TYPE[type] and PAGE_BY_TYPE[type].loc then
 		return PAGE_BY_TYPE[type].loc;
 	end
 	return UNKNOWN;
 end
-TRP3_API.extended.tools.getTypeLocale = getTypeLocale;
+TRP3_API.extended.tools.getTypeLocale = addon.main.getTypeLocale;
 
-local function getClassDataSafeByType(class)
+function addon.main.getClassDataSafeByType(class)
 	if class.TY == TRP3_DB.types.CAMPAIGN or class.TY == TRP3_DB.types.QUEST or class.TY == TRP3_DB.types.ITEM or class.TY == TRP3_DB.types.AURA then
 		return TRP3_API.extended.getClassDataSafe(class);
 	end
@@ -104,30 +105,30 @@ local function getClassDataSafeByType(class)
 		return "ability_warrior_rallyingcry", (class.DS[1].TX or ""):gsub("\n", ""):sub(1, 70) .. "...";
 	end
 end
-TRP3_API.extended.tools.getClassDataSafeByType = getClassDataSafeByType;
+TRP3_API.extended.tools.getClassDataSafeByType = addon.main.getClassDataSafeByType;
 
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 -- Root object action
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-local function getObjectLocale(class)
+function addon.main.getObjectLocale(class)
 	return (class.MD or TRP3_API.globals.empty).LO or "en";
 end
-TRP3_API.extended.tools.getObjectLocale = getObjectLocale;
+TRP3_API.extended.tools.getObjectLocale = addon.main.getObjectLocale;
 
 local LOCALE_FLAGS = {
 	en = "Interface\\AddOns\\totalRP3_Extended\\libs\\en.tga",
 	es = "Interface\\AddOns\\totalRP3_Extended\\libs\\es.tga",
 	de = "Interface\\AddOns\\totalRP3_Extended\\libs\\de.tga",
 	fr = "Interface\\AddOns\\totalRP3_Extended\\libs\\fr.tga",
-}
+};
 
-local function getObjectLocaleImage(locale)
+function addon.main.getObjectLocaleImage(locale)
 	return LOCALE_FLAGS[locale] or LOCALE_FLAGS.en;
 end
-TRP3_API.extended.tools.getObjectLocaleImage = getObjectLocaleImage;
+TRP3_API.extended.tools.getObjectLocaleImage = addon.main.getObjectLocaleImage;
 
-local function getModeLocale(mode)
+function addon.main.getModeLocale(mode)
 	if mode == TRP3_DB.modes.QUICK then
 		return loc.MODE_QUICK;
 	end
@@ -139,7 +140,7 @@ local function getModeLocale(mode)
 	end
 	return tostring(mode);
 end
-TRP3_API.extended.tools.getModeLocale = getModeLocale;
+TRP3_API.extended.tools.getModeLocale = addon.main.getModeLocale;
 
 TRP3_ToolFrameTabsMixin = {};
 function TRP3_ToolFrameTabsMixin:CloseRequest(tabButton, data)
@@ -191,21 +192,21 @@ function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
 	toolFrame.disclaimer:Hide();
 
 	if data.type == TAB_TYPE.DATABASE then
-		setBackground(1);
+		addon.main.setBackground(1);
 		toolFrame.database:Show();
 		addon.database.refreshCreationsList();
 	elseif data.type == TAB_TYPE.CREATION then
 		addon.editor.show(data);
 		toolFrame.editor:Show();
 	elseif data.type == TAB_TYPE.CREDITS then
-		setBackground(1);
-		toolFrame.backers.scroll.child.HTML:SetText(TRP3_API.utils.str.toHTML(TRP3_KS_BACKERS:format(TRP3_API.extended.tools.formatVersion())));
+		addon.main.setBackground(1);
+		toolFrame.backers.scroll.child.HTML:SetText(TRP3_API.utils.str.toHTML(TRP3_KS_BACKERS:format(addon.database.formatVersion())));
 		toolFrame.backers.scroll.child.HTML:SetScript("OnHyperlinkClick", function(self, url, text, button) -- luacheck: ignore 212
 			TRP3_API.Ellyb.Popups:OpenURL(url);
 		end)
 		toolFrame.backers:Show();
 	elseif data.type == TAB_TYPE.DISCLAIMER then
-		setBackground(1);
+		addon.main.setBackground(1);
 		--toolFrame.disclaimer.html:SetText(TRP3_API.utils.str.toHTML(loc.DISCLAIMER)); -- TODO uncomment
 		toolFrame.disclaimer.html:SetText(TRP3_API.utils.str.toHTML([[{h1:c}Prototype - please read{/h1}
 
@@ -407,10 +408,20 @@ end
 -- INIT
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-function TRP3_API.extended.tools.showFrame()
+function addon.main.showFrame()
 	toolFrame:Show();
 	toolFrame:Raise();
 end
+TRP3_API.extended.tools.showFrame = addon.main.showFrame;
+
+function addon.main.toggleFrame()
+	if toolFrame:IsVisible() then
+		toolFrame:Hide();
+	else
+		addon.main.showFrame();
+	end
+end
+TRP3_API.extended.tools.toggleFrame = addon.main.toggleFrame;
 
 local function localizeTransformer(text)
 	if text and text:match("^%$%{.*%}$") then
@@ -469,19 +480,13 @@ local function onStart()
 	TRP3_API.RegisterCallback(TRP3_Addon, TRP3_Addon.Events.WORKFLOW_ON_LOADED, function()
 		if TRP3_API.toolbar then
 			local toolbarButton = {
-				id = "bb_extended_tools",
-				icon = "Inv_engineering_90_toolbox_blue",
+				id         = "bb_extended_tools",
+				icon       = "Inv_engineering_90_toolbox_blue",
 				configText = loc.TB_TOOLS,
-				tooltip = loc.TB_TOOLS,
+				tooltip    = loc.TB_TOOLS,
 				tooltipSub = TRP3_API.FormatShortcutWithInstruction("CLICK", loc.TB_TOOLS_TT),
-				onClick = function()
-					if toolFrame:IsVisible() then
-						toolFrame:Hide();
-					else
-						TRP3_API.extended.tools.showFrame();
-					end
-				end,
-				visible = 1
+				onClick    = addon.main.toggleFrame,
+				visible    = 1
 			};
 			TRP3_API.toolbar.toolbarAddButton(toolbarButton);
 		end

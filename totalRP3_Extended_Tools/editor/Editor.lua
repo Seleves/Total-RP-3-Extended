@@ -656,7 +656,7 @@ local function displayRootInfo()
 	statusBar.creationTime:SetText("|cffff9900" .. loc.ROOT_CREATED:format(color .. (currentDraft.class.MD.CB or "?") .. "|r|cffff9900", "|r" .. color .. (currentDraft.class.MD.CD or "?") .. "|r"));
 	statusBar.changeTime:SetText("|cffff9900" .. loc.ROOT_SAVED:format(color .. (currentDraft.class.MD.SB or "?") .. "|r|cffff9900", "|r" .. color .. (currentDraft.class.MD.SD or "?") .. "|r"));
 
-	statusBar.language:SetSelectedValue(TRP3_API.extended.tools.getObjectLocale(currentDraft.class));
+	statusBar.language:SetSelectedValue(addon.main.getObjectLocale(currentDraft.class));
 	
 	statusBar.save:SetEnabled(TRP3_Tools_DB[currentEditor.creationId] ~= nil);
 end
@@ -756,10 +756,10 @@ function addon.editor.initialize(frame)
 	
 	local template = "|T%s:11:16|t";
 	local types = {
-		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("en")), "en"},
-		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("fr")), "fr"},
-		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("es")), "es"},
-		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("de")), "de"},
+		{template:format(addon.main.getObjectLocaleImage("en")), "en"},
+		{template:format(addon.main.getObjectLocaleImage("fr")), "fr"},
+		{template:format(addon.main.getObjectLocaleImage("es")), "es"},
+		{template:format(addon.main.getObjectLocaleImage("de")), "de"},
 	}
 	TRP3_API.ui.listbox.setupListBox(statusBar.language, types, function(value)
 		if currentDraft.class.MD then

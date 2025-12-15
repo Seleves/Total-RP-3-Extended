@@ -49,12 +49,12 @@ function TRP3_Tools_EditorObjectRibbonMixin:Initialize()
 	self.innerObjectsPanel.AU.Icon:SetTexture("Interface\\ICONS\\ability_priest_spiritoftheredeemer");
 	self.innerObjectsPanel.DO.Icon:SetTexture("Interface\\ICONS\\inv_inscription_scroll");
 	self.innerObjectsPanel.DI.Icon:SetTexture("Interface\\ICONS\\ui_chat");
-	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.QU, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. TRP3_API.extended.tools.getTypeLocale(TRP3_DB.types.QUEST), loc.IN_INNER_HELP);
-	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.ST, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. TRP3_API.extended.tools.getTypeLocale(TRP3_DB.types.QUEST_STEP), loc.IN_INNER_HELP);
-	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.IT, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. TRP3_API.extended.tools.getTypeLocale(TRP3_DB.types.ITEM), loc.IN_INNER_HELP);
-	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.AU, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. TRP3_API.extended.tools.getTypeLocale(TRP3_DB.types.AURA), loc.IN_INNER_HELP);
-	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.DO, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. TRP3_API.extended.tools.getTypeLocale(TRP3_DB.types.DOCUMENT), loc.IN_INNER_HELP);
-	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.DI, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. TRP3_API.extended.tools.getTypeLocale(TRP3_DB.types.DIALOG), loc.IN_INNER_HELP);
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.QU, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. addon.main.getTypeLocale(TRP3_DB.types.QUEST), loc.IN_INNER_HELP);
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.ST, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. addon.main.getTypeLocale(TRP3_DB.types.QUEST_STEP), loc.IN_INNER_HELP);
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.IT, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. addon.main.getTypeLocale(TRP3_DB.types.ITEM), loc.IN_INNER_HELP);
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.AU, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. addon.main.getTypeLocale(TRP3_DB.types.AURA), loc.IN_INNER_HELP);
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.DO, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. addon.main.getTypeLocale(TRP3_DB.types.DOCUMENT), loc.IN_INNER_HELP);
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self.innerObjectsPanel.DI, "BOTTOMRIGHT", 0, 0, loc.IN_INNER_ADD .. ": " .. addon.main.getTypeLocale(TRP3_DB.types.DIALOG), loc.IN_INNER_HELP);
 	self.innerObjectsPanel.QU:SetScript("OnClick", function() 
 		addon.editor.requestInnerObject(addon.editor.getCurrentObjectAbsoluteId(), TRP3_DB.types.QUEST);
 	end);
@@ -223,7 +223,7 @@ function TRP3_Tools_EditorObjectRibbonMixin:Initialize()
 end
 
 function TRP3_Tools_EditorObjectRibbonMixin:ClassToInterface(class)
-	self.title:SetText(TRP3_API.extended.tools.getTypeLocale(class.TY));
+	self.title:SetText(addon.main.getTypeLocale(class.TY));
 	self.id:SetText(addon.editor.getCurrentObjectRelativeId());
 	self.innerObjectsPanel.QU:SetShown(class.TY == TRP3_DB.types.CAMPAIGN);
 	self.innerObjectsPanel.ST:SetShown(class.TY == TRP3_DB.types.QUEST);

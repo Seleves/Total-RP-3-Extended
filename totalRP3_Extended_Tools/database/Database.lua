@@ -38,7 +38,7 @@ local function getMetadataTooltipText(rootID, rootClass, isRoot, innerID, type)
 		text = text .. fieldFormat:format(loc.SPECIFIC_INNER_ID, "|cff00ffff" .. innerID .. "|r");
 	end
 
-	text = text .. "\n" .. fieldFormat:format(loc.SPECIFIC_MODE, TRP3_API.extended.tools.getModeLocale(metadata.MO) or "?");
+	text = text .. "\n" .. fieldFormat:format(loc.SPECIFIC_MODE, addon.main.getModeLocale(metadata.MO) or "?");
 	text = text .. "\n\n" .. TRP3_API.FormatShortcutWithInstruction("LCLICK", loc.CM_OPEN);
 	text = text .. "\n" .. TRP3_API.FormatShortcutWithInstruction("RCLICK", loc.DB_ACTIONS);
 	if type == TRP3_DB.types.ITEM or type == TRP3_DB.types.CAMPAIGN then
@@ -47,7 +47,7 @@ local function getMetadataTooltipText(rootID, rootClass, isRoot, innerID, type)
 	return text;
 end
 
-function TRP3_API.extended.tools.formatVersion(version)
+function addon.database.formatVersion(version)
 	if not version then
 		return TRP3_API.utils.str.sanitizeVersion(TRP3_API.globals.extended_display_version);
 	end
@@ -66,21 +66,22 @@ function TRP3_API.extended.tools.formatVersion(version)
 	local inter = tostring(tonumber(v:sub(2, 3)));
 	return v:sub(1, 1) .. "." .. inter .. "." .. v:sub(4, 4);
 end
+TRP3_API.extended.tools.formatVersion = addon.database.formatVersion;
 
-function TRP3_API.extended.tools.getClassVersion(rootID)
-	if not rootID.MD.tV and not rootID.MD.dV then
+function addon.database.getClassVersion(creationClass)
+	if not creationClass.MD.tV and not creationClass.MD.dV then
 		return "?"
 	end
 
-	if rootID.MD.dV then	-- Display version in the creation data (after 1.1.1)
-		return rootID.MD.dV
-	elseif (rootID.MD.tV <= 1012) then	-- No display version (1.1.1 and before)
-		return TRP3_API.extended.tools.formatVersion(rootID.MD.tV);
+	if creationClass.MD.dV then	-- Display version in the creation data (after 1.1.1)
+		return creationClass.MD.dV
+	elseif (creationClass.MD.tV <= 1012) then	-- No display version (1.1.1 and before)
+		return addon.database.formatVersion(creationClass.MD.tV);
 	else	-- Shouldn't happen
-		return rootID.MD.tV
+		return creationClass.MD.tV
 	end
 end
-
+TRP3_API.extended.tools.getClassVersion = addon.database.getClassVersion;
 
 --*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 -- INIT
@@ -123,10 +124,10 @@ function addon.database.initialize(frame)
 	local template = "|T%s:11:16|t";
 	local locales = {
 		{loc.ALL, ""},
-		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("en")), "en"},
-		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("fr")), "fr"},
-		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("es")), "es"},
-		{template:format(TRP3_API.extended.tools.getObjectLocaleImage("de")), "de"},
+		{template:format(addon.main.getObjectLocaleImage("en")), "en"},
+		{template:format(addon.main.getObjectLocaleImage("fr")), "fr"},
+		{template:format(addon.main.getObjectLocaleImage("es")), "es"},
+		{template:format(addon.main.getObjectLocaleImage("de")), "de"},
 	}
 	TRP3_API.ui.listbox.setupListBox(creationsFilter.locale, locales, addon.database.refreshCreationsList);
 	creationsFilter.locale:SetSelectedValue("");
@@ -181,7 +182,7 @@ function addon.database.initialize(frame)
 			local link = TRP3_API.inventory.getItemLink(data);
 			local by = data.MD.CB;
 			local objectVersion = data.MD.V or 0;
-			local type = TRP3_API.extended.tools.getTypeLocale(data.TY);
+			local type = addon.main.getTypeLocale(data.TY);
 			TRP3_API.popup.showConfirmPopup(loc.DB_IMPORT_FULL_CONFIRM:format(type, link, by, objectVersion), function()
 				C_Timer.After(0.25, function()
 					importFunction(version, ID, data, displayVersion);
@@ -241,7 +242,7 @@ function addon.database.refreshCreationsList()
 	for _, source in pairs({"my", "exchange", "inner"}) do
 		for creationId, class in pairs(TRP3_DB[source] or TRP3_API.globals.empty) do
 			if not creationId:find(TRP3_API.extended.ID_SEPARATOR) and not class.hideFromList then
-				local icon = TRP3_API.extended.tools.getClassDataSafeByType(class);
+				local icon = addon.main.getClassDataSafeByType(class);
 				local link = TRP3_API.inventory.getItemLink(class, creationId);
 				creationsTotal = creationsTotal + 1;
 				if filter(class) then
@@ -377,7 +378,7 @@ function addon.database.importCreation(version, ID, data, displayVersion)
 	end
 
 	if version ~= TRP3_API.globals.extended_version then
-		TRP3_API.popup.showConfirmPopup(loc.DB_IMPORT_CONFIRM:format(displayVersion or TRP3_API.extended.tools.formatVersion(version), TRP3_API.extended.tools.formatVersion()), function()
+		TRP3_API.popup.showConfirmPopup(loc.DB_IMPORT_CONFIRM:format(displayVersion or addon.database.formatVersion(version), addon.database.formatVersion()), function()
 			C_Timer.After(0.25, checkVersion);
 		end);
 	else

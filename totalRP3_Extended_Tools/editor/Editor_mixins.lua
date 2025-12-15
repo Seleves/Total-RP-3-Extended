@@ -31,7 +31,7 @@ function TRP3_Tools_CreationTreeNodeMixin:Refresh()
 
 	local tooltipText = 
 		"Inner id: " .. self.node.data.relativeId .. "|n" ..
-		"Type: " .. TRP3_API.extended.tools.getTypeLocale((addon.editor.getCurrentDraftClass(self.node.data.absoluteId) or TRP3_API.globals.empty).TY or "") .. "|n|n" ..
+		"Type: " .. addon.main.getTypeLocale((addon.editor.getCurrentDraftClass(self.node.data.absoluteId) or TRP3_API.globals.empty).TY or "") .. "|n|n" ..
 		TRP3_API.FormatShortcutWithInstruction("LCLICK", "edit object") .. "|n" ..
 		TRP3_API.FormatShortcutWithInstruction("RCLICK", "more options") .. "|n" ..
 		TRP3_API.FormatShortcutWithInstruction("SHIFT-CLICK", "select range") .. "|n" ..

@@ -84,7 +84,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Initialize()
 		frame = self,
 		showMethod = function(onSelectCallback, objectType, inventoryMode)
 			self.onSelectCallback = onSelectCallback;
-			self.title:SetText(loc.DB_BROWSER .. " (" .. TRP3_API.extended.tools.getTypeLocale(objectType) .. ")")
+			self.title:SetText(loc.DB_BROWSER .. " (" .. addon.main.getTypeLocale(objectType) .. ")")
 			self.objectType = objectType;
 			self.inventoryMode = inventoryMode;
 			self.filter.box:SetText("");
@@ -135,7 +135,7 @@ local function generateObjectsBrowserLineData(absoluteId, classSource, classExis
 
 	local tooltip = "";
 	local fieldFormat = "%s: " .. TRP3_API.Colors.Yellow("%s|r");
-	tooltip = tooltip .. fieldFormat:format(loc.TYPE, TRP3_API.extended.tools.getTypeLocale(class.TY));
+	tooltip = tooltip .. fieldFormat:format(loc.TYPE, addon.main.getTypeLocale(class.TY));
 	tooltip = tooltip .. "|n" .. fieldFormat:format(loc.ROOT_CREATED_BY, (rootClass.MD or TRP3_API.globals.empty).CB or "?");
 	tooltip = tooltip .. "|n" .. fieldFormat:format(loc.SEC_LEVEL, TRP3_API.security.getSecurityText(rootClass.securityLevel or SECURITY_LEVEL.LOW));
 	if class.TY == TRP3_DB.types.ITEM then
@@ -194,7 +194,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Filter()
 					or TRP3_API.extended.isObjectMine(absoluteId)
 					or not class.BA or not class.BA.PA
 				then
-					local _, name = TRP3_API.extended.tools.getClassDataSafeByType(class);
+					local _, name = addon.main.getClassDataSafeByType(class);
 					if filter(absoluteId) or filter(name) then
 						table.insert(model, generateObjectsBrowserLineData(absoluteId, TRP3_API.extended.getClass, TRP3_API.extended.classExists));
 						count = count + 1;
@@ -208,7 +208,7 @@ function TRP3_Tools_ObjectsBrowserMixin:Filter()
 	if currentCreationId then
 		addon.editor.forEachObjectInCurrentDraft(function(absoluteId, relativeId, class)
 			if class.TY == self.objectType then
-				local _, name = TRP3_API.extended.tools.getClassDataSafeByType(class);
+				local _, name = addon.main.getClassDataSafeByType(class);
 				if filter(absoluteId) or filter(name) then
 					table.insert(model, generateObjectsBrowserLineData(absoluteId, addon.editor.getCurrentDraftClass, addon.editor.currentDraftClassExists));
 					count = count + 1;

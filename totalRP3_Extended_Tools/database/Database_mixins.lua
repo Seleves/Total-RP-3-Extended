@@ -125,7 +125,7 @@ function TRP3_Tools_CreationsListElementMixin:OnClick(button)
 			if TRP3_API.extended.isObjectMine(self.data.creationId) or TRP3_API.extended.isObjectExchanged(self.data.creationId) then
 				contextMenu:CreateDivider()
 				local deleteOption = contextMenu:CreateButton(DELETE, function()
-					local _, name = TRP3_API.extended.tools.getClassDataSafeByType(TRP3_API.extended.getClass(self.data.creationId));
+					local _, name = addon.main.getClassDataSafeByType(TRP3_API.extended.getClass(self.data.creationId));
 					TRP3_API.popup.showConfirmPopup(loc.DB_REMOVE_OBJECT_POPUP:format(self.data.creationId, name or UNKNOWN), function()
 						addon.database.removeCreation(self.data.creationId);
 					end);
@@ -184,7 +184,7 @@ function TRP3_Tools_CreationsActionsMixin:Initialize()
 				local link = TRP3_API.inventory.getItemLink(data);
 				local by = data.MD.CB;
 				local objectVersion = data.MD.V or 0;
-				local type = TRP3_API.extended.tools.getTypeLocale(data.TY);
+				local type = addon.main.getTypeLocale(data.TY);
 				TRP3_API.popup.showConfirmPopup(loc.DB_IMPORT_FULL_CONFIRM:format(type, link, by, objectVersion), function()
 					C_Timer.After(0.25, function()
 						addon.database.importCreation(version, ID, data, displayVersion);
