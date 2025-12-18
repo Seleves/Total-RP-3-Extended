@@ -414,8 +414,8 @@ function TRP3_Tools_EditorScriptMixin:UpdateTriggerList()
 	sortTriggers(triggerList);
 	
 	if addon.script.supportsTriggerType(class.TY, addon.script.triggerType.ACTION)
-	or addon.script.supportsTriggerType(class.TY, addon.script.triggerType.EVENT)
-	or usedObjectTriggerCount < CountTable(addon.script.objectTriggers[class.TY] or TRP3_API.globals.empty)
+		or addon.script.supportsTriggerType(class.TY, addon.script.triggerType.EVENT)
+		or usedObjectTriggerCount < CountTable(addon.script.objectTriggers[class.TY] or TRP3_API.globals.empty)
 	then
 		table.insert(triggerList, {isAddButton = true});
 	end

@@ -72,8 +72,13 @@ function TRP3_Tools_CreationsListElementMixin:OnClick(button)
 						TRP3_API.inventory.addItem(nil, self.data.creationId, {count = inputValue or 1, madeBy = class.BA and class.BA.CR});
 					end, nil, 1);
 				end);
-				addItemOption:SetEnabled(TRP3_API.extended.isObjectMine(self.data.creationId) or (class.BA and not class.BA.PA))
-				TRP3_MenuUtil.SetElementTooltip(addItemOption, loc.DB_ADD_ITEM_TT); -- TODO if disabled, explain why
+				local addItemEnabled = TRP3_API.extended.isObjectMine(self.data.creationId) or (class.BA and not class.BA.PA);
+				addItemOption:SetEnabled(addItemEnabled);
+				if addItemEnabled then
+					TRP3_MenuUtil.SetElementTooltip(addItemOption, loc.DB_ADD_ITEM_TT);
+				else
+					TRP3_MenuUtil.SetElementTooltip(addItemOption, loc.DB_ADD_ITEM_TT .. "|n|nThe creator of this item doesn't want you to add this item manually to your bag.");
+				end
 			end
 			
 			if ChatEdit_GetActiveWindow() and (self.data.type == TRP3_DB.types.ITEM or self.data.type == TRP3_DB.types.CAMPAIGN) then

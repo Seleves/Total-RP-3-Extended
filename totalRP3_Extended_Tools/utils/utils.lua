@@ -1,9 +1,8 @@
 local _, addon = ...
 local loc = TRP3_API.loc;
 
--- load on demand
-local CACHED_GAME_EVENTS;
-local CACHED_EMOTES;
+local CACHED_GAME_EVENTS; -- load on demand
+local CACHED_EMOTES; -- load on demand
 local CREATION_ID_REGEX = "^[^%" .. TRP3_API.extended.ID_SEPARATOR .. "]*";
 local RELATIVE_ID_REGEX = "(.*)%" .. TRP3_API.extended.ID_SEPARATOR .. "+([^%" .. TRP3_API.extended.ID_SEPARATOR .. "]+)$";
 
@@ -99,7 +98,7 @@ function addon.utils.createEmptyClass(type)
 			ST = {
 				step_1_first = select(1, addon.utils.createEmptyClass(TRP3_DB.types.QUEST_STEP))
 			},
-			OB = {},
+			OB = {}, -- TODO check if necessary
 			MD = {
 				MO = TRP3_DB.modes.EXPERT,
 			}

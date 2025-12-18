@@ -171,7 +171,7 @@ function TRP3_Tools_CreationTreeNodeMixin:OnClick(button)
 				addon.editor.requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.ITEM);
 			end);
 			local createInnerOptionAura = createInnerOption:CreateButton(loc.TYPE_AURA, function() 
-				requestInneaddon.editor.requestInnerObjectrObject(self.node.data.absoluteId, TRP3_DB.types.AURA);
+				addon.editor.requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.AURA);
 			end);
 			local createInnerOptionDocument = createInnerOption:CreateButton(loc.TYPE_DOCUMENT, function() 
 				addon.editor.requestInnerObject(self.node.data.absoluteId, TRP3_DB.types.DOCUMENT);
