@@ -768,7 +768,7 @@ function TRP3_Tools_ScriptEffectListElementMixin:OnClick(button)
 				TRP3_MenuUtil.SetElementTooltip(addOption, "Add effect...");
 
 				local script = addon.editor.script.scripts[scriptId];
-				if not TableHasAnyEntries(script) and addon.clipboard.isPasteCompatible(addon.clipboard.types.EFFECT) then
+				if TableIsEmpty(script) and addon.clipboard.isPasteCompatible(addon.clipboard.types.EFFECT) then
 					local count = addon.clipboard.count();	
 					local optionText;
 					if count == 1 then

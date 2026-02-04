@@ -13,7 +13,11 @@ end
 function TRP3_Tools_ModalOverlayMixin:ShowModal(popupId, popupArgs)
 	local layer = self:AcquireLayer();
 	local popupFrame = TRP3_API.popup.POPUPS[popupId].frame;
+	popupFrame.OriginalOnHide = popupFrame:GetScript("OnHide");
 	popupFrame:SetScript("OnHide", function()
+		if popupFrame.OriginalOnHide then
+			popupFrame:OriginalOnHide();
+		end
 		self:HideLayer(layer);
 	end); -- TODO adding OnHide is suboptimal, it could overwrite any existing handler
 	TRP3_API.popup.showPopup(popupId, {parent = layer}, popupArgs);
@@ -25,7 +29,7 @@ function TRP3_Tools_ModalOverlayMixin:HideLayer(layer)
 		if doHide or l == layer then
 			l:Hide();
 			for _, child in pairs({l:GetChildren()}) do
-				child:SetScript("OnHide", nil);
+				child:SetScript("OnHide", child.OriginalOnHide);
 				child:Hide();
 			end
 			doHide = true;

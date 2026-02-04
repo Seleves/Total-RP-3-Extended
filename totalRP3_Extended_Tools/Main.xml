@@ -12,19 +12,19 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Include file="ui\Templates.xml"/>
 	<Include file="clipboard\clipboard.lua"/>
 
-	<Include file="script\Script.xml"/>
-	<Include file="script\Parameter.xml"/>
-	<Include file="script\Parameter.lua"/>
-	<Include file="script\Constraint.xml"/>
-	<Include file="script\Trigger.xml"/>
-	<Include file="script\Effect.xml"/>
+	<Include file="Script\Script.xml"/>
+	<Include file="Script\Parameter.xml"/>
+	<Include file="Script\Parameter.lua"/>
+	<Include file="Script\Constraint.xml"/>
+	<Include file="Script\Trigger.xml"/>
+	<Include file="Script\Effect.xml"/>
 	
-	<Include file="document\Document.xml"/>
-	<Include file="campaign\Campaign.xml"/>
+	<Include file="Document\Document.xml"/>
+	<Include file="Campaign\Campaign.xml"/>
 	<Include file="quest\Quest.xml"/>
 	<Include file="quest_step\Quest_step.xml"/>
-	<Include file="cutscene\Cutscene.xml"/>
-	<Include file="aura\Aura.xml"/>
+	<Include file="Cutscene\Cutscene.xml"/>
+	<Include file="Aura\Aura.xml"/>
 	<Include file="item\Item.xml"/>
 	
 	<Include file="database\Database.xml"/>
@@ -115,8 +115,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 				<KeyValues>
 					<KeyValue key="minTabWidth" value="150" type="number"/>
 					<KeyValue key="maxTabWidth" value="300" type="number"/>
+					<KeyValue key="tabTemplate" value="TRP3_Tools_TabButtonLargeTemplate" type="string"/>
 				</KeyValues>
-				<Size y="40"/>
+				<Size x="0" y="42"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="30" y="-24"/>
 					<Anchor point="TOPRIGHT" x="-30" y="-24"/>

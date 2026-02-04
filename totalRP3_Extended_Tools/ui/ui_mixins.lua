@@ -87,80 +87,155 @@ function TRP3_Tools_ListElementMixin:SetHighlightEnabled(enabled)
 	end	
 end
 
+TRP3_Tools_TabButtonMixin = {};
+
+local function scale(texture, factor)
+	local atlasInfo = C_Texture.GetAtlasInfo(texture:GetAtlas());
+	texture:SetSize(atlasInfo.width * factor, atlasInfo.height * factor);
+end
+
+function TRP3_Tools_TabButtonMixin:Initialize(tabBar)
+	self.tabBar = tabBar;
+	local availableHeight = tabBar:GetHeight();
+	self:SetHeight(availableHeight);
+	local activeHeight = C_Texture.GetAtlasInfo(self.LeftActive:GetAtlas()).height;
+	local normalHeight = C_Texture.GetAtlasInfo(self.Left:GetAtlas()).height;
+	local scalingFactor = availableHeight / activeHeight;
+	self.Left:SetPoint("BOTTOMLEFT", -6*scalingFactor, 0); -- offsetting space in the texture
+	self.LeftActive:SetPoint("BOTTOMLEFT", -6*scalingFactor, 0);
+	scale(self.Left, scalingFactor);
+	scale(self.Right, scalingFactor);
+	scale(self.LeftActive, scalingFactor);
+	scale(self.RightActive, scalingFactor);
+	
+	-- space to the left and right
+	self.offsetH = 10*scalingFactor;
+
+	-- distance to the visual middle line
+	-- the visual tab is only ~75% of its atlas height
+	self.activeOffsetV = (activeHeight * scalingFactor * 0.75 - availableHeight) / 2;
+	self.normalOffsetV = (normalHeight * scalingFactor * 0.75 - availableHeight) / 2;
+	
+	self:SetTooltip();
+	self:SetActive(false);
+	self:SetCloseable(false);
+end
+
+function TRP3_Tools_TabButtonMixin:SetLabel(label)
+	self.Text:SetText(label);
+end
+
+function TRP3_Tools_TabButtonMixin:SetTooltip(tooltipHeader, tooltipBody)
+	TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOM", 0, -5, tooltipHeader, tooltipBody);
+end
+
+function TRP3_Tools_TabButtonMixin:SetActive(active)
+	if active == self.active then
+		return;
+	end
+	self.active = active;
+	self.offsetV = self.active and self.activeOffsetV or self.normalOffsetV;
+
+	self.LeftActive:SetShown(self.active);
+	self.MiddleActive:SetShown(self.active);
+	self.RightActive:SetShown(self.active);
+	self.Left:SetShown(not self.active);
+	self.Middle:SetShown(not self.active);
+	self.Right:SetShown(not self.active);
+
+	self.LeftHighlight:SetPoint("TOPLEFT"     , self.active and self.LeftActive  or self.Left);
+	self.LeftHighlight:SetPoint("BOTTOMRIGHT" , self.active and self.LeftActive  or self.Left);
+	self.RightHighlight:SetPoint("TOPLEFT"    , self.active and self.RightActive or self.Right);
+	self.RightHighlight:SetPoint("BOTTOMRIGHT", self.active and self.RightActive or self.Right);
+	
+	self.closeButton:SetPoint("RIGHT", -self.offsetH, self.offsetV);
+	self.Text:SetPoint("LEFT", self.offsetH, self.offsetV);
+	self.Text:SetPoint("RIGHT", -self.offsetH - (self.closeButton:IsShown() and self.closeButton:GetWidth() or 0), self.offsetV);
+end
+
+function TRP3_Tools_TabButtonMixin:IsActive()
+	return self.active;
+end
+
+function TRP3_Tools_TabButtonMixin:SetCloseable(closeable)
+	self.closeButton:SetShown(closeable);
+	self.Text:SetPoint("RIGHT", -self.offsetH - (closeable and self.closeButton:GetWidth() or 0), self.offsetV);
+end
+
+function TRP3_Tools_TabButtonMixin:GetRequiredWidth()
+	return 2*self.offsetH + self.Text:GetStringWidth() + (self.closeButton:IsShown() and self.closeButton:GetWidth() or 0);
+end
+
+function TRP3_Tools_TabButtonMixin:OnClick(button)
+	if button == "LeftButton" then
+		PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
+		self.tabBar:Activate(self);
+	elseif button == "RightButton" then
+		self.tabBar:RightClick(self);
+	end
+end
+
+function TRP3_Tools_TabButtonMixin:OnEnter()
+	TRP3_RefreshTooltipForFrame(self);
+end
+
+function TRP3_Tools_TabButtonMixin:OnLeave()
+	TRP3_MainTooltip:Hide();
+end
+
+function TRP3_Tools_TabButtonMixin:OnClose()
+	self.tabBar:CloseRequest(self, self.data);
+end
+
 TRP3_Tools_TabBarMixin = {};
 
 function TRP3_Tools_TabBarMixin:Initialize()
-	self.tabPool = CreateFramePool("Button", self.scrollFrame.scrollChild, "TRP3_Tools_TabButtonTemplate");
+	self.tabPool = CreateFramePool("Button", self.scrollFrame.scrollChild, self.tabTemplate or "TRP3_Tools_TabButtonNormalTemplate");
 	self.tabs = {};
 	self.scrollFrame.scrollChild:SetHeight(self:GetHeight());
 	self.scrollFrame.scrollChild.offset = 0;
 	self:Refresh();
 end
 
--- tabData 
+-- tabProperties 
 --     .label         - tab label
 --     .closeable     - whether or not the tab should have a close button
 --     .tooltipHeader - 
 --     .tooltipBody   -
-function TRP3_Tools_TabBarMixin:AddTabAndActivate(tabData)
+function TRP3_Tools_TabBarMixin:AddTab(tabProperties, tabData)
 	local tabButton = self.tabPool:Acquire();
+	tabButton:Initialize(self);
+	tabButton:SetLabel(tabProperties.label);
+	tabButton:SetTooltip(tabProperties.tooltipHeader, tabProperties.tooltipBody);
+	tabButton:SetCloseable(tabProperties.closeable);
 	tabButton.data = tabData;
-	tabButton.tabBar = self;
-	tabButton.isActive = false;
-	tabButton.activationOrder = #self.tabs + 1;
-	tabButton:Show();
+	for _, tab in ipairs(self.tabs) do
+		tab.activationPriority = tab.activationPriority + 1;
+	end
+	tabButton.activationPriority = 1;
 	table.insert(self.tabs, tabButton);
+	tabButton:Show();
+	return tabButton;
+end
+
+function TRP3_Tools_TabBarMixin:AddTabAndActivate(tabProperties, tabData)
+	local tabButton = self:AddTab(tabProperties, tabData);
 	self:Activate(tabButton);
+	return tabButton;
 end
 
 function TRP3_Tools_TabBarMixin:Refresh(ensureActiveTabVisibility)
 	local totalWidthRequired = 0;
-	local activeTabOffsetLeft;
-	local activeTabOffsetRight;
+	local activeTabOffsetLeft = 0;
+	local activeTabOffsetRight = 0;
 	for index, tabButton in ipairs(self.tabs) do
-		tabButton.Text:SetText(tabButton.data.label);
-		local textRightOffset = 10;
-		if tabButton.data.closeable then
-			textRightOffset = textRightOffset + tabButton.closeButton:GetWidth();
-		end
-		
-		local tabWidth = math.min(math.max(self.minTabWidth, tabButton.Text:GetStringWidth() + 10 + textRightOffset), self.maxTabWidth);
-		tabButton:SetSize(tabWidth, self:GetHeight());
+		local tabWidth = math.min(math.max(self.minTabWidth, tabButton:GetRequiredWidth()), self.maxTabWidth);
+		tabButton:SetWidth(tabWidth);
 		tabButton:SetPoint("BOTTOMLEFT", totalWidthRequired, 0);
 		totalWidthRequired = totalWidthRequired + tabWidth;
-		local textOffsetY = -10;
-		if tabButton.isActive then
-			textOffsetY = -6;
-		end
-		tabButton.closeButton:SetShown(tabButton.data.closeable);
-		tabButton.Text:SetPoint("LEFT", 10, textOffsetY);
-		tabButton.Text:SetPoint("RIGHT", -textRightOffset, textOffsetY);
-		if tabButton.isActive then
-			tabButton.LeftActive:Show();
-			tabButton.MiddleActive:Show();
-			tabButton.RightActive:Show();
-			tabButton.Left:Hide();
-			tabButton.Middle:Hide();
-			tabButton.Right:Hide();
-			tabButton.LeftHighlight:SetPoint("TOPRIGHT", tabButton.LeftActive);
-			tabButton.MiddleHighlight:SetPoint("TOPLEFT", tabButton.MiddleActive);
-			tabButton.MiddleHighlight:SetPoint("TOPRIGHT", tabButton.MiddleActive);
-			tabButton.RightHighlight:SetPoint("TOPLEFT", tabButton.RightActive);
-			tabButton.closeButton:SetPoint("RIGHT", -6 , -4);
+		if tabButton:IsActive() then
 			activeTabOffsetLeft = totalWidthRequired - tabWidth;
 			activeTabOffsetRight = totalWidthRequired;
-		else
-			tabButton.LeftActive:Hide();
-			tabButton.MiddleActive:Hide();
-			tabButton.RightActive:Hide();
-			tabButton.Left:Show();
-			tabButton.Middle:Show();
-			tabButton.Right:Show();
-			tabButton.LeftHighlight:SetPoint("TOPRIGHT", tabButton.Left);
-			tabButton.MiddleHighlight:SetPoint("TOPLEFT", tabButton.Middle);
-			tabButton.MiddleHighlight:SetPoint("TOPRIGHT", tabButton.Middle);
-			tabButton.RightHighlight:SetPoint("TOPLEFT", tabButton.Right);
-			tabButton.closeButton:SetPoint("RIGHT", -6 , -8);
 		end
 	end
 	
@@ -217,17 +292,17 @@ function TRP3_Tools_TabBarMixin:Close(tabButton)
 		if tab == tabButton then
 			table.remove(self.tabs, index);
 		end
-		if tab.activationOrder > tabButton.activationOrder then
-			tab.activationOrder = tab.activationOrder - 1;
+		if tab.activationPriority > tabButton.activationPriority then
+			tab.activationPriority = tab.activationPriority - 1;
 		end
 	end
 	self.tabPool:Release(tabButton);
-	if tabButton.isActive then
+	if tabButton:IsActive() then
 		local maxOrder = 0;
 		local maxTab;
 		for _, tab in ipairs(self.tabs) do
-			if tab.activationOrder > maxOrder then
-				maxOrder = tab.activationOrder;
+			if tab.activationPriority > maxOrder then
+				maxOrder = tab.activationPriority;
 				maxTab = tab
 			end
 		end
@@ -242,20 +317,26 @@ function TRP3_Tools_TabBarMixin:Close(tabButton)
 end
 
 function TRP3_Tools_TabBarMixin:Activate(tabButton)
-	if tabButton.isActive then
+	if tabButton:IsActive() then
 		return
 	end
 	for _, tab in ipairs(self.tabs) do
-		tab.isActive = false;
-		if tab.activationOrder > tabButton.activationOrder then
-			tab.activationOrder = tab.activationOrder - 1;
+		tab:SetActive(false);
+		if tab.activationPriority > tabButton.activationPriority then
+			tab.activationPriority = tab.activationPriority - 1;
 		end
 	end
-	tabButton.isActive = true;
-	tabButton.activationOrder = #self.tabs;
+	tabButton:SetActive(true);
+	tabButton.activationPriority = #self.tabs;
 	self:Refresh(true);
 	if self.OnActivate then
 		self:OnActivate(tabButton, tabButton.data);
+	end
+end
+
+function TRP3_Tools_TabBarMixin:RightClick(tabButton)
+	if self.OnRightClick then
+		self:OnRightClick(tabButton, tabButton.data);
 	end
 end
 

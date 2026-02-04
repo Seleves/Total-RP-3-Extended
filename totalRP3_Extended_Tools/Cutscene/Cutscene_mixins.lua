@@ -113,7 +113,7 @@ function TRP3_Tools_EditorCutsceneMixin:ClassToInterface(class, creationClass, c
 		TRP3_API.utils.table.copy(copy, step);
 		table.insert(steps, {step = copy});
 	end
-	if not TableHasAnyEntries(steps) then
+	if TableIsEmpty(steps) then
 		table.insert(steps, {step = newStep()});
 	end
 	table.insert(steps, {isAddButton = true});
@@ -374,7 +374,7 @@ function TRP3_Tools_EditorCutsceneMixin:DeleteSelectedSteps()
 			end
 		end
 	end
-	if not TableHasAnyEntries(steps) then
+	if TableIsEmpty(steps) then
 		table.insert(steps, {step = newStep()});
 	end
 	table.insert(steps, {isAddButton = true});
@@ -593,7 +593,7 @@ function TRP3_Tools_EditorCutsceneChoiceMixin:Initialize()
 				});
 			end
 		end
-		if not TableHasAnyEntries(choices) then
+		if TableIsEmpty(choices) then
 			choices = nil;
 		end
 		self:Hide();

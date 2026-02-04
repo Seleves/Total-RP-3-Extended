@@ -138,97 +138,90 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</Scripts>
 
 	</Frame>
-	
-	<Button name="TRP3_Tools_TabButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+
+	<Button name="TRP3_Tools_TabButtonTemplate" registerForClicks="LeftButtonUp,RightButtonUp" motionScriptsWhileDisabled="true" virtual="true" mixin="TRP3_Tools_TabButtonMixin">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="LeftActive" atlas="uiframe-activetab-left" useAtlasSize="true" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
+				
+				<Texture parentKey="LeftActive" atlas="uiframe-activetab-right" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="RightActive" atlas="uiframe-activetab-left" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT"/>
 					</Anchors>
 				</Texture>
-				<Texture parentKey="RightActive" atlas="uiframe-activetab-right" useAtlasSize="true" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
+				<Texture parentKey="MiddleActive" atlas="_uiframe-activetab-center" horizTile="true" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
 					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="-6"/>
+						<Anchor point="TOPLEFT" relativeKey="$parent.LeftActive" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.RightActive" relativePoint="BOTTOMLEFT"/>
 					</Anchors>
 				</Texture>
-				<Texture parentKey="MiddleActive" atlas="_uiframe-activetab-center" useAtlasSize="true" horizTile="true" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
+
+				<Texture parentKey="Left" atlas="uiframe-tab-right" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.RightActive" relativePoint="TOPRIGHT"/>
-						<Anchor point="TOPRIGHT" relativeKey="$parent.LeftActive" relativePoint="TOPLEFT"/>
+						<Anchor point="BOTTOMLEFT"/>
 					</Anchors>
 				</Texture>
-				<Texture parentKey="Left" atlas="uiframe-tab-left" useAtlasSize="true" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
+				<Texture parentKey="Right" atlas="uiframe-tab-left" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT"/>
 					</Anchors>
 				</Texture>
-				<Texture parentKey="Right" atlas="uiframe-tab-right" useAtlasSize="true" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
+				<Texture parentKey="Middle" atlas="_uiframe-tab-center" horizTile="true" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
 					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="-6"/>
-					</Anchors>
-				</Texture>
-				<Texture parentKey="Middle" atlas="_uiframe-tab-center" useAtlasSize="true" horizTile="true" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.Right" relativePoint="TOPRIGHT"/>
-						<Anchor point="TOPRIGHT" relativeKey="$parent.Left" relativePoint="TOPLEFT"/>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Left" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Right" relativePoint="BOTTOMLEFT"/>
 					</Anchors>
 				</Texture>
 			</Layer>
 			<Layer level="HIGHLIGHT">
-				<Texture parentKey="LeftHighlight" atlas="uiframe-tab-left" useAtlasSize="true" alphaMode="ADD" alpha="0.4" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
+				<Texture parentKey="LeftHighlight" atlas="uiframe-tab-right" alphaMode="ADD" alpha="0.4" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false"/>
+				<Texture parentKey="RightHighlight" atlas="uiframe-tab-left" alphaMode="ADD" alpha="0.4" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false"/>
+				<Texture parentKey="MiddleHighlight" atlas="_uiframe-tab-center" horizTile="true" alphaMode="ADD" alpha="0.4" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
 					<Anchors>
-						<Anchor point="TOPRIGHT" relativeKey="$parent.Left"/>
-					</Anchors>
-				</Texture>
-				<Texture parentKey="MiddleHighlight" atlas="_uiframe-tab-center" useAtlasSize="true" horizTile="true" alphaMode="ADD" alpha="0.4" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.Middle" relativePoint="TOPLEFT"/>
-						<Anchor point="TOPRIGHT" relativeKey="$parent.Middle" relativePoint="TOPRIGHT"/>
-					</Anchors>
-				</Texture>
-				<Texture parentKey="RightHighlight" atlas="uiframe-tab-right" useAtlasSize="true" alphaMode="ADD" alpha="0.4" rotation="180" texelSnappingBias="0.0" snapToPixelGrid="false">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.Right"/>
+						<Anchor point="TOPLEFT" relativeKey="$parent.LeftHighlight" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.RightHighlight" relativePoint="BOTTOMLEFT"/>
 					</Anchors>
 				</Texture>
 			</Layer>
 		</Layers>
-		<ButtonText parentKey="Text" wordwrap="false">
-			<Anchors>
-				<Anchor point="LEFT" x="10" y="-6"/>
-				<Anchor point="RIGHT" x="-10" y="-6"/>
-			</Anchors>
-		</ButtonText>
-		<NormalFont style="GameFontNormalLarge"/>
-		<HighlightFont style="GameFontHighlightLarge"/>
-		
 		<Frames>
 			<Button parentKey="closeButton" inherits="UIPanelCloseButton">
 				<Size x="20" y="20"/>
 				<Anchors>
-					<Anchor point="RIGHT" x="-6" y="-4"/>
+					<Anchor point="RIGHT" x="-6" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						self:GetParent().tabBar:CloseRequest(self:GetParent(), self:GetParent().data);
+						self:GetParent():OnClose();
 					</OnClick>
 				</Scripts>
 			</Button>			
 		</Frames>
+		<ButtonText parentKey="Text" wordwrap="false">
+			<Anchors>
+				<Anchor point="LEFT" x="6" y="0"/>
+				<Anchor point="RIGHT" x="-6" y="0"/>
+			</Anchors>
+		</ButtonText>
 		<Scripts>
-			<OnClick>
-				PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
-				self.tabBar:Activate(self);
-			</OnClick>
-			<OnEnter>
-				TRP3_API.ui.tooltip.setTooltipForSameFrame(self, "BOTTOM", 0, -5, self.data.tooltipHeader, self.data.tooltipBody);
-				TRP3_RefreshTooltipForFrame(self);
-			</OnEnter>
-			<OnLeave>
-				TRP3_MainTooltip:Hide();
-			</OnLeave>
+			<OnClick method="OnClick"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
 		</Scripts>
+	</Button>
+
+	<Button name="TRP3_Tools_TabButtonNormalTemplate" motionScriptsWhileDisabled="true" virtual="true" inherits="TRP3_Tools_TabButtonTemplate">
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+	</Button>
+
+	<Button name="TRP3_Tools_TabButtonLargeTemplate" motionScriptsWhileDisabled="true" virtual="true" inherits="TRP3_Tools_TabButtonTemplate">
+		<NormalFont style="GameFontNormalLarge"/>
+		<HighlightFont style="GameFontHighlightLarge"/>
 	</Button>
 	
 	<Frame name="TRP3_Tools_SplitPaneTemplate" virtual="true" mixin="TRP3_Tools_SplitPaneMixin">

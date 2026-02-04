@@ -9,7 +9,7 @@ function TRP3_Tools_StaticAnalysisMixin:Initialize()
 		frame = self,
 		showMethod = function(issueList)
 			self.content.list:SetShown(TableHasAnyEntries(issueList));
-			self.content.emptyText:SetShown(not TableHasAnyEntries(issueList));
+			self.content.emptyText:SetShown(TableIsEmpty(issueList));
 			self.content.list.model:Flush();
 			self.content.list.model:InsertTable(issueList);
 		end,

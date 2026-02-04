@@ -16,21 +16,15 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 						<Anchor point="LEFT" x="8"/>
 					</Anchors>
 				</Texture>
-				<Texture parentKey="icon">
-					<Size x="20" y="20"/>
+				<FontString parentKey="link" text="" maxLines="1" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<Size x="10000" y="24"/> <!-- textures are not properly centered if the string is too long to fit... unless you trick the system into thinking the line is obscenely long :-) -->
 					<Anchors>
 						<Anchor point="LEFT" x="2" relativePoint="RIGHT" relativeKey="$parent.typeIcon"/>
-					</Anchors>
-				</Texture>
-				<FontString parentKey="link" text="" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
-					<Size y="28"/>
-					<Anchors>
-						<Anchor point="LEFT" x="2" relativePoint="RIGHT" relativeKey="$parent.icon"/>
 						<Anchor point="RIGHT" x="-120"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="creator" text="" inherits="GameFontNormal" justifyH="RIGHT" justifyV="CENTER">
-					<Size y="28"/>
+				<FontString parentKey="creator" text="" maxLines="1" inherits="GameFontNormal" justifyH="RIGHT" justifyV="CENTER">
+					<Size x="10000" y="24"/>
 					<Anchors>
 						<Anchor point="LEFT" x="-120" relativePoint="RIGHT"/>
 						<Anchor point="RIGHT" x="-8" />
@@ -66,129 +60,79 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 					<Anchor point="BOTTOMRIGHT" x="-8" y="8"/>
 				</Anchors>
 				<Frames>
-					<Frame parentKey="creations" inherits="TRP3_Tools_SplitPaneTemplate">
-						<KeyValues>
-							<KeyValue key="orientation" value="TRP3_Tools_SplitPaneMixin.Direction.VERTICAL" type="global"/>
-							<KeyValue key="ratio" value="0" type="number"/>
-						</KeyValues>
+					<Frame parentKey="creations">
 						<Frames>
-							<Frame name="$parentCreationsFilter" parentKey="filter" inherits="TRP3_GroupBoxTemplate">
+							<Frame name="$parentFilterTabs" parentKey="filterTabs" inherits="TRP3_Tools_TabBarTemplate" mixin="TRP3_Tools_FilterTabsMixin">
 								<KeyValues>
-									<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_CREAMY_BROWN" type="global"/>
-									<KeyValue key="collapsible" value="true" type="boolean"/>
-									<KeyValue key="collapsedLabel" value="${DB_FILTERS}" type="string"/>
-									<KeyValue key="minExtent" value="200" type="number"/>
-									<KeyValue key="maxExtent" value="200" type="number"/>
+									<KeyValue key="minTabWidth" value="60" type="number"/>
+									<KeyValue key="maxTabWidth" value="240" type="number"/>
+									<KeyValue key="tabTemplate" value="TRP3_Tools_TabButtonNormalTemplate" type="string"/>
 								</KeyValues>
+								<Size x="0" y="30"/>
 								<Anchors>
-									<Anchor point="TOP" y="-8"/>
+									<Anchor point="TOPLEFT"/>
+									<Anchor point="TOPRIGHT"/>
 								</Anchors>
-								<Frames>
-
-									<!-- column 1 -->
-									<EditBox parentKey="name" inherits="TRP3_Tools_TitledEditBoxTemplate">
-										<KeyValues>
-											<KeyValue key="titleText" value="${DB_FILTERS_NAME}" type="string"/>
-										</KeyValues>
-										<Size x="200" y="25"/>
-										<Anchors>
-											<Anchor point="TOP" y="-30"/>
-											<Anchor point="RIGHT" relativePoint="CENTER" x="-20"/>
-										</Anchors>
-									</EditBox>
-									
-									<EditBox parentKey="owner" inherits="TRP3_Tools_TitledEditBoxTemplate">
-										<KeyValues>
-											<KeyValue key="titleText" value="${DB_FILTERS_OWNER}" type="string"/>
-										</KeyValues>
-										<Size x="200" y="25"/>
-										<Anchors>
-											<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.name" x="0" y="-15"/>
-											<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.name" x="0" y="-15"/>
-										</Anchors>
-									</EditBox>
-									
-									<DropdownButton parentKey="type" inherits="TRP3_Tools_TitledDropdownButtonTemplate">
-										<KeyValues>
-											<KeyValue key="titleText" value="${TYPE}" type="string"/>
-										</KeyValues>
-										<Anchors>
-											<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.owner" x="0" y="-15"/>
-											<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.owner" x="0" y="-15"/>
-										</Anchors>
-									</DropdownButton>
-									
-									<Button parentKey="search" text="SEARCH" inherits="TRP3_CommonButton">
-										<Anchors>
-											<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.type" x="20" y="-15"/>
-											<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.type" x="-20" y="-15"/>
-										</Anchors>
-									</Button>
-									
-									<!-- column 2 -->
-									
-									<EditBox parentKey="id" inherits="TRP3_Tools_TitledEditBoxTemplate">
-										<KeyValues>
-											<KeyValue key="titleText" value="${ROOT_ID}" type="string"/>
-										</KeyValues>
-										<Size x="200" y="25"/>
-										<Anchors>
-											<Anchor point="TOP" y="-30"/>
-											<Anchor point="LEFT" relativePoint="CENTER" x="20"/>
-										</Anchors>
-									</EditBox>
-									
-									<DropdownButton parentKey="locale" inherits="TRP3_Tools_TitledDropdownButtonTemplate" enableMouse="true">
-										<KeyValues>
-											<KeyValue key="titleText" value="${DB_LOCALE}" type="string"/>
-										</KeyValues>
-										<Anchors>
-											<Anchor point="TOP" relativeKey="$parent.type" y="0"/>
-											<Anchor point="LEFT" relativeKey="$parent.id" x="0"/>
-											<Anchor point="RIGHT" relativeKey="$parent.id"/>
-										</Anchors>
-									</DropdownButton>
-									
-									<Button parentKey="clear" text="RESET" inherits="TRP3_CommonButton">
-										<Anchors>
-											<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.locale" x="20" y="-15"/>
-											<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.locale" x="-20" y="-15"/>
-										</Anchors>
-									</Button>
-
-								</Frames>
 							</Frame>
-						
-							<Frame parentKey="listWrapper">
-							
+
+							<EditBox name="$parentSearchBox" parentKey="searchBox" inherits="SearchBoxTemplate" autoFocus="false" historyLines="32" bytes="256" >
+								<KeyValues>
+									<KeyValue key="instructionsFontObject" value="UserScaledFontGameDisableSmall" type="global"/>
+								</KeyValues>
+								<Size x="0" y="24"/>
+								<Anchors>
+									<Anchor point="TOPLEFT" x="7" y="-40"/>
+									<Anchor point="RIGHT" relativePoint="CENTER"/>
+								</Anchors>
 								<Layers>
-									<Layer level="OVERLAY">
-										<FontString parentKey="filterText" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
-											<Size x="0" y="20"/>
+									<Layer level="BACKGROUND">
+										<Texture parentKey="Backdrop" atlas="glues-characterSelect-searchbar" useAtlasSize="false">
 											<Anchors>
-												<Anchor point="TOP" x="0"/>
-												<Anchor point="RIGHT"/>
-												<Anchor point="LEFT"/>
+												<Anchor point="TOPLEFT" x="-5"/>
+												<Anchor point="BOTTOMRIGHT"/>
 											</Anchors>
-											<Color r="0.95" g="0.95" b="0.95" />
-										</FontString>
+										</Texture>
 									</Layer>
 								</Layers>
-							
-								<Frames>
-									<Frame name="$parentCreationsList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
-										<KeyValues>
-											<KeyValue key="listElementTemplate" value="TRP3_Tools_CreationsListElementTemplate" type="string"/>
-											<KeyValue key="listElementMixin" value="TRP3_Tools_CreationsListElementMixin" type="global"/>
-										</KeyValues>
-										<Anchors>
-											<Anchor point="TOPLEFT"/>
-											<Anchor point="BOTTOMRIGHT"/>
-										</Anchors>
-									</Frame>
-								</Frames>
+								<FontString inherits="UserScaledFontGameHighlight" justifyH="LEFT"/>
+							</EditBox>
+
+							<Frame name="$parentCreationsList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
+								<KeyValues>
+									<KeyValue key="listElementTemplate" value="TRP3_Tools_CreationsListElementTemplate" type="string"/>
+									<KeyValue key="listElementMixin" value="TRP3_Tools_CreationsListElementMixin" type="global"/>
+								</KeyValues>
+								<Anchors>
+									<Anchor point="TOPLEFT" y="-65"/>
+									<Anchor point="BOTTOMRIGHT"/>
+								</Anchors>
 							</Frame>
 						</Frames>
+
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="filterText" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
+									<Size x="0" y="20"/>
+									<Anchors>
+										<Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.searchBox"/>
+										<Anchor point="RIGHT"/>
+									</Anchors>
+									<Color r="0.95" g="0.95" b="0.95" />
+								</FontString>
+							</Layer>
+							<Layer level="ARTWORK">
+								<Texture file="Interface\AddOns\totalRP3\Resources\UI\_ui-frame-wooden-border" horizTile="true">
+									<Color r="1" g="0.8" b="0.8"/>
+									<TexCoords top="0.484375" bottom="0.8125"/>
+									<Anchors>
+										<Anchor point="TOP" y="-30"/>
+										<Anchor point="BOTTOM" y="-38" relativePoint="TOP"/>
+										<Anchor point="LEFT"/>
+										<Anchor point="RIGHT"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
 					</Frame>
 					<Frame parentKey="actions" mixin="TRP3_Tools_CreationsActionsMixin">
 						<Frames>
@@ -428,6 +372,177 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 		</Frames>
 	</Frame>
 
-	<Include file="Database.lua"/>
+	<Button name="TRP3_Tools_FilterBuilderListElementTemplate" inherits="TRP3_Tools_ListElementTemplate" virtual="true" mixin="TRP3_Tools_FilterBuilderListElementMixin">
+		<Size x="1" y="40"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="open" text="(" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="CENTER">
+					<Size x="10" y="22"/>
+					<Anchors>
+						<Anchor point="TOP" y="-8"/>
+						<Anchor point="LEFT" x="65"/>
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+				<FontString parentKey="close" text=")" inherits="GameFontNormalLarge" justifyH="RIGHT" justifyV="CENTER">
+					<Size x="10" y="22"/>
+					<Anchors>
+						<Anchor point="TOP" y="-8"/>
+						<Anchor point="TOPRIGHT" x="-35" y="-8"/>
+					</Anchors>
+					<Color r="0.95" g="0.95" b="0.95" />
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="logicalOperatorButton" inherits="TRP3_CommonButton">
+				<Size x="50" y="22"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="8" y="-8"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ToggleLogicalOperator();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<DropdownButton parentKey="predicate" inherits="TRP3_Tools_TitledDropdownButtonTemplate">
+				<Size x="150" y="25"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" x="10" y="0" relativeKey="$parent.open"/>
+				</Anchors>
+			</DropdownButton>
+			<Button parentKey="delete" inherits="TRP3_Tools_DeleteButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-8" y="-8"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnDelete();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Button>
 
+	<Frame name="TRP3_Tools_FilterBuilder" hidden="true" enableMouse="true" inherits="TRP3_BrowserDialogBackdropTemplate" mixin="TRP3_Tools_FilterBuilderMixin">
+		<KeyValues>
+			<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_GREY" type="global"/>
+		</KeyValues>
+
+		<Size x="650" y="400"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="title" text="Edit Filter" inherits="GameFontNormalLarge">
+					<Size x="0" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-17"/>
+						<Anchor point="TOPRIGHT" x="0" y="-17"/>
+					</Anchors>
+					<Color b="0.95" r="0.95" g="0.95"/>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+
+			<Button parentKey="close" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-5" y="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Cancel();
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<EditBox parentKey="name" inherits="TRP3_Tools_TitledHelpEditBoxTemplate">
+				<KeyValues>
+					<KeyValue key="titleText" value="Filter name" type="string"/>
+					<KeyValue key="helpText" value="This name appears on the filter's tab" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOP" y="-35"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-10" y="0"/>
+					<Anchor point="LEFT" x="10" y="0"/>
+				</Anchors>
+			</EditBox>
+
+			<CheckButton parentKey="persistent" inherits="TRP3_Tools_CheckBoxTemplate" name="$parentPersistent">
+				<KeyValues>
+					<KeyValue key="titleText" value="Save filter" type="string"/>
+					<KeyValue key="helpText" value="Keep this filter across sessions" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOP" y="-35"/>
+					<Anchor point="LEFT" x="10" y="0" relativePoint="CENTER"/>
+				</Anchors>
+			</CheckButton>
+
+			<Button parentKey="applyButton" text="OK" inherits="TRP3_CommonButton">
+				<Size x="100" y="22"/>
+				<Anchors>
+					<Anchor point="BOTTOM" y="10"/>
+					<Anchor point="RIGHT" x="-5" relativePoint="CENTER"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Apply();
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button parentKey="cancelButton" text="CANCEL" inherits="TRP3_CommonButton">
+				<Size x="100" y="22"/>
+				<Anchors>
+					<Anchor point="BOTTOM" y="10"/>
+					<Anchor point="LEFT" x="5" relativePoint="CENTER"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Cancel();
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Frame parentKey="content" inherits="TRP3_TooltipBackdropTemplate">
+				
+				<KeyValues>
+					<KeyValue key="backdropBorderColor" value="TRP3_BACKDROP_COLOR_CREAMY_BROWN" type="global"/>
+				</KeyValues>
+
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-70"/>
+					<Anchor point="LEFT" x="10" y="0"/>
+					<Anchor point="RIGHT" x="-10" y="0"/>
+					<Anchor point="BOTTOM" x="0" y="35"/>
+				</Anchors>
+
+				<Frames>
+					<Frame name="$parentList" parentKey="list" inherits="TRP3_Tools_ListTemplate">
+						<KeyValues>
+							<KeyValue key="listElementTemplate" value="TRP3_Tools_FilterBuilderListElementTemplate" type="string"/>
+							<KeyValue key="listElementMixin" value="TRP3_Tools_FilterBuilderListElementMixin" type="global"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="5" y="-5"/>
+							<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnHide method="OnHide"/>
+		</Scripts>
+	</Frame>
+
+	<Include file="Database.lua"/>
+	<Include file="Filters.lua"/>
+	
 </Ui>

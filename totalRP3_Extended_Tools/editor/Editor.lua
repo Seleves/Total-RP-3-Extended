@@ -18,7 +18,7 @@ local currentObject;
 local DUMMY_TREE_MODEL = CreateTreeDataProvider();
 
 local function updateTabBar()
-	addon.main.forEachTab(function(editor) 
+	addon.main.forEachTab(function(tab, editor) 
 		if editor.creationId == currentEditor.creationId then
 			local body;
 			local absoluteId = "";
@@ -40,9 +40,8 @@ local function updateTabBar()
 				end
 				absoluteId = absoluteId .. TRP3_API.extended.ID_SEPARATOR;
 			end
-			editor.label = root;
-			editor.tooltipHeader = root;
-			editor.tooltipBody = body;
+			tab:SetLabel(root);
+			tab:SetTooltip(root, body);
 		end
 	end);
 	addon.main.refreshTabs();
@@ -290,7 +289,7 @@ function addon.editor.deleteInnerObjectsById(...)
 			toDelete[absoluteId] = absoluteId;
 		end
 	end
-	if not TableHasAnyEntries(toDelete) then
+	if TableIsEmpty(toDelete) then
 		return;
 	end
 	local ancestors = {};
@@ -312,7 +311,7 @@ function addon.editor.deleteInnerObjectsById(...)
 		ancestors[absoluteId] = ancestor.data.absoluteId;
 	end
 
-	addon.main.forEachTab(function(editor) 
+	addon.main.forEachTab(function(_, editor) 
 		if editor.creationId == currentEditor.creationId then
 			for absoluteId, ancestorId in pairs(ancestors) do
 				if addon.utils.isInnerIdOrEqual(absoluteId, editor.cursor.objectId) then
@@ -354,7 +353,7 @@ function addon.editor.changeRelativeId(absoluteId, newRelativeId)
 
 		currentEditor.cursor.objects[newAbsoluteId] = currentEditor.cursor.objects[absoluteId] or {};
 
-		addon.main.forEachTab(function(editor) 
+		addon.main.forEachTab(function(_, editor) 
 			if editor.creationId == currentEditor.creationId and addon.utils.isInnerIdOrEqual(absoluteId, editor.cursor.objectId) then
 				editor.cursor.objectId = editor.cursor.objectId:gsub(absoluteId, newAbsoluteId);
 			end

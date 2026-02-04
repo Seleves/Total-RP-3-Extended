@@ -46,7 +46,7 @@ function addon.static_analysis.run()
 		end
 
 		for scriptId, scriptData in pairs(class.SC or TRP3_API.globals.empty) do
-			if not scriptData.ST or not TableHasAnyEntries(scriptData.ST) then
+			if not scriptData.ST or TableIsEmpty(scriptData.ST) then
 				push(absoluteId, relativeId, class, "Empty workflow", ("The workflow %s does nothing because it has no effects in it.|nConsider deleting it or adding effects."):format(addon.script.formatters.constant(scriptId)));
 			else
 				local effect = scriptData.ST["1"];

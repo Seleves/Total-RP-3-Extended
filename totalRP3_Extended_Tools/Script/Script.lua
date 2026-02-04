@@ -324,7 +324,7 @@ function addon.script.registerEffect(effect)
 	for index, parameter in ipairs(effect.parameters) do
 		if parameter.values then
 			parameter.dropdownValues = {};
-			for index, value in ipairs(parameter.values) do
+			for _, value in ipairs(parameter.values) do
 				table.insert(parameter.dropdownValues, {value[2], value[1], value[3]});
 			end
 		end
@@ -345,7 +345,7 @@ function addon.script.registerOperand(operand)
 	for _, parameter in ipairs(operand.parameters) do
 		if parameter.values then
 			parameter.dropdownValues = {};
-			for index, value in ipairs(parameter.values) do
+			for _, value in ipairs(parameter.values) do
 				table.insert(parameter.dropdownValues, {value[2], value[1], value[3]});
 			end
 		end

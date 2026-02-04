@@ -154,7 +154,7 @@ function TRP3_ToolFrameTabsMixin:CloseRequest(tabButton, data)
 		addon.editor.updateCurrentObjectDraft();
 		if openTabCount <= 1 then
 			if TRP3_API.extended.isObjectMine(data.creationId) and not addon.utils.deepCompare(drafts[data.creationId].class, TRP3_API.extended.getClass(data.creationId)) then
-				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].text = "Your creation " .. data.label .. " has unsaved changes.|nDo you want to save them?";
+				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].text = "Your creation " .. tabButton:GetText() .. " has unsaved changes.|nDo you want to save them?";
 				StaticPopupDialogs["TRP3_SAVE_DISCARD_CANCEL"].OnAccept = function()
 					addon.main.saveDraft(data.creationId);
 					addon.main.deleteDraft(data.creationId);
@@ -194,7 +194,6 @@ function TRP3_ToolFrameTabsMixin:OnActivate(tabButton, data)
 	if data.type == TAB_TYPE.DATABASE then
 		addon.main.setBackground(1);
 		toolFrame.database:Show();
-		addon.database.refreshCreationsList();
 	elseif data.type == TAB_TYPE.CREATION then
 		addon.editor.show(data);
 		toolFrame.editor:Show();
@@ -254,11 +253,12 @@ function addon.main.openDraft(creationId, forceNewEditor, cursor)
 		local class = TRP3_API.extended.getClass(creationId);
 		local link = TRP3_API.inventory.getItemLink(class, creationId);
 		tabBar:AddTabAndActivate({
-			type       = TAB_TYPE.CREATION,
-			creationId = creationId, 
 			label      = link, 
 			tooltipHeader = link,
-			closeable  = true,
+			closeable  = true
+		},{
+			type       = TAB_TYPE.CREATION,
+			creationId = creationId, 
 			cursor     = cursor or {
 				objectId = creationId
 			}
@@ -310,6 +310,7 @@ function addon.main.saveDraft(creationId)
 	TRP3_API.extended.auras.refresh();
 	TRP3_Extended:TriggerEvent(TRP3_Extended.Events.REFRESH_BAG);
 	TRP3_Extended:TriggerEvent(TRP3_Extended.Events.REFRESH_CAMPAIGN, creationId);
+	addon.database.refreshView();
 end
 
 function addon.main.closeAllDrafts(creationId)
@@ -328,9 +329,10 @@ function addon.main.openDatabase()
 	local databaseTab = tabBar:FindTab(function(data) return data.type == TAB_TYPE.DATABASE; end);
 	if not databaseTab then
 		tabBar:AddTabAndActivate({
-			type       = TAB_TYPE.DATABASE, 
 			label      = loc.DB, 
 			closeable  = false
+		},{
+			type       = TAB_TYPE.DATABASE,
 		});
 	else
 		tabBar:Activate(databaseTab);
@@ -341,9 +343,10 @@ function addon.main.openDisclaimer()
 	local disclaimerTab = tabBar:FindTab(function(data) return data.type == TAB_TYPE.DISCLAIMER; end);
 	if not disclaimerTab then
 		tabBar:AddTabAndActivate({
-			type       = TAB_TYPE.DISCLAIMER, 
 			label      = "Before you start...", 
 			closeable  = false
+		}, {
+			type       = TAB_TYPE.DISCLAIMER
 		});
 	else
 		tabBar:Activate(disclaimerTab);
@@ -354,9 +357,10 @@ function addon.main.openCredits()
 	local creditsTab = tabBar:FindTab(function(data) return data.type == TAB_TYPE.CREDITS; end);
 	if not creditsTab then
 		tabBar:AddTabAndActivate({
-			type       = TAB_TYPE.CREDITS, 
 			label      = "Credits", 
 			closeable  = true
+		}, {
+			type       = TAB_TYPE.CREDITS, 
 		});
 	else
 		tabBar:Activate(creditsTab);
@@ -369,7 +373,7 @@ end
 
 function addon.main.forEachTab(tabFun)
 	for _, tab in pairs(tabBar.tabs) do
-		tabFun(tab.data);
+		tabFun(tab, tab.data);
 	end
 end
 
@@ -499,6 +503,7 @@ local function onStart()
 	BINDING_NAME_TRP3_EXTENDED_TOOLS = loc.TB_TOOLS;
 
 	TRP3_API.RegisterCallback(TRP3_Addon, TRP3_Addon.Events.WORKFLOW_ON_FINISH, function()
+		addon.database.setupFilters();
 		if TRP3_Tools_Flags.has_seen_disclaimer then
 			--addon.main.openDisclaimer(); -- TODO remove
 			addon.main.openDatabase(); -- TODO uncomment

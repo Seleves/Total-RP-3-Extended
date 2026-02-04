@@ -275,7 +275,7 @@ function TRP3_Tools_EditorDocumentMixin:DeleteSelectedPages()
 			end
 		end
 	end
-	if not TableHasAnyEntries(pages) then
+	if TableIsEmpty(pages) then
 		table.insert(pages, {
 			page = {TX = ""}
 		});
