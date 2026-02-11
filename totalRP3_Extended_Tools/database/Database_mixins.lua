@@ -53,7 +53,13 @@ function TRP3_Tools_FilterTabsMixin:OnRightClick(tab, data)
 end
 
 function TRP3_Tools_FilterTabsMixin:CloseRequest(tab, data)
-	addon.database.removeFilter(tab, data);
+	if data.persistent then
+		TRP3_API.popup.showConfirmPopup(("Are you sure you want to permanently delete the filter [%s]?"):format(data.name), function()
+			addon.database.removeFilter(tab, data);
+		end);
+	else
+		addon.database.removeFilter(tab, data);
+	end
 end
 
 TRP3_Tools_CreationsListElementMixin = {};
