@@ -423,10 +423,6 @@ local ContainerDropTargetType = {
 local function GetContainerDropTarget()
 	local frames = GetMouseFoci();
 
-	if #frames == 0 then
-		return ContainerDropTargetType.World, nil;
-	end
-
 	for _, frame in ipairs(frames) do
 		local name = frame:GetName() or "";
 
@@ -441,7 +437,7 @@ local function GetContainerDropTarget()
 		end
 	end
 
-	return nil, nil;
+	return ContainerDropTargetType.World, nil;
 end
 
 local function slotOnDragStop(slotFrom)
