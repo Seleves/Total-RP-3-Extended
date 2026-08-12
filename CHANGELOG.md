@@ -1,3 +1,9 @@
+# Changelog for version 2.3.5
+
+## Fixed
+
+- Fixed some errors related to patch 12.1 API changes.
+
 # Changelog for version 2.3.4
 
 ## Fixed
