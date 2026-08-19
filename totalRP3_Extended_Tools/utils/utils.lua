@@ -368,9 +368,19 @@ function addon.utils.editDistance(str1, str2, insDelCost)
 	return matrix[len1][len2]/math.max(len1, len2);
 end
 
+local function isConsecutive(tbl)
+	local i = 0;
+	for _ in pairs(tbl) do
+		i = i + 1;
+		if tbl[i] == nil then 
+			return false;
+		end
+	end
+	return true;
+end
+
 -- simplistic serialization
 -- cannot handle cycles
--- cannot handle associative tables
 -- cannot handle functions
 function addon.utils.serializeLua(object)
 	if type(object) == "nil" then
@@ -384,9 +394,16 @@ function addon.utils.serializeLua(object)
 	elseif type(object) == "table" then
 		local out = "{";
 		local s = "";
-		for _, element in ipairs(object) do
-			out = out .. s .. addon.utils.serializeLua(element);
-			s = ", ";
+		if isConsecutive(object) then
+			for _, element in ipairs(object) do
+				out = out .. s .. addon.utils.serializeLua(element);
+				s = ", ";
+			end
+		else
+			for key, element in pairs(object) do
+				out = out .. s .. "[" .. addon.utils.serializeLua(key) .. "] = " .. addon.utils.serializeLua(element);
+				s = ", ";
+			end
 		end
 		out = out .. "}";
 		return out;
