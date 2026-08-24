@@ -1376,7 +1376,7 @@ function addon.script.registerBuiltinEffects()
 					fmt(self.parameters[1], source),
 					fmt(self.parameters[3], var),
 					tostring(operation),
-					fmt(self.parameters[3], value)
+					fmt(self.parameters[4], value)
 				);
 			else
 				local v = fmt(self.parameters[3], var);
@@ -1386,7 +1386,7 @@ function addon.script.registerBuiltinEffects()
 					v,
 					v,
 					tostring(operation),
-					fmt(self.parameters[3], value)
+					fmt(self.parameters[4], value)
 				);
 			end
 		end,
