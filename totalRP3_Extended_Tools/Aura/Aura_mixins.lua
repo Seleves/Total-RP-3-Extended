@@ -25,7 +25,7 @@ function TRP3_Tools_EditorAuraMixin:UpdatePreview(doFullUpdate)
 		if self.gameplay.hasDuration:GetChecked() then
 			self.preview.persistent.expiry = time() + tonumber(self.gameplay.duration:GetText()) or 0;
 		else
-			self.preview.persistent.expiry = nil;
+			self.preview.persistent.expiry = math.huge;
 		end
 		self.preview.class.BA.DE = TRP3_API.script.parseArgs(TRP3_API.utils.str.emptyToNil(strtrim(self.display.description.scroll.text:GetText())), TRP3_API.globals.empty);
 		self.preview.class.BA.NA = TRP3_API.utils.str.emptyToNil(strtrim(self.display.name:GetText()));
