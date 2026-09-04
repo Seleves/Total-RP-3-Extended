@@ -304,7 +304,14 @@ function TRP3_Tools_EditorScriptMixin:AddScript()
 	end, nil, "");
 end
 
-function TRP3_Tools_EditorScriptMixin:OnScriptSelected(scriptId)
+function TRP3_Tools_EditorScriptMixin:OnScriptSelected(scriptId, overwriteScrollPct)
+	local scrollPct = 0;
+	if overwriteScrollPct then
+		scrollPct = overwriteScrollPct;
+	elseif self.selectedScriptId == scriptId then
+		scrollPct = self.effectList.widget:GetScrollPercentage();
+	end
+
 	self.selectedScriptId = scriptId;
 	if scriptId then
 		local effects = {};
@@ -321,6 +328,7 @@ function TRP3_Tools_EditorScriptMixin:OnScriptSelected(scriptId)
 
 		self.effectList.model:Flush();
 		self.effectList.model:InsertTable(effects);
+		self.effectList.widget:SetScrollPercentage(scrollPct);
 		self.scriptHeader:Initialize({scriptId = scriptId});
 	else
 		self.scriptList:Refresh();
@@ -396,10 +404,10 @@ function TRP3_Tools_EditorScriptMixin:ClassToInterface(class, _creationClass, cu
 	self.triggers = addon.script.getNormalizedTriggerData(class, self.scripts);
 	self:OnScriptsChanged(nil, nil, nil);
 
-	self:UpdateTriggerList();
+	self:UpdateTriggerList(cursor and cursor.triggerListScrollPct or 0);
 
 	if cursor and cursor.scriptId and self.scripts[cursor.scriptId] then
-		self:OnScriptSelected(cursor.scriptId);
+		self:OnScriptSelected(cursor.scriptId, cursor and cursor.effectListScrollPct or 0);
 	else
 		self:OnScriptSelected(nil);
 	end
@@ -419,7 +427,8 @@ function TRP3_Tools_EditorScriptMixin:UpdateScriptList()
 	self.scriptList.model:InsertTable(scriptList);
 end
 
-function TRP3_Tools_EditorScriptMixin:UpdateTriggerList()
+function TRP3_Tools_EditorScriptMixin:UpdateTriggerList(overwriteScrollPct)
+	local scrollPct = overwriteScrollPct or self.triggerList.widget:GetScrollPercentage();
 	local triggerList = {};
 	local class = addon.editor.getCurrentDraftClass();
 	local usedObjectTriggerCount = 0;
@@ -440,6 +449,7 @@ function TRP3_Tools_EditorScriptMixin:UpdateTriggerList()
 
 	self.triggerList.model:Flush();
 	self.triggerList.model:InsertTable(triggerList);
+	self.triggerList.widget:SetScrollPercentage(scrollPct);
 end
 
 function TRP3_Tools_EditorScriptMixin:InterfaceToClass(targetClass, targetCursor)
@@ -484,6 +494,8 @@ function TRP3_Tools_EditorScriptMixin:InterfaceToClass(targetClass, targetCursor
 
 	if targetCursor then
 		targetCursor.scriptId = self.selectedScriptId;
+		targetCursor.triggerListScrollPct = self.triggerList.widget:GetScrollPercentage();
+		targetCursor.effectListScrollPct = self.effectList.widget:GetScrollPercentage();
 	end
 end
 
